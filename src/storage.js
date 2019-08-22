@@ -3,13 +3,18 @@
 const fs = require("fs");
 
 class Storage {
-  async get() {}
+  constructor() {
+    this.data = null
+    this.archive = null
+  }
 
-  async getArchive() {}
+  get() {}
 
-  async set() {}
+  getArchive() {}
 
-  async setArchive() {}
+  set() {}
+
+  setArchive() {}
 }
 
 module.exports = Storage;

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 "use strict";
 const crypto = require("crypto");
 const fs = require("fs");
@@ -8,7 +9,10 @@ const config = require("./config");
 const render = require("./render");
 const Storage = require("./storage");
 
-const { basename, join } = path;
+const {
+  basename,
+  join
+} = path;
 
 class LocalStorage extends Storage {
   constructor() {
@@ -23,7 +27,9 @@ class LocalStorage extends Storage {
   }
 
   get _mainAppDir() {
-    const { taskbookDirectory } = config.get();
+    const {
+      taskbookDirectory
+    } = config.get();
     const defaultAppDirectory = join(os.homedir(), ".taskbook");
 
     if (!taskbookDirectory) {
@@ -98,13 +104,13 @@ class LocalStorage extends Storage {
   get() {
     let self = this;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
+      let data = {};
       if (fs.existsSync(self._mainStorageFile)) {
         const content = fs.readFileSync(self._mainStorageFile, "utf8");
-        let data = JSON.parse(content);
-        resolve(data);
+        data = JSON.parse(content);
       }
-      reject();
+      resolve(data);
     });
   }
 
@@ -122,7 +128,7 @@ class LocalStorage extends Storage {
   set(data) {
     let self = this;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       data = JSON.stringify(data, null, 4);
       const tempStorageFile = self._getTempFile(self._mainStorageFile);
 

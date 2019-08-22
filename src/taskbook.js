@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 "use strict";
 const clipboardy = require("clipboardy");
 const Task = require("./task");
@@ -6,27 +7,34 @@ const Note = require("./note");
 const LocalStorage = require("./local");
 const render = require("./render");
 const FirebaseStorage = require("./firebase");
+const config = require("./config")
 
 class Taskbook {
   constructor() {
-    this._localStorage = new LocalStorage();
-    this._firebaseStorage = new FirebaseStorage();
+    const {
+      storageModule
+    } = config.get();
+    if (storageModule === "firestore") {
+      this._storage = new FirebaseStorage();
+    } else {
+      this._storage = new LocalStorage();
+    }
   }
 
   get _archive() {
-    return this._localStorage.getArchive();
+    return this._storage.getArchive();
   }
 
   get _data() {
-    return this._localStorage.get();
+    return this._storage.get();
   }
 
   _getData() {
-    return this._localStorage.get();
+    return this._storage.get();
   }
 
   _getArchive() {
-    return this._localStorage.getArchive();
+    return this._storage.getArchive();
   }
 
   _arrayify(x) {
@@ -34,11 +42,11 @@ class Taskbook {
   }
 
   _save(data) {
-    this._localStorage.set(data);
+    this._storage.set(data);
   }
 
   _saveArchive(data) {
-    this._localStorage.setArchive(data);
+    this._storage.setArchive(data);
   }
 
   _removeDuplicates(x) {
@@ -113,7 +121,10 @@ class Taskbook {
   }
 
   async _getOptions(input) {
-    const [boards, desc] = [[], []];
+    const [boards, desc] = [
+      [],
+      []
+    ];
 
     if (input.length === 0) {
       render.missingDesc();
@@ -125,9 +136,9 @@ class Taskbook {
 
     input.forEach(x => {
       if (!this._isPriorityOpt(x)) {
-        return x.startsWith("@") && x.length > 1
-          ? boards.push(x)
-          : desc.push(x);
+        return x.startsWith("@") && x.length > 1 ?
+          boards.push(x) :
+          desc.push(x);
       }
     });
 
@@ -137,7 +148,12 @@ class Taskbook {
       boards.push("My Board");
     }
 
-    return { boards, description, id, priority };
+    return {
+      boards,
+      description,
+      id,
+      priority
+    };
   }
 
   async _getStats() {
@@ -146,11 +162,13 @@ class Taskbook {
 
     Object.keys(data).forEach(id => {
       if (data[id]._isTask) {
-        return data[id].isComplete
-          ? complete++
-          : data[id].inProgress
-          ? inProgress++
-          : pending++;
+        return data[id].isComplete ?
+          complete++
+          :
+          data[id].inProgress ?
+          inProgress++
+          :
+          pending++;
       }
 
       return notes++;
@@ -159,7 +177,13 @@ class Taskbook {
     const total = complete + pending + inProgress;
     const percent = total === 0 ? 0 : Math.floor((complete * 100) / total);
 
-    return { percent, complete, inProgress, pending, notes };
+    return {
+      percent,
+      complete,
+      inProgress,
+      pending,
+      notes
+    };
   }
 
   _hasTerms(string, terms) {
@@ -323,20 +347,20 @@ class Taskbook {
     return grouped;
   }
 
-  _saveItemToArchive(item) {
-    const { _archive } = this;
-    const archiveID = this._generateID(_archive);
+  async _saveItemToArchive(item) {
+    let archive = await this._storage.getArchive();
+    const archiveID = await this._generateID(archive);
 
     item._id = archiveID;
-    _archive[archiveID] = item;
+    archive[archiveID] = item;
 
-    this._saveArchive(_archive);
+    this._saveArchive(archive);
   }
 
   async _saveItemToStorage(item) {
     let data = await this._getData();
 
-    const restoreID = this._generateID();
+    const restoreID = await this._generateID();
 
     item._id = restoreID;
     data[restoreID] = item;
@@ -347,8 +371,16 @@ class Taskbook {
   async createNote(desc) {
     let data = await this._getData();
 
-    const { id, description, boards } = await this._getOptions(desc);
-    const note = new Note({ id, description, boards });
+    const {
+      id,
+      description,
+      boards
+    } = await this._getOptions(desc);
+    const note = new Note({
+      id,
+      description,
+      boards
+    });
     data[id] = note;
     await this._save(data);
     render.successCreate(note);
@@ -370,8 +402,13 @@ class Taskbook {
     let data = await this._getData();
 
     ids = await this._validateIDs(ids);
-    const { data } = this;
-    const [checked, unchecked] = [[], []];
+    const {
+      data
+    } = this;
+    const [checked, unchecked] = [
+      [],
+      []
+    ];
 
     ids.forEach(id => {
       if (data[id]._isTask) {
@@ -390,7 +427,10 @@ class Taskbook {
     let data = await this._getData();
 
     ids = await this._validateIDs(ids);
-    const [started, paused] = [[], []];
+    const [started, paused] = [
+      [],
+      []
+    ];
 
     ids.forEach(id => {
       if (data[id]._isTask) {
@@ -408,8 +448,18 @@ class Taskbook {
   async createTask(desc) {
     let data = await this._getData();
 
-    const { boards, description, id, priority } = await this._getOptions(desc);
-    const task = new Task({ id, description, boards, priority });
+    const {
+      boards,
+      description,
+      id,
+      priority
+    } = await this._getOptions(desc);
+    const task = new Task({
+      id,
+      description,
+      boards,
+      priority
+    });
     data[id] = task;
     this._save(data);
     render.successCreate(task);
@@ -496,7 +546,10 @@ class Taskbook {
   }
 
   listByAttributes(terms) {
-    let [boards, attributes] = [[], []];
+    let [boards, attributes] = [
+      [],
+      []
+    ];
     const storedBoards = this._getBoards();
 
     terms.forEach(x => {
@@ -571,7 +624,10 @@ class Taskbook {
 
     let data = await this._getData();
 
-    const [starred, unstarred] = [[], []];
+    const [starred, unstarred] = [
+      [],
+      []
+    ];
 
     ids.forEach(id => {
       data[id].isStarred = !data[id].isStarred;
