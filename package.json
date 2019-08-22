@@ -1,0 +1,59 @@
+{
+  "name": "taskbook",
+  "productName": "Taskbook",
+  "version": "0.3.0",
+  "description": "Tasks, boards & notes for the command-line habitat",
+  "repository": "klaussinani/taskbook",
+  "license": "MIT",
+  "author": {
+    "name": "Klaus Sinani",
+    "email": "klaussinani@gmail.com",
+    "url": "https://klaussinani.github.io"
+  },
+  "bin": {
+    "tb": "cli.js"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "files": [
+    "src",
+    "cli.js",
+    "index.js"
+  ],
+  "keywords": [
+    "task",
+    "board",
+    "note",
+    "todo",
+    "notebook",
+    "command",
+    "line",
+    "console",
+    "cli",
+    "app"
+  ],
+  "configuration": {
+    "default": {
+      "taskbookDirectory": "~",
+      "displayCompleteTasks": true,
+      "displayProgressOverview": true
+    }
+  },
+  "scripts": {
+    "test": "xo"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "clipboardy": "^1.2.3",
+    "meow": "^5.0.0",
+    "signale": "1.4.0",
+    "update-notifier": "^2.5.0"
+  },
+  "devDependencies": {
+    "xo": "*"
+  },
+  "xo": {
+    "space": 2
+  }
+}
