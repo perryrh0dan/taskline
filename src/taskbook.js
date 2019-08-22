@@ -1,22 +1,32 @@
 #!/usr/bin/env node
-'use strict';
-const clipboardy = require('clipboardy');
-const Task = require('./task');
-const Note = require('./note');
-const Storage = require('./storage');
-const render = require('./render');
+"use strict";
+const clipboardy = require("clipboardy");
+const Task = require("./task");
+const Note = require("./note");
+const LocalStorage = require("./local");
+const render = require("./render");
+const FirebaseStorage = require("./firebase");
 
 class Taskbook {
   constructor() {
-    this._storage = new Storage();
+    this._localStorage = new LocalStorage();
+    this._firebaseStorage = new FirebaseStorage();
   }
 
   get _archive() {
-    return this._storage.getArchive();
+    return this._localStorage.getArchive();
   }
 
   get _data() {
-    return this._storage.get();
+    return this._localStorage.get();
+  }
+
+  _getData() {
+    return this._localStorage.get();
+  }
+
+  _getArchive() {
+    return this._localStorage.getArchive();
   }
 
   _arrayify(x) {
@@ -24,24 +34,27 @@ class Taskbook {
   }
 
   _save(data) {
-    this._storage.set(data);
+    this._localStorage.set(data);
   }
 
   _saveArchive(data) {
-    this._storage.setArchive(data);
+    this._localStorage.setArchive(data);
   }
 
   _removeDuplicates(x) {
     return [...new Set(this._arrayify(x))];
   }
 
-  _generateID(data = this._data) {
+  async _generateID() {
+    let data = await this._getData();
     const ids = Object.keys(data).map(id => parseInt(id, 10));
-    const max = (ids.length === 0) ? 0 : Math.max(...ids);
+    const max = ids.length === 0 ? 0 : Math.max(...ids);
     return max + 1;
   }
 
-  _validateIDs(inputIDs, existingIDs = this._getIDs()) {
+  async _validateIDs(inputIDs) {
+    let existingIDs = await this._getIDs();
+
     if (inputIDs.length === 0) {
       render.missingID();
       process.exit(1);
@@ -60,21 +73,23 @@ class Taskbook {
   }
 
   _isPriorityOpt(x) {
-    return ['p:1', 'p:2', 'p:3'].indexOf(x) > -1;
+    return ["p:1", "p:2", "p:3"].indexOf(x) > -1;
   }
 
-  _getBoards() {
-    const {_data} = this;
-    const boards = ['My Board'];
+  async _getBoards() {
+    let data = await this._getData();
+    const boards = ["My Board"];
 
-    Object.keys(_data).forEach(id => {
-      boards.push(..._data[id].boards.filter(x => boards.indexOf(x) === -1));
+    Object.keys(data).forEach(id => {
+      boards.push(...data[id].boards.filter(x => boards.indexOf(x) === -1));
     });
 
     return boards;
   }
 
-  _getDates(data = this._data) {
+  async _getDates() {
+    let data = await this._getData();
+
     const dates = [];
 
     Object.keys(data).forEach(id => {
@@ -86,7 +101,9 @@ class Taskbook {
     return dates;
   }
 
-  _getIDs(data = this._data) {
+  async _getIDs() {
+    let data = await this._getData();
+
     return Object.keys(data).map(id => parseInt(id, 10));
   }
 
@@ -95,7 +112,7 @@ class Taskbook {
     return opt ? opt[opt.length - 1] : 1;
   }
 
-  _getOptions(input) {
+  async _getOptions(input) {
     const [boards, desc] = [[], []];
 
     if (input.length === 0) {
@@ -103,40 +120,46 @@ class Taskbook {
       process.exit(1);
     }
 
-    const id = this._generateID();
+    const id = await this._generateID();
     const priority = this._getPriority(input);
 
     input.forEach(x => {
       if (!this._isPriorityOpt(x)) {
-        return x.startsWith('@') && x.length > 1 ? boards.push(x) : desc.push(x);
+        return x.startsWith("@") && x.length > 1
+          ? boards.push(x)
+          : desc.push(x);
       }
     });
 
-    const description = desc.join(' ');
+    const description = desc.join(" ");
 
     if (boards.length === 0) {
-      boards.push('My Board');
+      boards.push("My Board");
     }
 
-    return {boards, description, id, priority};
+    return { boards, description, id, priority };
   }
 
-  _getStats() {
-    const {_data} = this;
+  async _getStats() {
+    let data = await this._getData();
     let [complete, inProgress, pending, notes] = [0, 0, 0, 0];
 
-    Object.keys(_data).forEach(id => {
-      if (_data[id]._isTask) {
-        return _data[id].isComplete ? complete++ : _data[id].inProgress ? inProgress++ : pending++;
+    Object.keys(data).forEach(id => {
+      if (data[id]._isTask) {
+        return data[id].isComplete
+          ? complete++
+          : data[id].inProgress
+          ? inProgress++
+          : pending++;
       }
 
       return notes++;
     });
 
     const total = complete + pending + inProgress;
-    const percent = (total === 0) ? 0 : Math.floor(complete * 100 / total);
+    const percent = total === 0 ? 0 : Math.floor((complete * 100) / total);
 
-    return {percent, complete, inProgress, pending, notes};
+    return { percent, complete, inProgress, pending, notes };
   }
 
   _hasTerms(string, terms) {
@@ -201,44 +224,46 @@ class Taskbook {
     return data;
   }
 
-  _filterByAttributes(attr, data = this._data) {
+  async _filterByAttributes(attr) {
+    let data = await this._getData();
+
     if (Object.keys(data).length === 0) {
       return data;
     }
 
     attr.forEach(x => {
       switch (x) {
-        case 'star':
-        case 'starred':
+        case "star":
+        case "starred":
           data = this._filterStarred(data);
           break;
 
-        case 'done':
-        case 'checked':
-        case 'complete':
+        case "done":
+        case "checked":
+        case "complete":
           data = this._filterComplete(data);
           break;
 
-        case 'progress':
-        case 'started':
-        case 'begun':
+        case "progress":
+        case "started":
+        case "begun":
           data = this._filterInProgress(data);
           break;
 
-        case 'pending':
-        case 'unchecked':
-        case 'incomplete':
+        case "pending":
+        case "unchecked":
+        case "incomplete":
           data = this._filterPending(data);
           break;
 
-        case 'todo':
-        case 'task':
-        case 'tasks':
+        case "todo":
+        case "task":
+        case "tasks":
           data = this._filterTask(data);
           break;
 
-        case 'note':
-        case 'notes':
+        case "note":
+        case "notes":
           data = this._filterNote(data);
           break;
 
@@ -250,7 +275,10 @@ class Taskbook {
     return data;
   }
 
-  _groupByBoard(data = this._data, boards = this._getBoards()) {
+  async _groupByBoard() {
+    let data = await this._getData();
+    let boards = await this._getBoards();
+
     const grouped = {};
 
     if (boards.length === 0) {
@@ -273,7 +301,10 @@ class Taskbook {
     return grouped;
   }
 
-  _groupByDate(data = this._data, dates = this._getDates()) {
+  async _groupByDate() {
+    let data = await this._getData();
+    let dates = await this._getDates();
+
     const grouped = {};
 
     Object.keys(data).forEach(id => {
@@ -293,7 +324,7 @@ class Taskbook {
   }
 
   _saveItemToArchive(item) {
-    const {_archive} = this;
+    const { _archive } = this;
     const archiveID = this._generateID(_archive);
 
     item._id = archiveID;
@@ -302,112 +333,125 @@ class Taskbook {
     this._saveArchive(_archive);
   }
 
-  _saveItemToStorage(item) {
-    const {_data} = this;
+  async _saveItemToStorage(item) {
+    let data = await this._getData();
+
     const restoreID = this._generateID();
 
     item._id = restoreID;
-    _data[restoreID] = item;
+    data[restoreID] = item;
 
-    this._save(_data);
+    this._save(data);
   }
 
-  createNote(desc) {
-    const {id, description, boards} = this._getOptions(desc);
-    const note = new Note({id, description, boards});
-    const {_data} = this;
-    _data[id] = note;
-    this._save(_data);
+  async createNote(desc) {
+    let data = await this._getData();
+
+    const { id, description, boards } = await this._getOptions(desc);
+    const note = new Note({ id, description, boards });
+    data[id] = note;
+    await this._save(data);
     render.successCreate(note);
   }
 
-  copyToClipboard(ids) {
-    ids = this._validateIDs(ids);
-    const {_data} = this;
+  async copyToClipboard(ids) {
+    let data = await this._getData();
+
+    ids = await this._validateIDs(ids);
     const descriptions = [];
 
-    ids.forEach(id => descriptions.push(_data[id].description));
+    ids.forEach(id => descriptions.push(data[id].description));
 
-    clipboardy.writeSync(descriptions.join('\n'));
+    clipboardy.writeSync(descriptions.join("\n"));
     render.successCopyToClipboard(ids);
   }
 
-  checkTasks(ids) {
-    ids = this._validateIDs(ids);
-    const {_data} = this;
+  async checkTasks(ids) {
+    let data = await this._getData();
+
+    ids = await this._validateIDs(ids);
+    const { data } = this;
     const [checked, unchecked] = [[], []];
 
     ids.forEach(id => {
-      if (_data[id]._isTask) {
-        _data[id].inProgress = false;
-        _data[id].isComplete = !_data[id].isComplete;
-        return _data[id].isComplete ? checked.push(id) : unchecked.push(id);
+      if (data[id]._isTask) {
+        data[id].inProgress = false;
+        data[id].isComplete = !data[id].isComplete;
+        return data[id].isComplete ? checked.push(id) : unchecked.push(id);
       }
     });
 
-    this._save(_data);
+    this._save(data);
     render.markComplete(checked);
     render.markIncomplete(unchecked);
   }
 
-  beginTasks(ids) {
-    ids = this._validateIDs(ids);
-    const {_data} = this;
+  async beginTasks(ids) {
+    let data = await this._getData();
+
+    ids = await this._validateIDs(ids);
     const [started, paused] = [[], []];
 
     ids.forEach(id => {
-      if (_data[id]._isTask) {
-        _data[id].isComplete = false;
-        _data[id].inProgress = !_data[id].inProgress;
-        return _data[id].inProgress ? started.push(id) : paused.push(id);
+      if (data[id]._isTask) {
+        data[id].isComplete = false;
+        data[id].inProgress = !data[id].inProgress;
+        return data[id].inProgress ? started.push(id) : paused.push(id);
       }
     });
 
-    this._save(_data);
+    this._save(data);
     render.markStarted(started);
     render.markPaused(paused);
   }
 
-  createTask(desc) {
-    const {boards, description, id, priority} = this._getOptions(desc);
-    const task = new Task({id, description, boards, priority});
-    const {_data} = this;
-    _data[id] = task;
-    this._save(_data);
+  async createTask(desc) {
+    let data = await this._getData();
+
+    const { boards, description, id, priority } = await this._getOptions(desc);
+    const task = new Task({ id, description, boards, priority });
+    data[id] = task;
+    this._save(data);
     render.successCreate(task);
   }
 
-  deleteItems(ids) {
-    ids = this._validateIDs(ids);
-    const {_data} = this;
+  async deleteItems(ids) {
+    let data = await this._getData();
+
+    ids = await this._validateIDs(ids);
 
     ids.forEach(id => {
-      this._saveItemToArchive(_data[id]);
-      delete _data[id];
+      this._saveItemToArchive(data[id]);
+      delete data[id];
     });
 
-    this._save(_data);
+    this._save(data);
     render.successDelete(ids);
   }
 
   displayArchive() {
-    render.displayByDate(this._groupByDate(this._archive, this._getDates(this._archive)));
+    render.displayByDate(
+      this._groupByDate(this._archive, this._getDates(this._archive))
+    );
   }
 
-  displayByBoard() {
-    render.displayByBoard(this._groupByBoard());
+  async displayByBoard() {
+    let data = await this._groupByBoard();
+    render.displayByBoard(data);
   }
 
-  displayByDate() {
-    render.displayByDate(this._groupByDate());
+  async displayByDate() {
+    let data = await this._groupByDate();
+    render.displayByDate(data);
   }
 
-  displayStats() {
-    render.displayStats(this._getStats());
+  async displayStats() {
+    let states = await this._getStats();
+    render.displayStats(states);
   }
 
-  editDescription(input) {
-    const targets = input.filter(x => x.startsWith('@'));
+  async editDescription(input) {
+    const targets = input.filter(x => x.startsWith("@"));
 
     if (targets.length === 0) {
       render.missingID();
@@ -420,30 +464,32 @@ class Taskbook {
     }
 
     const [target] = targets;
-    const id = this._validateIDs(target.replace('@', ''));
-    const newDesc = input.filter(x => x !== target).join(' ');
+    const id = await this._validateIDs(target.replace("@", ""));
+    const newDesc = input.filter(x => x !== target).join(" ");
 
     if (newDesc.length === 0) {
       render.missingDesc();
       process.exit(1);
     }
 
-    const {_data} = this;
-    _data[id].description = newDesc;
-    this._save(_data);
+    let data = await this._getData();
+
+    data[id].description = newDesc;
+    this._save(data);
     render.successEdit(id);
   }
 
-  findItems(terms) {
-    const result = {};
-    const {_data} = this;
+  async findItems(terms) {
+    let data = await this._getData();
 
-    Object.keys(_data).forEach(id => {
-      if (!this._hasTerms(_data[id].description, terms)) {
+    const result = {};
+
+    Object.keys(data).forEach(id => {
+      if (!this._hasTerms(data[id].description, terms)) {
         return;
       }
 
-      result[id] = _data[id];
+      result[id] = data[id];
     });
 
     render.displayByBoard(this._groupByBoard(result));
@@ -455,21 +501,23 @@ class Taskbook {
 
     terms.forEach(x => {
       if (storedBoards.indexOf(`@${x}`) === -1) {
-        return x === 'myboard' ? boards.push('My Board') : attributes.push(x);
+        return x === "myboard" ? boards.push("My Board") : attributes.push(x);
       }
 
       return boards.push(`@${x}`);
     });
 
-    [boards, attributes] = [boards, attributes].map(x => this._removeDuplicates(x));
+    [boards, attributes] = [boards, attributes].map(x =>
+      this._removeDuplicates(x)
+    );
 
     const data = this._filterByAttributes(attributes);
     render.displayByBoard(this._groupByBoard(data, boards));
   }
 
-  moveBoards(input) {
+  async moveBoards(input) {
     let boards = [];
-    const targets = input.filter(x => x.startsWith('@'));
+    const targets = input.filter(x => x.startsWith("@"));
 
     if (targets.length === 0) {
       render.missingID();
@@ -482,11 +530,13 @@ class Taskbook {
     }
 
     const [target] = targets;
-    const id = this._validateIDs(target.replace('@', ''));
+    const id = await this._validateIDs(target.replace("@", ""));
 
-    input.filter(x => x !== target).forEach(x => {
-      boards.push(x === 'myboard' ? 'My Board' : `@${x}`);
-    });
+    input
+      .filter(x => x !== target)
+      .forEach(x => {
+        boards.push(x === "myboard" ? "My Board" : `@${x}`);
+      });
 
     if (boards.length === 0) {
       render.missingBoards();
@@ -495,49 +545,53 @@ class Taskbook {
 
     boards = this._removeDuplicates(boards);
 
-    const {_data} = this;
-    _data[id].boards = boards;
-    this._save(_data);
+    let data = await this._getData();
+    data[id].boards = boards;
+    this._save(data);
     render.successMove(id, boards);
   }
 
-  restoreItems(ids) {
-    ids = this._validateIDs(ids, this._getIDs(this._archive));
-    const {_archive} = this;
+  async restoreItems(ids) {
+    let archive = await this.getArchive();
+    let existingIDs = await this._getIDs(archive);
+
+    ids = await this._validateIDs(ids, existingIDs);
 
     ids.forEach(id => {
-      this._saveItemToStorage(_archive[id]);
-      delete _archive[id];
+      this._saveItemToStorage(archive[id]);
+      delete archive[id];
     });
 
-    this._saveArchive(_archive);
+    this._saveArchive(archive);
     render.successRestore(ids);
   }
 
-  starItems(ids) {
-    ids = this._validateIDs(ids);
-    const {_data} = this;
+  async starItems(ids) {
+    ids = await this._validateIDs(ids);
+
+    let data = await this._getData();
+
     const [starred, unstarred] = [[], []];
 
     ids.forEach(id => {
-      _data[id].isStarred = !_data[id].isStarred;
-      return _data[id].isStarred ? starred.push(id) : unstarred.push(id);
+      data[id].isStarred = !data[id].isStarred;
+      return data[id].isStarred ? starred.push(id) : unstarred.push(id);
     });
 
-    this._save(_data);
+    this._save(data);
     render.markStarred(starred);
     render.markUnstarred(unstarred);
   }
 
-  updatePriority(input) {
-    const level = input.find(x => ['1', '2', '3'].indexOf(x) > -1);
+  async updatePriority(input) {
+    const level = input.find(x => ["1", "2", "3"].indexOf(x) > -1);
 
     if (!level) {
       render.invalidPriority();
       process.exit(1);
     }
 
-    const targets = input.filter(x => x.startsWith('@'));
+    const targets = input.filter(x => x.startsWith("@"));
 
     if (targets.length === 0) {
       render.missingID();
@@ -550,20 +604,22 @@ class Taskbook {
     }
 
     const [target] = targets;
-    const id = this._validateIDs(target.replace('@', ''));
+    const id = await this._validateIDs(target.replace("@", ""));
 
-    const {_data} = this;
-    _data[id].priority = level;
-    this._save(_data);
+    let data = await this._getData();
+
+    data[id].priority = level;
+    await this._save(data);
     render.successPriority(id, level);
   }
 
-  clear() {
-    const ids = [];
-    const {_data} = this;
+  async clear() {
+    let data = await this._getData();
 
-    Object.keys(_data).forEach(id => {
-      if (_data[id].isComplete) {
+    const ids = [];
+
+    Object.keys(data).forEach(id => {
+      if (data[id].isComplete) {
         ids.push(id);
       }
     });

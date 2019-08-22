@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-'use strict';
-const taskbook = require('./src/taskbook');
+"use strict";
+const taskbook = require("./src/taskbook");
 
 const taskbookCLI = (input, flags) => {
   if (flags.archive) {
@@ -69,8 +69,9 @@ const taskbookCLI = (input, flags) => {
     return taskbook.clear();
   }
 
-  taskbook.displayByBoard();
-  return taskbook.displayStats();
+  taskbook.displayByBoard().then(() => {
+    return taskbook.displayStats();
+  });
 };
 
 module.exports = taskbookCLI;

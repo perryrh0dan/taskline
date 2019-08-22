@@ -1,4 +1,5 @@
 const firebase = require("firebase-admin");
+const Storage = require("./storage")
 
 const cert = {
   type: "service_account",
@@ -15,8 +16,9 @@ const cert = {
     "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-86yi4%40todo-83ef9.iam.gserviceaccount.com"
 };
 
-class Firebase {
+class FirebaseStorage extends Storage{
   constructor() {
+    super();
     firebase.initializeApp({
       credential: firebase.credential.cert(cert),
       databaseURL: "https://test-23cfc.firebaseio.com"
@@ -44,51 +46,21 @@ class Firebase {
     let pureData = this._parse(data);
 
     this._updateCollection("storage", pureData);
-    // this._deleteCollection("storage").then(() => {
-    //   pureData.forEach(element => {
-    //     this.db
-    //       .collection("storage")
-    //       .doc(element._id.toString())
-    //       .set(element);
-    //   });
-    // });
   }
 
   setArchive(data) {
     let pureData = this._parse(data);
 
-    this._deleteCollection("archive").then(() => {
-      pureData.forEach(element => {
-        this.db
-          .collection("archive")
-          .doc(element._id.toString())
-          .set(element);
-      });
-    });
+    this._updateCollection("archive", pureData);
   }
 
   get() {
-    let self = this;
-
-    return new Promise(function(resolve, reject) {
-      self.db
-        .collection("storage")
-        .get()
-        .then(content => {
-          let data = content.docs.map(doc => doc.data());
-          let result = {};
-          for (let i = 0; i < data.length; i++) {
-            result[data[i]._id] = data[i];
-          }
-          resolve(result);
-        })
-        .catch(error => {
-          reject();
-        });
-    });
+    return this._getCollection("storage")
   }
 
-  getArchive() {}
+  getArchive() {
+    return this._getCollection("archive")
+  }
 
   _updateCollection(path, dataArray) {
     let self = this;
@@ -107,7 +79,28 @@ class Firebase {
           resolve();
         })
         .catch(error => {
-          reject();
+          reject(error);
+        });
+    });
+  }
+
+  _getCollection(path) {
+    let self = this;
+
+    return new Promise(function(resolve, reject) {
+      self.db
+        .collection(path)
+        .get()
+        .then(content => {
+          let data = content.docs.map(doc => doc.data());
+          let result = {};
+          for (let i = 0; i < data.length; i++) {
+            result[data[i]._id] = data[i];
+          }
+          resolve(result);
+        })
+        .catch(error => {
+          reject(error);
         });
     });
   }
@@ -131,10 +124,10 @@ class Firebase {
           });
         })
         .catch(error => {
-          reject();
+          reject(error);
         });
     });
   }
 }
 
-module.exports = Firebase;
+module.exports = FirebaseStorage;
