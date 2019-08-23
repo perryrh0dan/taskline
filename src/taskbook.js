@@ -7,13 +7,11 @@ const Note = require("./note");
 const LocalStorage = require("./local");
 const render = require("./render");
 const FirebaseStorage = require("./firebase");
-const config = require("./config")
+const config = require("./config");
 
 class Taskbook {
   constructor() {
-    const {
-      storageModule
-    } = config.get();
+    const { storageModule } = config.get();
     if (storageModule === "firestore") {
       this._storage = new FirebaseStorage();
     } else {
@@ -113,11 +111,21 @@ class Taskbook {
     return opt ? opt[opt.length - 1] : 1;
   }
 
+  _parseDate(input, format) {
+    format = format || "yyyy-mm-dd"; // default format
+    var parts = input.match(/(\d+)/g),
+      i = 0,
+      fmt = {};
+    // extract date-part indexes from the format
+    format.replace(/(yyyy|dd|mm)/g, function(part) {
+      fmt[part] = i++;
+    });
+
+    return new Date(parts[fmt["yyyy"]], parts[fmt["mm"]] - 1, parts[fmt["dd"]]);
+  }
+
   async _getOptions(input) {
-    const [boards, desc] = [
-      [],
-      []
-    ];
+    const [boards, desc] = [[], []];
 
     if (input.length === 0) {
       render.missingDesc();
@@ -129,9 +137,9 @@ class Taskbook {
 
     input.forEach(x => {
       if (!this._isPriorityOpt(x)) {
-        return x.startsWith("@") && x.length > 1 ?
-          boards.push(x) :
-          desc.push(x);
+        return x.startsWith("@") && x.length > 1
+          ? boards.push(x)
+          : desc.push(x);
       }
     });
 
@@ -155,13 +163,11 @@ class Taskbook {
 
     Object.keys(data).forEach(id => {
       if (data[id]._isTask) {
-        return data[id].isComplete ?
-          complete++
-          :
-          data[id].inProgress ?
-          inProgress++
-          :
-          pending++;
+        return data[id].isComplete
+          ? complete++
+          : data[id].inProgress
+          ? inProgress++
+          : pending++;
       }
 
       return notes++;
@@ -292,14 +298,19 @@ class Taskbook {
     return data;
   }
 
-  async _groupByBoard() {
-    let data = await this._getData();
-    let boards = await this._getBoards();
+  async _groupByBoard(data, boards) {
+    if (!data) {
+      data = await this._getData();
+    }
+
+    if (!boards) {
+      boards = await this._getBoards();
+    }
 
     const grouped = {};
 
     if (boards.length === 0) {
-      boards = this._getBoards();
+      boards = await this._getBoards();
     }
 
     Object.keys(data).forEach(id => {
@@ -366,14 +377,21 @@ class Taskbook {
     this._save(data);
   }
 
-  async createNote(desc) {
+  _splitOption(option) {
+    if (!(option instanceof Array)) {
+      let options = option.split(",");
+      return options;
+    } else {
+      return option;
+    }
+  }
+
+  async createNote(description, boards = "My Board") {
+    const id = await this._generateID();
     let data = await this._getData();
 
-    const {
-      id,
-      description,
-      boards
-    } = await this._getOptions(desc);
+    boards = this._splitOption(boards);
+
     const note = new Note({
       id,
       description,
@@ -399,11 +417,9 @@ class Taskbook {
   async checkTasks(ids) {
     let data = await this._getData();
 
+    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
-    const [checked, unchecked] = [
-      [],
-      []
-    ];
+    const [checked, unchecked] = [[], []];
 
     ids.forEach(id => {
       if (data[id]._isTask) {
@@ -421,11 +437,9 @@ class Taskbook {
   async beginTasks(ids) {
     let data = await this._getData();
 
+    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
-    const [started, paused] = [
-      [],
-      []
-    ];
+    const [started, paused] = [[], []];
 
     ids.forEach(id => {
       if (data[id]._isTask) {
@@ -440,20 +454,21 @@ class Taskbook {
     render.markPaused(paused);
   }
 
-  async createTask(desc) {
+  async createTask(description, boards = "My Board", priority = 1, due = null) {
+    const id = await this._generateID();
     let data = await this._getData();
 
-    const {
-      boards,
-      description,
-      id,
-      priority
-    } = await this._getOptions(desc);
+    boards = this._splitOption(boards);
+    if (due) {
+      due = this._parseDate(due, "dd.mm.yyyy").toDateString();
+    }
+
     const task = new Task({
       id,
       description,
       boards,
-      priority
+      priority,
+      due
     });
     data[id] = task;
     this._save(data);
@@ -463,6 +478,7 @@ class Taskbook {
   async deleteItems(ids) {
     const data = await this._getData();
 
+    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
     ids.forEach(id => {
@@ -498,31 +514,17 @@ class Taskbook {
     render.displayStats(states);
   }
 
-  async editDescription(input) {
-    const targets = input.filter(x => x.startsWith("@"));
-
-    if (targets.length === 0) {
-      render.missingID();
-      process.exit(1);
-    }
-
-    if (targets.length > 1) {
-      render.invalidIDsNumber();
-      process.exit(1);
-    }
-
-    const [target] = targets;
-    const id = await this._validateIDs(target.replace("@", ""));
-    const newDesc = input.filter(x => x !== target).join(" ");
-
-    if (newDesc.length === 0) {
+  async editDescription(id, description) {
+    if (description.length === 0) {
       render.missingDesc();
       process.exit(1);
     }
 
+    id = await this._validateIDs(id);
+
     let data = await this._getData();
 
-    data[id].description = newDesc;
+    data[id].description = description;
     this._save(data);
     render.successEdit(id);
   }
@@ -539,15 +541,14 @@ class Taskbook {
       result[id] = data[id];
     });
 
-    render.displayByBoard(this._groupByBoard(result));
+    const grouped = await this._groupByBoard(result);
+    render.displayByBoard(grouped);
   }
 
-  listByAttributes(terms) {
-    let [boards, attributes] = [
-      [],
-      []
-    ];
-    const storedBoards = this._getBoards();
+  async listByAttributes(terms) {
+    terms = this._splitOption(terms);
+    let [boards, attributes] = [[], []];
+    const storedBoards = await this._getBoards();
 
     terms.forEach(x => {
       if (storedBoards.indexOf(`@${x}`) === -1) {
@@ -561,26 +562,17 @@ class Taskbook {
       this._removeDuplicates(x)
     );
 
-    const data = this._filterByAttributes(attributes);
-    render.displayByBoard(this._groupByBoard(data, boards));
+    const data = await this._filterByAttributes(attributes);
+    const grouped = await this._groupByBoard(data, boards);
+    render.displayByBoard(grouped);
   }
 
-  async moveBoards(input) {
-    let boards = [];
+  async moveBoards(id, boards) {
+    boards = this._splitOption(boards);
+    id = await this._validateIDs(id);
     const targets = input.filter(x => x.startsWith("@"));
 
-    if (targets.length === 0) {
-      render.missingID();
-      process.exit(1);
-    }
-
-    if (targets.length > 1) {
-      render.invalidIDsNumber();
-      process.exit(1);
-    }
-
     const [target] = targets;
-    const id = await this._validateIDs(target.replace("@", ""));
 
     input
       .filter(x => x !== target)
@@ -605,6 +597,7 @@ class Taskbook {
     let archive = await this.getArchive();
     let existingIDs = await this._getIDs(archive);
 
+    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids, existingIDs);
 
     ids.forEach(id => {
@@ -617,14 +610,12 @@ class Taskbook {
   }
 
   async starItems(ids) {
+    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
     let data = await this._getData();
 
-    const [starred, unstarred] = [
-      [],
-      []
-    ];
+    const [starred, unstarred] = [[], []];
 
     ids.forEach(id => {
       data[id].isStarred = !data[id].isStarred;

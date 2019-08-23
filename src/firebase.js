@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-'use strict';
+"use strict";
 
-const firebase = require('firebase-admin');
-const Storage = require('./storage');
-const config  = require('./config')
+const firebase = require("firebase-admin");
+const Storage = require("./storage");
+const config = require("./config");
 
 class FirebaseStorage extends Storage {
   constructor() {
@@ -12,7 +12,7 @@ class FirebaseStorage extends Storage {
     const { firestoreConfig } = config.get();
     firebase.initializeApp({
       credential: firebase.credential.cert(firestoreConfig),
-      databaseURL: 'https://test-23cfc.firebaseio.com'
+      databaseURL: firestoreConfig.databaseURL
     });
     this.db = firebase.firestore();
   }
@@ -34,25 +34,25 @@ class FirebaseStorage extends Storage {
   set(data) {
     let pureData = this._parse(data);
 
-    this._updateCollection('storage', pureData);
+    this._updateCollection("storage", pureData);
   }
 
   setArchive(data) {
     let pureData = this._parse(data);
 
-    this._updateCollection('archive', pureData);
+    this._updateCollection("archive", pureData);
   }
 
   async get() {
     if (!this.data) {
-      this.data = await this._getCollection('storage')
+      this.data = await this._getCollection("storage");
     }
     return this.data;
   }
 
   async getArchive() {
     if (!this.archive) {
-      this.archive = await this._getCollection('archive')
+      this.archive = await this._getCollection("archive");
     }
     return this.archive;
   }
@@ -62,7 +62,7 @@ class FirebaseStorage extends Storage {
     let batch = this.db.batch();
 
     return self._deleteCollection(path).then(() => {
-      return new Promise(function (resolve, reject) {
+      return new Promise(function(resolve, reject) {
         dataArray.forEach(element => {
           // Create a ref
           var elementRef = self.db.collection(path).doc(element._id.toString());
@@ -78,13 +78,13 @@ class FirebaseStorage extends Storage {
             reject(error);
           });
       });
-    })
+    });
   }
 
   _getCollection(path) {
     let self = this;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       self.db
         .collection(path)
         .get()
@@ -106,7 +106,7 @@ class FirebaseStorage extends Storage {
     // Get a new write batch
     let batch = this.db.batch();
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       firebase
         .firestore()
         .collection(path)

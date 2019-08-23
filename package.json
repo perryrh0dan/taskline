@@ -49,7 +49,8 @@
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-86yi4%40todo-83ef9.iam.gserviceaccount.com"
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-86yi4%40todo-83ef9.iam.gserviceaccount.com",
+        "databaseURL": "https://test-23cfc.firebaseio.com"
       }
     }
   },
@@ -59,6 +60,7 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "clipboardy": "^1.2.3",
+    "commander": "^3.0.0",
     "firebase-admin": "^8.4.0",
     "meow": "^5.0.0",
     "signale": "1.4.0",
