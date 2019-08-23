@@ -628,28 +628,15 @@ class Taskbook {
     render.markUnstarred(unstarred);
   }
 
-  async updatePriority(input) {
-    const level = input.find(x => ["1", "2", "3"].indexOf(x) > -1);
+  async updatePriority(id, priority) {
+    const level = (["1", "2", "3"].indexOf(priority) > -1) ? priority : null;
 
     if (!level) {
       render.invalidPriority();
       process.exit(1);
     }
 
-    const targets = input.filter(x => x.startsWith("@"));
-
-    if (targets.length === 0) {
-      render.missingID();
-      process.exit(1);
-    }
-
-    if (targets.length > 1) {
-      render.invalidIDsNumber();
-      process.exit(1);
-    }
-
-    const [target] = targets;
-    const id = await this._validateIDs(target.replace("@", ""));
+    id = await this._validateIDs(id);
 
     let data = await this._getData();
 
