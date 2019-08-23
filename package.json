@@ -1,7 +1,7 @@
 {
   "name": "taskbook",
   "productName": "Taskbook",
-  "version": "0.4.0",
+  "version": "0.1.0",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "johnmcclan3/taskbook",
   "license": "MIT",
@@ -51,7 +51,8 @@
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-86yi4%40todo-83ef9.iam.gserviceaccount.com",
         "databaseURL": "https://test-23cfc.firebaseio.com"
-      }
+      },
+      "dateformat": "dd.mm.yyyy"
     }
   },
   "scripts": {

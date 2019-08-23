@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 "use strict";
 const program = require("commander");
-const pckg = require("./../package.json");
+const pkg = require("./../package.json");
+const updateNotifier = require('update-notifier');
 const taskbook = require("../src/taskbook");
 
-program.version(pckg.version);
-program.description(pckg.description);
+program.version(pkg.version);
+program.description(pkg.description);
 
 program
   .command("task <description>") // sub-command name
@@ -143,5 +144,7 @@ program
 if (process.argv.length === 2) {
   taskbook.displayByBoard();
 }
+
+updateNotifier({pkg}).notify();
 
 program.parse(process.argv);

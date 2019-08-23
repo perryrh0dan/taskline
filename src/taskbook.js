@@ -454,13 +454,14 @@ class Taskbook {
     render.markPaused(paused);
   }
 
-  async createTask(description, boards = "My Board", priority = 1, due = null) {
+  async createTask(description, boards = "My Board", priority = 1, dueDate = null) {
     const id = await this._generateID();
     let data = await this._getData();
+    const { dateformat } = config.get()
 
     boards = this._splitOption(boards);
-    if (due) {
-      due = this._parseDate(due, "dd.mm.yyyy").toDateString();
+    if (dueDate) {
+      dueDate = this._parseDate(dueDate, dateformat).getTime();
     }
 
     const task = new Task({
@@ -468,7 +469,7 @@ class Taskbook {
       description,
       boards,
       priority,
-      due
+      dueDate
     });
     data[id] = task;
     this._save(data);
