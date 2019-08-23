@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-"use strict";
-const fs = require("fs");
+'use strict';
 
 class Storage {
   constructor() {
-    this.data = null
-    this.archive = null
+    this.data = null;
+    this.archive = null;
   }
 
   get() {}

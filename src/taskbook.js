@@ -21,14 +21,6 @@ class Taskbook {
     }
   }
 
-  get _archive() {
-    return this._storage.getArchive();
-  }
-
-  get _data() {
-    return this._storage.get();
-  }
-
   _getData() {
     return this._storage.get();
   }
@@ -95,9 +87,10 @@ class Taskbook {
     return boards;
   }
 
-  async _getDates() {
-    let data = await this._getData();
-
+  async _getDates(data) {
+    if (!data) {
+      data = await this._getData();
+    }
     const dates = [];
 
     Object.keys(data).forEach(id => {
@@ -325,9 +318,14 @@ class Taskbook {
     return grouped;
   }
 
-  async _groupByDate() {
-    let data = await this._getData();
-    let dates = await this._getDates();
+  async _groupByDate(data, dates) {
+    if (!data) {
+      data = await this._getData();
+    }
+
+    if (dates) {
+      dates = await this._getDates();
+    }
 
     const grouped = {};
 
@@ -402,9 +400,6 @@ class Taskbook {
     let data = await this._getData();
 
     ids = await this._validateIDs(ids);
-    const {
-      data
-    } = this;
     const [checked, unchecked] = [
       [],
       []
@@ -466,7 +461,7 @@ class Taskbook {
   }
 
   async deleteItems(ids) {
-    let data = await this._getData();
+    const data = await this._getData();
 
     ids = await this._validateIDs(ids);
 
@@ -479,24 +474,27 @@ class Taskbook {
     render.successDelete(ids);
   }
 
-  displayArchive() {
-    render.displayByDate(
-      this._groupByDate(this._archive, this._getDates(this._archive))
-    );
+  async displayArchive() {
+    const archive = await this._getArchive();
+    const dates = await this._getDates(archive);
+
+    const data = await this._groupByDate(archive, dates);
+
+    render.displayByDate(data);
   }
 
   async displayByBoard() {
-    let data = await this._groupByBoard();
+    const data = await this._groupByBoard();
     render.displayByBoard(data);
   }
 
   async displayByDate() {
-    let data = await this._groupByDate();
+    const data = await this._groupByDate();
     render.displayByDate(data);
   }
 
   async displayStats() {
-    let states = await this._getStats();
+    const states = await this._getStats();
     render.displayStats(states);
   }
 
@@ -530,8 +528,7 @@ class Taskbook {
   }
 
   async findItems(terms) {
-    let data = await this._getData();
-
+    const data = await this._getData();
     const result = {};
 
     Object.keys(data).forEach(id => {

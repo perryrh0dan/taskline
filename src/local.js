@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-"use strict";
-const crypto = require("crypto");
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
-const config = require("./config");
-const render = require("./render");
-const Storage = require("./storage");
+'use strict';
+const crypto = require('crypto');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const config = require('./config');
+const render = require('./render');
+const Storage = require('./storage');
 
 const {
   basename,
@@ -17,11 +17,11 @@ const {
 class LocalStorage extends Storage {
   constructor() {
     super();
-    this._storageDir = join(this._mainAppDir, "storage");
-    this._archiveDir = join(this._mainAppDir, "archive");
-    this._tempDir = join(this._mainAppDir, ".temp");
-    this._archiveFile = join(this._archiveDir, "archive.json");
-    this._mainStorageFile = join(this._storageDir, "storage.json");
+    this._storageDir = join(this._mainAppDir, 'storage');
+    this._archiveDir = join(this._mainAppDir, 'archive');
+    this._tempDir = join(this._mainAppDir, '.temp');
+    this._archiveFile = join(this._archiveDir, 'archive.json');
+    this._mainStorageFile = join(this._storageDir, 'storage.json');
 
     this._ensureDirectories();
   }
@@ -30,7 +30,7 @@ class LocalStorage extends Storage {
     const {
       taskbookDirectory
     } = config.get();
-    const defaultAppDirectory = join(os.homedir(), ".taskbook");
+    const defaultAppDirectory = join(os.homedir(), '.taskbook');
 
     if (!taskbookDirectory) {
       return defaultAppDirectory;
@@ -41,7 +41,7 @@ class LocalStorage extends Storage {
       process.exit(1);
     }
 
-    return join(taskbookDirectory, ".taskbook");
+    return join(taskbookDirectory, '.taskbook');
   }
 
   _ensureMainAppDir() {
@@ -89,25 +89,25 @@ class LocalStorage extends Storage {
   _getRandomHexString(length = 8) {
     return crypto
       .randomBytes(Math.ceil(length / 2))
-      .toString("hex")
+      .toString('hex')
       .slice(0, length);
   }
 
   _getTempFile(filePath) {
     const randomString = this._getRandomHexString();
     const tempFilename = basename(filePath)
-      .split(".")
+      .split('.')
       .join(`.TEMP-${randomString}.`);
     return join(this._tempDir, tempFilename);
   }
 
   get() {
-    let self = this;
+    const self = this;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(resolve => {
       let data = {};
       if (fs.existsSync(self._mainStorageFile)) {
-        const content = fs.readFileSync(self._mainStorageFile, "utf8");
+        const content = fs.readFileSync(self._mainStorageFile, 'utf8');
         data = JSON.parse(content);
       }
       resolve(data);
@@ -118,7 +118,7 @@ class LocalStorage extends Storage {
     let archive = {};
 
     if (fs.existsSync(this._archiveFile)) {
-      const content = fs.readFileSync(this._archiveFile, "utf8");
+      const content = fs.readFileSync(this._archiveFile, 'utf8');
       archive = JSON.parse(content);
     }
 
@@ -132,7 +132,7 @@ class LocalStorage extends Storage {
       data = JSON.stringify(data, null, 4);
       const tempStorageFile = self._getTempFile(self._mainStorageFile);
 
-      fs.writeFileSync(tempStorageFile, data, "utf8");
+      fs.writeFileSync(tempStorageFile, data, 'utf8');
       fs.renameSync(tempStorageFile, self._mainStorageFile);
       resolve()
     });
@@ -142,7 +142,7 @@ class LocalStorage extends Storage {
     const data = JSON.stringify(archive, null, 4);
     const tempArchiveFile = this._getTempFile(this._archiveFile);
 
-    fs.writeFileSync(tempArchiveFile, data, "utf8");
+    fs.writeFileSync(tempArchiveFile, data, 'utf8');
     fs.renameSync(tempArchiveFile, this._archiveFile);
   }
 }

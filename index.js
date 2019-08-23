@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-"use strict";
-const taskbook = require("./src/taskbook");
+'use strict';
+const taskbook = require('./src/taskbook');
 
 const taskbookCLI = (input, flags) => {
   if (flags.archive) {
