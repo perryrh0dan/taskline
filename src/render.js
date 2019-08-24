@@ -56,14 +56,16 @@ class Render {
 
   _getDueDays(dueDate) {
     const daytime = 24 * 60 * 60 * 1000;
-    const dueDays = Math.round(Math.abs(((Date.now() - dueDate)) / daytime))
+    const dueDays = Math.round(Math.abs(((Date.now() - dueDate)) / daytime));
     if (dueDays <= 0) {
-      return red(`${dueDays}d left`)
-    } else if (dueDays == 1) {
-      return yellow(`${dueDays}d left`)
-    } else {
-      return grey(`${dueDays}d left`)
+      return red(`${dueDays}d left`);
     }
+    
+    if (dueDays === 1) {
+      return yellow(`${dueDays}d left`);
+    }
+
+    return grey(`${dueDays}d left`);
   }
 
   _getCorrelation(items) {
@@ -165,13 +167,14 @@ class Render {
     const age = this._getAge(item._timestamp);
     let dueDays = '';
     if (item._dueDate && !item.isComplete) {
-      dueDays = this._getDueDays(item._dueDate)
+      dueDays = this._getDueDays(item._dueDate);
     }
+
     const star = this._getStar(item);
 
     const prefix = this._buildPrefix(item);
     const message = this._buildMessage(item);
-    let suffix = '';
+    let suffix;
     if (dueDays.length !== 0) {
       suffix = `${dueDays} ${star}`;
     } else {

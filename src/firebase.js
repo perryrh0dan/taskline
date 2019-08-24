@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-"use strict";
+'use strict';
 
-const firebase = require("firebase-admin");
-const Storage = require("./storage");
-const config = require("./config");
+const firebase = require('firebase-admin');
+const Storage = require('./storage');
+const config = require('./config');
 
 class FirebaseStorage extends Storage {
   constructor() {
@@ -34,25 +34,25 @@ class FirebaseStorage extends Storage {
   set(data) {
     let pureData = this._parse(data);
 
-    this._updateCollection("storage", pureData);
+    this._updateCollection('storage', pureData);
   }
 
   setArchive(data) {
     let pureData = this._parse(data);
 
-    this._updateCollection("archive", pureData);
+    this._updateCollection('archive', pureData);
   }
 
   async get() {
     if (!this.data) {
-      this.data = await this._getCollection("storage");
+      this.data = await this._getCollection('storage');
     }
     return this.data;
   }
 
   async getArchive() {
     if (!this.archive) {
-      this.archive = await this._getCollection("archive");
+      this.archive = await this._getCollection('archive');
     }
     return this.archive;
   }

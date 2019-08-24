@@ -110,6 +110,7 @@ class LocalStorage extends Storage {
         const content = fs.readFileSync(self._mainStorageFile, 'utf8');
         data = JSON.parse(content);
       }
+
       resolve(data);
     });
   }
@@ -126,7 +127,7 @@ class LocalStorage extends Storage {
   }
 
   set(data) {
-    let self = this;
+    const self = this;
 
     return new Promise(function (resolve, reject) {
       data = JSON.stringify(data, null, 4);
@@ -134,7 +135,7 @@ class LocalStorage extends Storage {
 
       fs.writeFileSync(tempStorageFile, data, 'utf8');
       fs.renameSync(tempStorageFile, self._mainStorageFile);
-      resolve()
+      resolve();
     });
   }
 
