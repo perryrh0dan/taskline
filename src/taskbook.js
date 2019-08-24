@@ -179,8 +179,8 @@ class Taskbook {
         return data[id].isComplete ?
           complete++ :
           data[id].inProgress ?
-            inProgress++ :
-            pending++;
+          inProgress++ :
+          pending++;
       }
 
       return notes++;
@@ -659,7 +659,7 @@ class Taskbook {
     render.markUnstarred(unstarred);
   }
 
-  async updatePriority(id, priority) {
+  async updatePriority(ids, priority) {
     const level = (['1', '2', '3'].indexOf(priority) > -1) ? priority : null;
 
     if (!level) {
@@ -667,13 +667,36 @@ class Taskbook {
       process.exit(1);
     }
 
-    id = await this._validateIDs(id);
+    ids = this._splitOption(ids)
+    ids = await this._validateIDs(ids);
 
     const data = await this._getData();
 
-    data[id].priority = level;
+    ids.forEach(id => {
+      data[id].priority = level;
+    })
+
     await this._save(data);
-    render.successPriority(id, level);
+    render.successPriority(ids, level);
+  }
+
+  async updateDueDate(ids, dueDate) {
+    const {
+      dateformat
+    } = config.get();
+
+    ids = this._splitOption(ids);
+    ids = await this._validateIDs(ids)
+
+    const data = await this._getData();
+    const dueTime = this._parseDate(dueDate, dateformat).getTime();
+
+    ids.forEach(id => {
+      if (data[id]._isTask) data[id].dueDate = dueTime;
+    })
+
+    await this._save(data);
+    render.successDueDate(ids, dueDate)
   }
 
   async clear() {

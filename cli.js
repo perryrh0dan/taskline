@@ -110,6 +110,13 @@ program
   });
 
 program
+  .command('due <ids> <dueDate>')
+  .description('Update duedateof task')
+  .action((ids, dueDate) => {
+    taskbook.updateDueDate(ids, dueDate)
+  })
+
+program
   .command('find <terms>')
   .alias('f')
   .description('Search for items')
