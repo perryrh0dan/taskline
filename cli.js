@@ -134,11 +134,11 @@ program
   })
 
 program
-  .command("move <id> <boards")
+  .command("move <ids> <boards")
   .alias("m")
   .description("Move item between boards")
-  .action((id, boards) => {
-    taskbook.moveBoards(id, boards);
+  .action((ids, boards) => {
+    taskbook.moveBoards(ids, boards);
   })
 
 if (process.argv.length === 2) {

@@ -54,16 +54,15 @@ class Render {
     return (age === 0) ? '' : grey(`${age}d`);
   }
 
-  _getDueDays(due) {
+  _getDueDays(dueDate) {
     const daytime = 24 * 60 * 60 * 1000;
-    const dueDays = Math.round(Math.abs(((Date.now() - due)) / daytime))
-    switch (dueDays) {
-      case 0:
-        return red(`${dueDays}d left`)
-      case 1:
-        return yellow(`${dueDays}d left`)
-      default:
-        return grey(`${dueDays}d left`)
+    const dueDays = Math.round(Math.abs(((Date.now() - dueDate)) / daytime))
+    if (dueDays <= 0) {
+      return red(`${dueDays}d left`)
+    } else if (dueDays == 1) {
+      return yellow(`${dueDays}d left`)
+    } else {
+      return grey(`${dueDays}d left`)
     }
   }
 
