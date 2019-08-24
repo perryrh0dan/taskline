@@ -56,7 +56,8 @@
     }
   },
   "scripts": {
-    "test": "xo"
+    "test-lint": "xo",
+    "test-unit": "jest"
   },
   "dependencies": {
     "chalk": "^2.4.1",
@@ -68,6 +69,7 @@
     "update-notifier": "^2.5.0"
   },
   "devDependencies": {
+    "jest": "^24.9.0",
     "xo": "*"
   },
   "xo": {

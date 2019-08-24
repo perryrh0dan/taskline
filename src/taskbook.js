@@ -45,15 +45,19 @@ class Taskbook {
     return [...new Set(this._arrayify(x))];
   }
 
-  async _generateID() {
-    let data = await this._getData();
+  async _generateID(data) {
+    if (!data) {
+      data = await this._getData();
+    }
     const ids = Object.keys(data).map(id => parseInt(id, 10));
     const max = ids.length === 0 ? 0 : Math.max(...ids);
     return max + 1;
   }
 
-  async _validateIDs(inputIDs) {
-    let existingIDs = await this._getIDs();
+  async _validateIDs(inputIDs, existingIDs) {
+    if (!existingIDs) {
+      existingIDs = await this._getIDs();
+    }
 
     if (inputIDs.length === 0) {
       render.missingID();
@@ -102,8 +106,10 @@ class Taskbook {
     return dates;
   }
 
-  async _getIDs() {
-    let data = await this._getData();
+  async _getIDs(data) {
+    if (!data) {
+      data = await this._getData();
+    }
 
     return Object.keys(data).map(id => parseInt(id, 10));
   }
@@ -341,7 +347,7 @@ class Taskbook {
       data = await this._getData();
     }
 
-    if (dates) {
+    if (!dates) {
       dates = await this._getDates();
     }
 
@@ -363,23 +369,30 @@ class Taskbook {
     return grouped;
   }
 
-  async _saveItemToArchive(item) {
-    let archive = await this._storage.getArchive();
-    const archiveID = await this._generateID(archive);
+  async _saveItemsToArchive(ids) {
+    const data = await this._getData();
+    let archive = await this._getArchive();
 
-    item._id = archiveID;
-    archive[archiveID] = item;
+    for await (const id of ids) {
+      const archiveID = await this._generateID(archive);
+      let item = data[id]
+      item._id = archiveID;
+      archive[archiveID] = item;
+    }
 
     this._saveArchive(archive);
   }
 
-  async _saveItemToStorage(item) {
-    let data = await this._getData();
+  async _saveItemsToStorage(ids) {
+    const archive = await this._getArchive();
+    let data = await this._getData()
 
-    const restoreID = await this._generateID();
-
-    item._id = restoreID;
-    data[restoreID] = item;
+    for await (const id of ids) {
+      const restoreID = await this._generateID(data);
+      let item = archive[id];
+      item._id = restoreID;
+      data[restoreID] = item;
+    }
 
     this._save(data);
   }
@@ -497,8 +510,9 @@ class Taskbook {
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
+    await this._saveItemsToArchive(ids)
+
     ids.forEach(id => {
-      this._saveItemToArchive(data[id]);
       delete data[id];
     });
 
@@ -510,9 +524,9 @@ class Taskbook {
     const archive = await this._getArchive();
     const dates = await this._getDates(archive);
 
-    const data = await this._groupByDate(archive, dates);
+    const grouped = await this._groupByDate(archive, dates);
 
-    render.displayByDate(data);
+    render.displayByDate(grouped);
   }
 
   async displayByBoard() {
@@ -608,14 +622,15 @@ class Taskbook {
   }
 
   async restoreItems(ids) {
-    let archive = await this.getArchive();
+    let archive = await this._getArchive();
     let existingIDs = await this._getIDs(archive);
 
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids, existingIDs);
 
+    await this._saveItemsToStorage(ids)
+
     ids.forEach(id => {
-      this._saveItemToStorage(archive[id]);
       delete archive[id];
     });
 
