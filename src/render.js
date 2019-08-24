@@ -60,7 +60,7 @@ class Render {
     if (dueDays <= 0) {
       return red(`${dueDays}d left`);
     }
-    
+
     if (dueDays === 1) {
       return yellow(`${dueDays}d left`);
     }
@@ -165,7 +165,7 @@ class Render {
       inProgress
     } = item;
     const age = this._getAge(item._timestamp);
-    let dueDays = '';
+    let dueDays;
     if (item._dueDate && !item.isComplete) {
       dueDays = this._getDueDays(item._dueDate);
     }
@@ -175,7 +175,7 @@ class Render {
     const prefix = this._buildPrefix(item);
     const message = this._buildMessage(item);
     let suffix;
-    if (dueDays.length !== 0) {
+    if (dueDays) {
       suffix = `${dueDays} ${star}`;
     } else {
       suffix = (age.length === 0) ? star : `${age} ${star}`;

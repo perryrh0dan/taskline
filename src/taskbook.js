@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 
-"use strict";
-const clipboardy = require("clipboardy");
-const Task = require("./task");
-const Note = require("./note");
-const LocalStorage = require("./local");
-const render = require("./render");
-const FirebaseStorage = require("./firebase");
-const config = require("./config");
+'use strict';
+const clipboardy = require('clipboardy');
+const Task = require('./task');
+const Note = require('./note');
+const LocalStorage = require('./local');
+const render = require('./render');
+const FirebaseStorage = require('./firebase');
+const config = require('./config');
 
 class Taskbook {
   constructor() {
     const {
       storageModule
     } = config.get();
-    if (storageModule === "firestore") {
+    if (storageModule === 'firestore') {
       this._storage = new FirebaseStorage();
     } else {
       this._storage = new LocalStorage();
@@ -49,6 +49,7 @@ class Taskbook {
     if (!data) {
       data = await this._getData();
     }
+
     const ids = Object.keys(data).map(id => parseInt(id, 10));
     const max = ids.length === 0 ? 0 : Math.max(...ids);
     return max + 1;
@@ -77,12 +78,12 @@ class Taskbook {
   }
 
   _isPriorityOpt(x) {
-    return ["p:1", "p:2", "p:3"].indexOf(x) > -1;
+    return ['p:1', 'p:2', 'p:3'].indexOf(x) > -1;
   }
 
   async _getBoards() {
-    let data = await this._getData();
-    const boards = ["My Board"];
+    const data = await this._getData();
+    const boards = ['My Board'];
 
     Object.keys(data).forEach(id => {
       boards.push(...data[id].boards.filter(x => boards.indexOf(x) === -1));
@@ -95,6 +96,7 @@ class Taskbook {
     if (!data) {
       data = await this._getData();
     }
+
     const dates = [];
 
     Object.keys(data).forEach(id => {
@@ -120,16 +122,16 @@ class Taskbook {
   }
 
   _parseDate(input, format) {
-    format = format || "yyyy-mm-dd"; // default format
-    var parts = input.match(/(\d+)/g),
-      i = 0,
-      fmt = {};
-    // extract date-part indexes from the format
-    format.replace(/(yyyy|dd|mm)/g, function (part) {
+    format = format || 'yyyy-mm-dd'; // Default format
+    const parts = input.match(/(\d+)/g);
+    let i = 0;
+    const fmt = {};
+    // Extract date-part indexes from the format
+    format.replace(/(yyyy|dd|mm)/g, part => {
       fmt[part] = i++;
     });
 
-    return new Date(parts[fmt["yyyy"]], parts[fmt["mm"]] - 1, parts[fmt["dd"]]);
+    return new Date(parts[fmt.yyyy], parts[fmt.mm] - 1, parts[fmt.dd]);
   }
 
   async _getOptions(input) {
@@ -148,16 +150,16 @@ class Taskbook {
 
     input.forEach(x => {
       if (!this._isPriorityOpt(x)) {
-        return x.startsWith("@") && x.length > 1 ?
+        return x.startsWith('@') && x.length > 1 ?
           boards.push(x) :
           desc.push(x);
       }
     });
 
-    const description = desc.join(" ");
+    const description = desc.join(' ');
 
     if (boards.length === 0) {
-      boards.push("My Board");
+      boards.push('My Board');
     }
 
     return {
@@ -169,18 +171,16 @@ class Taskbook {
   }
 
   async _getStats() {
-    let data = await this._getData();
+    const data = await this._getData();
     let [complete, inProgress, pending, notes] = [0, 0, 0, 0];
 
     Object.keys(data).forEach(id => {
       if (data[id]._isTask) {
         return data[id].isComplete ?
-          complete++
-          :
+          complete++ :
           data[id].inProgress ?
-          inProgress++
-          :
-          pending++;
+            inProgress++ :
+            pending++;
       }
 
       return notes++;
@@ -269,37 +269,37 @@ class Taskbook {
 
     attr.forEach(x => {
       switch (x) {
-        case "star":
-        case "starred":
+        case 'star':
+        case 'starred':
           data = this._filterStarred(data);
           break;
 
-        case "done":
-        case "checked":
-        case "complete":
+        case 'done':
+        case 'checked':
+        case 'complete':
           data = this._filterComplete(data);
           break;
 
-        case "progress":
-        case "started":
-        case "begun":
+        case 'progress':
+        case 'started':
+        case 'begun':
           data = this._filterInProgress(data);
           break;
 
-        case "pending":
-        case "unchecked":
-        case "incomplete":
+        case 'pending':
+        case 'unchecked':
+        case 'incomplete':
           data = this._filterPending(data);
           break;
 
-        case "todo":
-        case "task":
-        case "tasks":
+        case 'todo':
+        case 'task':
+        case 'tasks':
           data = this._filterTask(data);
           break;
 
-        case "note":
-        case "notes":
+        case 'note':
+        case 'notes':
           data = this._filterNote(data);
           break;
 
@@ -371,11 +371,11 @@ class Taskbook {
 
   async _saveItemsToArchive(ids) {
     const data = await this._getData();
-    let archive = await this._getArchive();
+    const archive = await this._getArchive();
 
     for await (const id of ids) {
       const archiveID = await this._generateID(archive);
-      let item = data[id]
+      const item = data[id];
       item._id = archiveID;
       archive[archiveID] = item;
     }
@@ -385,11 +385,11 @@ class Taskbook {
 
   async _saveItemsToStorage(ids) {
     const archive = await this._getArchive();
-    let data = await this._getData()
+    const data = await this._getData();
 
     for await (const id of ids) {
       const restoreID = await this._generateID(data);
-      let item = archive[id];
+      const item = archive[id];
       item._id = restoreID;
       data[restoreID] = item;
     }
@@ -398,17 +398,17 @@ class Taskbook {
   }
 
   _splitOption(option) {
-    if (!(option instanceof Array)) {
-      let options = option.split(",");
+    if (!(Array.isArray(option))) {
+      const options = option.split(',');
       return options;
-    } else {
-      return option;
     }
+
+    return option;
   }
 
-  async createNote(description, boards = "My Board") {
+  async createNote(description, boards = 'My Board') {
     const id = await this._generateID();
-    let data = await this._getData();
+    const data = await this._getData();
 
     boards = this._splitOption(boards);
 
@@ -423,19 +423,19 @@ class Taskbook {
   }
 
   async copyToClipboard(ids) {
-    let data = await this._getData();
+    const data = await this._getData();
 
     ids = await this._validateIDs(ids);
     const descriptions = [];
 
     ids.forEach(id => descriptions.push(data[id].description));
 
-    clipboardy.writeSync(descriptions.join("\n"));
+    clipboardy.writeSync(descriptions.join('\n'));
     render.successCopyToClipboard(ids);
   }
 
   async checkTasks(ids) {
-    let data = await this._getData();
+    const data = await this._getData();
 
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
@@ -458,7 +458,7 @@ class Taskbook {
   }
 
   async beginTasks(ids) {
-    let data = await this._getData();
+    const data = await this._getData();
 
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
@@ -480,12 +480,12 @@ class Taskbook {
     render.markPaused(paused);
   }
 
-  async createTask(description, boards = "My Board", priority = 1, dueDate = null) {
+  async createTask(description, boards = 'My Board', priority = 1, dueDate = null) {
     const id = await this._generateID();
-    let data = await this._getData();
+    const data = await this._getData();
     const {
       dateformat
-    } = config.get()
+    } = config.get();
 
     boards = this._splitOption(boards);
     if (dueDate) {
@@ -510,7 +510,7 @@ class Taskbook {
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
-    await this._saveItemsToArchive(ids)
+    await this._saveItemsToArchive(ids);
 
     ids.forEach(id => {
       delete data[id];
@@ -552,7 +552,7 @@ class Taskbook {
 
     id = await this._validateIDs(id);
 
-    let data = await this._getData();
+    const data = await this._getData();
 
     data[id].description = description;
     this._save(data);
@@ -585,7 +585,7 @@ class Taskbook {
 
     terms.forEach(x => {
       if (storedBoards.indexOf(`@${x}`) === -1) {
-        return x === "myboard" ? boards.push("My Board") : attributes.push(x);
+        return x === 'myboard' ? boards.push('My Board') : attributes.push(x);
       }
 
       return boards.push(`@${x}`);
@@ -601,7 +601,7 @@ class Taskbook {
   }
 
   async moveBoards(ids, boards) {
-    ids = this._splitOption(ids)
+    ids = this._splitOption(ids);
     boards = this._splitOption(boards);
     ids = await this._validateIDs(ids);
 
@@ -612,23 +612,23 @@ class Taskbook {
 
     boards = this._removeDuplicates(boards);
 
-    let data = await this._getData();
+    const data = await this._getData();
 
     ids.forEach(id => {
       data[id].boards = boards;
-    })
+    });
     this._save(data);
     render.successMove(ids, boards);
   }
 
   async restoreItems(ids) {
-    let archive = await this._getArchive();
-    let existingIDs = await this._getIDs(archive);
+    const archive = await this._getArchive();
+    const existingIDs = await this._getIDs(archive);
 
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids, existingIDs);
 
-    await this._saveItemsToStorage(ids)
+    await this._saveItemsToStorage(ids);
 
     ids.forEach(id => {
       delete archive[id];
@@ -642,7 +642,7 @@ class Taskbook {
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
-    let data = await this._getData();
+    const data = await this._getData();
 
     const [starred, unstarred] = [
       [],
@@ -660,7 +660,7 @@ class Taskbook {
   }
 
   async updatePriority(id, priority) {
-    const level = (["1", "2", "3"].indexOf(priority) > -1) ? priority : null;
+    const level = (['1', '2', '3'].indexOf(priority) > -1) ? priority : null;
 
     if (!level) {
       render.invalidPriority();
@@ -669,7 +669,7 @@ class Taskbook {
 
     id = await this._validateIDs(id);
 
-    let data = await this._getData();
+    const data = await this._getData();
 
     data[id].priority = level;
     await this._save(data);
@@ -677,7 +677,7 @@ class Taskbook {
   }
 
   async clear() {
-    let data = await this._getData();
+    const data = await this._getData();
 
     const ids = [];
 

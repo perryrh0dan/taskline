@@ -129,14 +129,14 @@ class LocalStorage extends Storage {
   set(data) {
     const self = this;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(((resolve, reject) => {
       data = JSON.stringify(data, null, 4);
       const tempStorageFile = self._getTempFile(self._mainStorageFile);
 
       fs.writeFileSync(tempStorageFile, data, 'utf8');
       fs.renameSync(tempStorageFile, self._mainStorageFile);
       resolve();
-    });
+    }));
   }
 
   setArchive(archive) {
