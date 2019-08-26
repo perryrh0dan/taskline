@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 'use strict';
 const program = require('commander');
 const updateNotifier = require('update-notifier');
@@ -149,13 +150,13 @@ program
   });
 
 if (process.argv.length === 2) {
-  taskbook.displayByBoard();
+  taskbook.displayByBoard().then(() => {
+    return taskbook.displayStats();
+  });
 }
 
-taskbook.displayByBoard().then(() => {
-  return taskbook.displayStats();
-});
-
-updateNotifier({pkg}).notify();
+updateNotifier({
+  pkg
+}).notify();
 
 program.parse(process.argv);
