@@ -489,7 +489,9 @@ class Taskbook {
 
     boards = this._splitOption(boards);
     if (dueDate) {
-      dueDate = this._parseDate(dueDate, dateformat).getTime();
+      dueDate = this._parseDate(dueDate, dateformat)
+      dueDate.setHourse(23, 59, 59)
+      dueTime = dueDate.getTime();
     }
 
     const task = new Task({
@@ -497,7 +499,7 @@ class Taskbook {
       description,
       boards,
       priority,
-      dueDate
+      dueTime
     });
     data[id] = task;
     this._save(data);
@@ -689,7 +691,9 @@ class Taskbook {
     ids = await this._validateIDs(ids)
 
     const data = await this._getData();
-    const dueTime = this._parseDate(dueDate, dateformat).getTime();
+    dueDate = this._parseDate(dueDate, dateformat)
+    dueDate.setHours(23,59,59)
+    const dueTime = dueDate.getTime();
 
     ids.forEach(id => {
       if (data[id]._isTask) data[id].dueDate = dueTime;

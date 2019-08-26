@@ -56,7 +56,7 @@ class Render {
 
   _getDueDays(dueDate) {
     const daytime = 24 * 60 * 60 * 1000;
-    const dueDays = Math.round(Math.abs(((Date.now() - dueDate)) / daytime));
+    const dueDays = Math.round(((dueDate - Date.now())) / daytime);
     if (dueDays <= 0) {
       return red(`${dueDays}d left`);
     }
