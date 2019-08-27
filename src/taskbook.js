@@ -492,7 +492,7 @@ class Taskbook {
     let dueTime;
     if (dueDate) {
       dueDate = this._parseDate(dueDate, dateformat)
-      dueDate.setHourse(23, 59, 59)
+      dueDate.setHours(23, 59, 59)
       dueTime = dueDate.getTime();
     }
 
