@@ -488,6 +488,8 @@ class Taskbook {
     } = config.get();
 
     boards = this._splitOption(boards);
+    
+    let dueTime;
     if (dueDate) {
       dueDate = this._parseDate(dueDate, dateformat)
       dueDate.setHourse(23, 59, 59)
