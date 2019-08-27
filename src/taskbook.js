@@ -534,6 +534,7 @@ class Taskbook {
   }
 
   async displayByBoard() {
+    render.loading()
     const data = await this._groupByBoard();
     render.displayByBoard(data);
   }

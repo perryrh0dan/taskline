@@ -1,6 +1,7 @@
 'use strict';
 const chalk = require('chalk');
 const signale = require('signale');
+const ora = require('ora')
 const config = require('./config');
 
 signale.config({
@@ -218,6 +219,10 @@ class Render {
     }
 
     return note(msgObj);
+  }
+
+  loading() {
+    const spinner = ora().start()
   }
 
   displayByBoard(data) {
