@@ -579,6 +579,7 @@ class Taskbook {
 
   async findItems(terms) {
     render.startLoading()
+    terms = this._splitOption(terms)
     const data = await this._getData();
     const result = {};
 
