@@ -221,8 +221,15 @@ class Render {
     return note(msgObj);
   }
 
-  loading() {
-    const spinner = ora().start()
+  startLoading() {
+    if (!this.spinner) {
+      this.spinner = ora()
+    }
+    this.spinner.start()
+  }
+
+  stopLoading() {
+    this.spinner.stop()
   }
 
   displayByBoard(data) {
