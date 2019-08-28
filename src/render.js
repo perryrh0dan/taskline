@@ -340,6 +340,7 @@ class Render {
   }
 
   invalidIDsNumber() {
+    this.stopLoading()
     const prefix = '\n';
     const message = 'More than one ids were given as input';
     error({
@@ -374,6 +375,7 @@ class Render {
   }
 
   markIncomplete(ids) {
+    this.stopLoading()
     if (ids.length === 0) {
       return;
     }
@@ -403,6 +405,7 @@ class Render {
   }
 
   markPaused(ids) {
+    this.stopLoading()
     if (ids.length === 0) {
       return;
     }
@@ -432,6 +435,7 @@ class Render {
   }
 
   markUnstarred(ids) {
+    this.stopLoading()
     if (ids.length === 0) {
       return;
     }

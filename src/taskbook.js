@@ -170,20 +170,21 @@ class Taskbook {
     };
   }
 
-  async _getStats() {
-    const data = await this._getData();
+  _getStats(grouped) {
     let [complete, inProgress, pending, notes] = [0, 0, 0, 0];
 
-    Object.keys(data).forEach(id => {
-      if (data[id]._isTask) {
-        return data[id].isComplete ?
-          complete++ :
-          data[id].inProgress ?
-          inProgress++ :
-          pending++;
-      }
+    Object.keys(grouped).forEach(group => {
+      grouped[group].forEach(item => {
+        if (item._isTask) {
+          return item.isComplete ?
+            complete++ :
+            item.inProgress ?
+            inProgress++ :
+            pending++;
+        }
 
-      return notes++;
+        return notes++;
+      })
     });
 
     const total = complete + pending + inProgress;
@@ -494,7 +495,7 @@ class Taskbook {
 
     priority = Number(priority)
     boards = this._splitOption(boards);
-    
+
     let dueTime;
     if (dueDate) {
       dueDate = this._parseDate(dueDate, dateformat)
@@ -543,18 +544,20 @@ class Taskbook {
 
   async displayByBoard() {
     render.startLoading()
-    const data = await this._groupByBoard();
-    render.displayByBoard(data);
+    const grouped = await this._groupByBoard();
+    render.displayByBoard(grouped);
+    return grouped
   }
 
   async displayByDate() {
     render.startLoading()
-    const data = await this._groupByDate();
-    render.displayByDate(data);
+    const grouped = await this._groupByDate();
+    render.displayByDate(grouped);
+    return grouped;
   }
 
-  async displayStats() {
-    const states = await this._getStats();
+  displayStats(grouped) {
+    const states = this._getStats(grouped);
     render.displayStats(states);
   }
 
@@ -601,11 +604,11 @@ class Taskbook {
     const storedBoards = await this._getBoards();
 
     terms.forEach(x => {
-      if (storedBoards.indexOf(`@${x}`) === -1) {
+      if (storedBoards.indexOf(x) === -1) {
         return x === 'myboard' ? boards.push('My Board') : attributes.push(x);
       }
 
-      return boards.push(`@${x}`);
+      return boards.push(x);
     });
 
     [boards, attributes] = [boards, attributes].map(x =>
@@ -615,6 +618,7 @@ class Taskbook {
     const data = await this._filterByAttributes(attributes);
     const grouped = await this._groupByBoard(data, boards);
     render.displayByBoard(grouped);
+    return grouped;
   }
 
   async moveBoards(ids, boards) {
@@ -713,7 +717,7 @@ class Taskbook {
 
     const data = await this._getData();
     dueDate = this._parseDate(dueDate, dateformat)
-    dueDate.setHours(23,59,59)
+    dueDate.setHours(23, 59, 59)
     const dueTime = dueDate.getTime();
 
     ids.forEach(id => {

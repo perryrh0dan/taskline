@@ -99,7 +99,9 @@ program
   .alias('i')
   .description('Display timeline view')
   .action(() => {
-    taskbook.displayByDate();
+    taskbook.displayByDate().then(grouped => {
+      taskbook.displayStats(grouped)
+    })
   });
 
 program
@@ -130,7 +132,9 @@ program
   .alias('l')
   .description('List items by attributes')
   .action(terms => {
-    taskbook.listByAttributes(terms);
+    taskbook.listByAttributes(terms).then(grouped => {
+      taskbook.displayStats(grouped);
+    });
   });
 
 program
@@ -150,8 +154,8 @@ program
   });
 
 if (process.argv.length === 2) {
-  taskbook.displayByBoard().then(() => {
-    return taskbook.displayStats();
+  taskbook.displayByBoard().then(grouped => {
+    return taskbook.displayStats(grouped);
   });
 }
 
