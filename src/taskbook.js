@@ -487,6 +487,7 @@ class Taskbook {
       dateformat
     } = config.get();
 
+    priority = Number(priority)
     boards = this._splitOption(boards);
     
     let dueTime;
@@ -666,7 +667,8 @@ class Taskbook {
   }
 
   async updatePriority(ids, priority) {
-    const level = (['1', '2', '3'].indexOf(priority) > -1) ? priority : null;
+    let level = (['1', '2', '3'].indexOf(priority) > -1) ? priority : null;
+    level = Number(level)
 
     if (!level) {
       render.invalidPriority();
