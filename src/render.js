@@ -508,7 +508,7 @@ class Render {
   successPriority(ids, level) {
     const prefix = '\n';
     const message = `Updated priority of ${ids.length > 1 ? 'tasks' : 'task'}: ${grey(ids.join(', '))} to`;
-    const suffix = level === '3' ? red('high') : (level === '2' ? yellow('medium') : green('normal'));
+    const suffix = level === 3 ? red('high') : (level === 2 ? yellow('medium') : green('normal'));
     success({
       prefix,
       message,
