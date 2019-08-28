@@ -407,6 +407,7 @@ class Taskbook {
   }
 
   async createNote(description, boards = 'My Board') {
+    render.startLoading()
     const id = await this._generateID();
     const data = await this._getData();
 
@@ -423,6 +424,7 @@ class Taskbook {
   }
 
   async copyToClipboard(ids) {
+    render.startLoading()
     const data = await this._getData();
 
     ids = await this._validateIDs(ids);
@@ -435,6 +437,7 @@ class Taskbook {
   }
 
   async checkTasks(ids) {
+    render.startLoading()
     const data = await this._getData();
 
     ids = this._splitOption(ids);
@@ -458,6 +461,7 @@ class Taskbook {
   }
 
   async beginTasks(ids) {
+    render.startLoading()
     const data = await this._getData();
 
     ids = this._splitOption(ids);
@@ -481,6 +485,7 @@ class Taskbook {
   }
 
   async createTask(description, boards = 'My Board', priority = 1, dueDate = null) {
+    render.startLoading()
     const id = await this._generateID();
     const data = await this._getData();
     const {
@@ -510,6 +515,7 @@ class Taskbook {
   }
 
   async deleteItems(ids) {
+    render.startLoading()
     const data = await this._getData();
 
     ids = this._splitOption(ids);
@@ -526,6 +532,7 @@ class Taskbook {
   }
 
   async displayArchive() {
+    render.startLoading()
     const archive = await this._getArchive();
     const dates = await this._getDates(archive);
 
@@ -537,11 +544,11 @@ class Taskbook {
   async displayByBoard() {
     render.startLoading()
     const data = await this._groupByBoard();
-    render.stopLoading()
     render.displayByBoard(data);
   }
 
   async displayByDate() {
+    render.startLoading()
     const data = await this._groupByDate();
     render.displayByDate(data);
   }
@@ -552,6 +559,7 @@ class Taskbook {
   }
 
   async editDescription(id, description) {
+    render.startLoading()
     if (description.length === 0) {
       render.missingDesc();
       process.exit(1);
@@ -567,6 +575,7 @@ class Taskbook {
   }
 
   async findItems(terms) {
+    render.startLoading()
     const data = await this._getData();
     const result = {};
 
@@ -583,6 +592,7 @@ class Taskbook {
   }
 
   async listByAttributes(terms) {
+    render.startLoading()
     terms = this._splitOption(terms);
     let [boards, attributes] = [
       [],
@@ -608,6 +618,7 @@ class Taskbook {
   }
 
   async moveBoards(ids, boards) {
+    render.startLoading()
     ids = this._splitOption(ids);
     boards = this._splitOption(boards);
     ids = await this._validateIDs(ids);
@@ -629,6 +640,7 @@ class Taskbook {
   }
 
   async restoreItems(ids) {
+    render.startLoading()
     const archive = await this._getArchive();
     const existingIDs = await this._getIDs(archive);
 
@@ -646,6 +658,7 @@ class Taskbook {
   }
 
   async starItems(ids) {
+    render.startLoading()
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
@@ -667,6 +680,7 @@ class Taskbook {
   }
 
   async updatePriority(ids, priority) {
+    render.startLoading()
     let level = (['1', '2', '3'].indexOf(priority) > -1) ? priority : null;
     level = Number(level)
 
@@ -689,6 +703,7 @@ class Taskbook {
   }
 
   async updateDueDate(ids, dueDate) {
+    render.startLoading()
     const {
       dateformat
     } = config.get();
@@ -710,6 +725,7 @@ class Taskbook {
   }
 
   async clear() {
+    render.startLoading()
     const data = await this._getData();
 
     const ids = [];
@@ -721,6 +737,7 @@ class Taskbook {
     });
 
     if (ids.length === 0) {
+      render.stopLoading()
       return;
     }
 

@@ -229,10 +229,13 @@ class Render {
   }
 
   stopLoading() {
-    this.spinner.stop()
+    if (this.spinner) {
+      this.spinner.stop()
+    }
   }
 
   displayByBoard(data) {
+    this.stopLoading();
     Object.keys(data).forEach(board => {
       if (this._isBoardComplete(data[board]) && !this._configuration.displayCompleteTasks) {
         return;
@@ -250,6 +253,7 @@ class Render {
   }
 
   displayByDate(data) {
+    this.stopLoading();
     Object.keys(data).forEach(date => {
       if (this._isBoardComplete(data[date]) && !this._configuration.displayCompleteTasks) {
         return;
@@ -314,6 +318,7 @@ class Render {
   }
 
   invalidCustomAppDir(path) {
+    this.stopLoading()
     const [prefix, suffix] = ['\n', red(path)];
     const message = 'Custom app directory was not found on your system:';
     error({
@@ -324,6 +329,7 @@ class Render {
   }
 
   invalidID(id) {
+    this.stopLoading()
     const [prefix, suffix] = ['\n', grey(id)];
     const message = 'Unable to find item with id:';
     error({
@@ -343,6 +349,7 @@ class Render {
   }
 
   invalidPriority() {
+    this.stopLoading();
     const prefix = '\n';
     const message = 'Priority can only be 1, 2 or 3';
     error({
@@ -352,6 +359,7 @@ class Render {
   }
 
   markComplete(ids) {
+    this.stopLoading();
     if (ids.length === 0) {
       return;
     }
@@ -380,6 +388,7 @@ class Render {
   }
 
   markStarted(ids) {
+    this.stopLoading();
     if (ids.length === 0) {
       return;
     }
@@ -408,6 +417,7 @@ class Render {
   }
 
   markStarred(ids) {
+    this.stopLoading();
     if (ids.length === 0) {
       return;
     }
@@ -436,6 +446,7 @@ class Render {
   }
 
   missingBoards() {
+    this.stopLoading()
     const prefix = '\n';
     const message = 'No boards were given as input';
     error({
@@ -445,6 +456,7 @@ class Render {
   }
 
   missingDesc() {
+    this.stopLoading()
     const prefix = '\n';
     const message = 'No description was given as input';
     error({
@@ -454,6 +466,7 @@ class Render {
   }
 
   missingID() {
+    this.stopLoading()
     const prefix = '\n';
     const message = 'No id was given as input';
     error({
@@ -466,6 +479,7 @@ class Render {
     _id,
     _isTask
   }) {
+    this.stopLoading()
     const [prefix, suffix] = ['\n', grey(_id)];
     const message = `Created ${_isTask ? 'task:' : 'note:'}`;
     success({
@@ -476,6 +490,7 @@ class Render {
   }
 
   successEdit(id) {
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(id)];
     const message = 'Updated description of item:';
     success({
@@ -486,6 +501,7 @@ class Render {
   }
 
   successDelete(ids) {
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Deleted ${ids.length > 1 ? 'items' : 'item'}:`;
     success({
@@ -496,6 +512,7 @@ class Render {
   }
 
   successMove(id, boards) {
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(boards.join(', '))];
     const message = `Move item: ${grey(id)} to`;
     success({
@@ -506,6 +523,7 @@ class Render {
   }
 
   successPriority(ids, level) {
+    this.stopLoading();
     const prefix = '\n';
     const message = `Updated priority of ${ids.length > 1 ? 'tasks' : 'task'}: ${grey(ids.join(', '))} to`;
     const suffix = level === 3 ? red('high') : (level === 2 ? yellow('medium') : green('normal'));
@@ -517,6 +535,7 @@ class Render {
   }
 
   successDueDate(ids, dueDate) {
+    this.stopLoading();
     const prefix = '\n';
     const message = `Updated duedate of ${ids.length > 1 ? 'tasks' : 'task'}: ${grey(ids.join(', '))} to`;
     const suffix = dueDate;
@@ -528,6 +547,7 @@ class Render {
   }
 
   successRestore(ids) {
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Restored ${ids.length > 1 ? 'items' : 'item'}:`;
     success({
@@ -538,6 +558,7 @@ class Render {
   }
 
   successCopyToClipboard(ids) {
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Copied the ${ids.length > 1 ? 'descriptions of items' : 'description of item'}:`;
     success({
