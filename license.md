@@ -1,5 +1,7 @@
 MIT License
 
+Copyright (c) 2019 -present Thomas Pöhlmann <thomaspoehlmann@googlemail.com>
+
 Copyright (c) 2018 - present Klaus Sinani <klaussinani@gmail.com> (klaussinani.github.io) Mario Sinani <mariosinani@protonmail.ch> (mario-sinani.github.io)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

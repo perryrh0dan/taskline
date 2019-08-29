@@ -1,7 +1,7 @@
 {
   "name": "taskbook",
   "productName": "Taskbook",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://gitlab.com/johnmcclan3/taskbook",
   "license": "MIT",
