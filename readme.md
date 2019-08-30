@@ -44,9 +44,10 @@ By utilizing a simple and minimal usage syntax, that requires a flat learning cu
 - Firestore module to save data in google firestore.
 - Sync tasks across all your devices with firestore.
 - Replaced Meow with commander.js
-- Set Duedate for tasks
+- Set duedate for tasks
+- Display loadingspinner while fetching network requests
 
-View highlights in a [taskbook board](https://raw.githubusercontent.com/klaussinani/taskbook/master/media/highlights.png).
+View highlights in a [taskbook board](https://raw.githubusercontent.com/perryrh0dan/taskbook/master/media/highlights.png).
 
 ## Contents
 
@@ -184,10 +185,21 @@ Display progress overview below the timeline and board views.
 - Default: `local`
 - Values: `local`, `firestore`
 
+Choose of storage module. Currently there are two modules `local` and `firestore`. For the firestore module the firestoreConfig is needed.
+
 ##### `firestoreConfig`
 
 - Type: `Google Dienstkontoschlüssel`
 - Default: `Empty`
+
+Configuration of the firestore module.
+
+##### `dateformat`
+
+- Type: `String`
+- Default: `dd.mm.yyyy`
+
+Dateformat used for duedate.
 
 ## Flight Manual
 
