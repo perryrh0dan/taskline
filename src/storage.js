@@ -7,6 +7,8 @@ class Storage {
     this.archive = null;
   }
 
+  init() {}
+
   get() {}
 
   getArchive() {}

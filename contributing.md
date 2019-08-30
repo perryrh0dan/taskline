@@ -31,10 +31,6 @@ You can use issue labels to discover issues you could help us out with!
 
 You may find an issue is assigned, or has the [`assigned` label](https://github.com/perryrh0dan/taskline/labels/assigned). Please double-check before starting on this issue because somebody else is likely already working on it
 
-### Say hi
-
-Come over and say hi anytime you feel like on [Gitter](https://gitter.im/perryrh0dan/taskline).
-
 ### Translating Documentation
 
 #### Create a Translation

@@ -10,15 +10,9 @@
   <img alt="Boards" width="60%" src="media/header-boards.png"/>
 </div>
 
-<p align="center">
-  <a href="https://travis-ci.com/klaussinani/taskbook">
-    <img alt="Build Status" src="https://travis-ci.com/klaussinani/taskbook.svg?branch=master">
-  </a>
-</p>
-
 ## Description
 
-By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
+By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules. Local storage where your task and are never shared with anyone or anything, or the firestore module, where your tasks are saved in your firestore database and can be shared across all your devices. Deleted items are automatically archived and can be inspected or restored at any moment.
 
 ## Highlights
 
@@ -44,7 +38,7 @@ By utilizing a simple and minimal usage syntax, that requires a flat learning cu
 - Firestore module to save data in google firestore.
 - Sync tasks across all your devices with firestore.
 - Replaced Meow with commander.js
-- Set duedate for tasks
+- Duedate mechanism
 - Display loadingspinner while fetching network requests
 
 View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
@@ -57,6 +51,7 @@ View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0
 - [Usage](#usage)
 - [Views](#views)
 - [Configuration](#configuration)
+- [Before Flight](#before-flight)
 - [Flight Manual](#flight-manual)
 - [Development](#development)
 - [Related](#related)
@@ -96,7 +91,7 @@ Commands:
   clear                           Delete all checked items
   copy|y <ids>                    Copy description to clipboard
   delete|d <ids>                  Delete item
-  due <ids> <dueDate>             Update duedateof task
+  due <ids> <dueDate>             Set or update duedate of task
   edit|e <id> <description>       Edit item description
   find|f <terms>                  Search for items
   list|l <terms>                  List items by attributes
@@ -192,7 +187,7 @@ Choose of storage module. Currently there are two modules `local` and `firestore
 - Type: `Google Dienstkontoschlüssel`
 - Default: `Empty`
 
-Configuration of the firestore module.
+Configuration of the firestore module. 
 
 ##### `dateformat`
 
@@ -200,6 +195,14 @@ Configuration of the firestore module.
 - Default: `dd.mm.yyyy`
 
 Dateformat used for duedate.
+
+## Before flight
+
+When you want to use the local storage module there is no further configuration need. When you want to use the firestore module follow this steps:
+
+1. Create a new Project on the google cloud platform.
+2. Create a new service account for this project.
+3. Download the authorization.json file and insert all the lines to the corresponding lines in the taskline configuration.
 
 ## Flight Manual
 
@@ -302,10 +305,10 @@ $ tl p 1,2,23 2
 
 ### Set Duedate
 
-To set a duedate for a task while initializing it, use the `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy`
+To set a duedate for a task while initializing it, use the `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy`. Note that all tasks by default have no duedate.
 
 ```
-$ tl t "Solve puzzle" -b coding -d 230.08.2019
+$ tl t "Solve puzzle" -b coding -d 23.08.2019
 ```
 
 To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date.
@@ -313,6 +316,8 @@ To update the duedate of a specified task after its creation, use the `due` comm
 ```
 $ tl due 1,2,23 15.09.2019
 ```
+
+The number of duedays (days left before duedate) of a task is displayed instead of the age of an task right next to the description. 
 
 ### Move Item
 

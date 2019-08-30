@@ -328,6 +328,17 @@ class Render {
     });
   }
 
+  invalidFirestoreConfig() {
+    this.stopLoading()
+    const [prefix, suffix] = ['\n', '']
+    const message = 'Firestore config contains error';
+    error({
+      prefix,
+      message,
+      suffix
+    })
+  }
+
   invalidID(id) {
     this.stopLoading()
     const [prefix, suffix] = ['\n', grey(id)];

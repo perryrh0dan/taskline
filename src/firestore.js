@@ -3,19 +3,25 @@
 'use strict';
 
 const firebase = require('firebase-admin');
+const render = require('./render');
 const Storage = require('./storage');
 const config = require('./config');
 
-class FirebaseStorage extends Storage {
+class FirestoreStorage extends Storage {
   constructor() {
     super();
+  }
+
+  init() {
     const {
       firestoreConfig
     } = config.get();
+
     firebase.initializeApp({
       credential: firebase.credential.cert(firestoreConfig),
       databaseURL: firestoreConfig.databaseURL
     });
+
     this.db = firebase.firestore();
   }
 
@@ -32,34 +38,6 @@ class FirebaseStorage extends Storage {
     }
 
     return result;
-  }
-
-  set(data) {
-    const pureData = this._parse(data);
-
-    this._updateCollection('storage', pureData);
-  }
-
-  setArchive(data) {
-    const pureData = this._parse(data);
-
-    this._updateCollection('archive', pureData);
-  }
-
-  async get() {
-    if (!this.data) {
-      this.data = await this._getCollection('storage');
-    }
-
-    return this.data;
-  }
-
-  async getArchive() {
-    if (!this.archive) {
-      this.archive = await this._getCollection('archive');
-    }
-
-    return this.archive;
   }
 
   _updateCollection(path, dataArray) {
@@ -131,6 +109,46 @@ class FirebaseStorage extends Storage {
         });
     }));
   }
+
+  async set(data) {
+    const pureData = this._parse(data);
+
+    await this._updateCollection('storage', pureData).catch(error => {
+      render.invalidFirestoreConfig();
+      process.exit(1);
+    });
+  }
+
+  async setArchive(data) {
+    const pureData = this._parse(data);
+
+    await this._updateCollection('archive', pureData).catch(error => {
+      render.invalidFirestoreConfig();
+      process.exit(1);
+    });
+  }
+
+  async get() {
+    if (!this.data) {
+      this.data = await this._getCollection('storage').catch(error => {
+        render.invalidFirestoreConfig();
+        process.exit(1);
+      });
+    }
+
+    return this.data;
+  }
+
+  async getArchive() {
+    if (!this.archive) {
+      this.archive = await this._getCollection('archive').catch(error => {
+        render.invalidFirestoreConfig();
+        process.exit(1);
+      });
+    }
+
+    return this.archive;
+  }
 }
 
-module.exports = FirebaseStorage;
+module.exports = FirestoreStorage;

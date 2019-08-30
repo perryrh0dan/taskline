@@ -6,7 +6,7 @@ const Task = require('./task');
 const Note = require('./note');
 const LocalStorage = require('./local');
 const render = require('./render');
-const FirebaseStorage = require('./firebase');
+const FirestoreStorage = require('./firestore');
 const config = require('./config');
 
 class Taskline {
@@ -15,10 +15,11 @@ class Taskline {
       storageModule
     } = config.get();
     if (storageModule === 'firestore') {
-      this._storage = new FirebaseStorage();
+      this._storage = new FirestoreStorage();
     } else if (storageModule === 'local') {
       this._storage = new LocalStorage();
     }
+    this._storage.init()
   }
 
   _getData() {

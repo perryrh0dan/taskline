@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.1",
-    "clipboardy": "^1.2.3",
+    "clipboardy": "^2.1.0",
     "commander": "^3.0.0",
     "firebase-admin": "^8.4.0",
     "ora": "^3.4.0",
@@ -68,7 +68,6 @@
     "update-notifier": "^2.5.0"
   },
   "devDependencies": {
-    "@google-cloud/firestore": "^2.2.8",
     "jest": "^24.9.0",
     "xo": "*"
   },
