@@ -1,5 +1,5 @@
 <h1 align="center">
-  Taskline
+  TaskPrompt
 </h1>
 
 <h4 align="center">
@@ -18,7 +18,7 @@
 
 ## Description
 
-By utilizing a simple and minimal usage syntax, that requires a flat learning curve, taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
+By utilizing a simple and minimal usage syntax, that requires a flat learning curve, TaskPrompt enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
 
 ## Highlights
 
@@ -68,13 +68,13 @@ View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0
 ### Yarn
 
 ```bash
-yarn global add taskline
+yarn global add taskprompt
 ```
 
 ### NPM
 
 ```bash
-npm install --global taskline
+npm install --global taskprompt
 ```
 
 ## Usage
@@ -136,7 +136,7 @@ The following illustrates all the available options with their respective defaul
 {
   "taskbookDirectory": "~",
   "displayCompleteTasks": true,
-  "displayProgressOverview": true`,
+  "displayProgressOverview": true,
   "storageModule": "local",
   "firestoreConfig": {
         "type": "",

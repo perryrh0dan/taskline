@@ -1,14 +1,14 @@
 {
-  "name": "taskbook",
-  "productName": "Taskbook",
-  "version": "0.5.7",
+  "name": "taskprompt",
+  "productName": "TaskPrompt",
+  "version": "0.5.8",
   "description": "Tasks, boards & notes for the command-line habitat",
-  "repository": "https://gitlab.com/johnmcclan3/taskbook",
+  "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
   "author": {
     "name": "Thomas Pöhlmann",
-    "email": "tpoe@camelot-itlab.com",
-    "url": "https://gitlab.com/johnmcclan3"
+    "email": "thomaspoehlmann96@googlemail.com",
+    "url": "https://github.com/perryrh0dan"
   },
   "bin": {
     "tb": "tb.js"
@@ -18,8 +18,7 @@
   },
   "files": [
     "src",
-    "cli.js",
-    "index.js"
+    "tb.js"
   ],
   "keywords": [
     "task",
@@ -64,7 +63,6 @@
     "clipboardy": "^1.2.3",
     "commander": "^3.0.0",
     "firebase-admin": "^8.4.0",
-    "meow": "^5.0.0",
     "ora": "^3.4.0",
     "signale": "1.4.0",
     "update-notifier": "^2.5.0"
