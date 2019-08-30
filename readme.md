@@ -294,10 +294,24 @@ To set a priority level for a task while initializing it, use the `-p` option fo
 $ tl t "Fix issue `#42`" -b coding -p 3
 ```
 
-To update the priority level of a specific task after its creation, use the `priority`/`p` command along with the ids of the target tasks and an integer of value `1`, `2` or `3`.
+To update the priority level of a specific task after its creation, use the `priority`/`p` command along with the id of the target tasks and an integer of value `1`, `2` or `3`.
 
 ```
 $ tl p 1,2,23 2
+```
+
+### Set Duedate
+
+To set a duedate for a task while initializing it, use the `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy`
+
+```
+$ tl t "Solve puzzle" -b coding -d 230.08.2019
+```
+
+To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date.
+
+```
+$ tl due 1,2,23 15.09.2019
 ```
 
 ### Move Item

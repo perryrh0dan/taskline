@@ -301,7 +301,7 @@ class Render {
     if (pending + inProgress + complete + notes === 0) {
       log({
         prefix: '\n ',
-        message: 'Type `tb --help` to get started!',
+        message: 'Type `tl --help` to get started!',
         suffix: yellow('★')
       });
     }
