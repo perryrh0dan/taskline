@@ -1,8 +1,6 @@
 MIT License
 
-Copyright (c) 2019 -present Thomas Pöhlmann <thomaspoehlmann@googlemail.com>
-
-Copyright (c) 2018 - present Klaus Sinani <klaussinani@gmail.com> (klaussinani.github.io) Mario Sinani <mariosinani@protonmail.ch> (mario-sinani.github.io)
+Copyright (c) for portions of project taskline are held by Klaus Sinani <klauscfhq@protonmail.com> and Mario Sinani <mariosinani@protonmail.ch> as part of project taskbook. All other copyright for project taskline are held by Thomas Pöhlmann <thomaspoehlmann96@googlemail.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

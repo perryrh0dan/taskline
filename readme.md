@@ -20,13 +20,9 @@
 
 By utilizing a simple and minimal usage syntax, that requires a flat learning curve, taskbook enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
 
-Read this document in: [简体中文](https://github.com/klaussinani/taskbook/blob/master/docs/readme.ZH.md), [Русский](https://github.com/klaussinani/taskbook/blob/master/docs/readme.RU.md), [Français](https://github.com/klaussinani/taskbook/blob/master/docs/readme.FR.md).
-
-Visit the [contributing guidelines](https://github.com/klaussinani/taskbook/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
-
-Come over to [Gitter](https://gitter.im/klaussinani/taskbook) or [Twitter](https://twitter.com/klaussinani) to share your thoughts on the project.
-
 ## Highlights
+
+### Original
 
 - Organize tasks & notes to boards
 - Board & timeline views
@@ -41,6 +37,14 @@ Come over to [Gitter](https://gitter.im/klaussinani/taskbook) or [Twitter](https
 - Update notifications
 - Configurable through `~/.taskbook.json`
 - Data stored in JSON file at `~/.taskbook/storage`
+
+### New
+
+- Modular data storage. 
+- Firestore module to save data in google firestore.
+- Sync tasks across all your devices with firestore.
+- Replaced Meow with commander.js
+- Set Duedate for tasks
 
 View highlights in a [taskbook board](https://raw.githubusercontent.com/klaussinani/taskbook/master/media/highlights.png).
 
@@ -72,67 +76,38 @@ yarn global add taskbook
 npm install --global taskbook
 ```
 
-### Snapcraft
-
-```bash
-snap install taskbook
-snap alias taskbook tb # set alias
-```
-
-**Note:** Due to the snap's strictly confined nature, both the storage & configuration files will be saved under the [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) environment variable instead of the generic `$HOME` one.
-
 ## Usage
 
 ```
 $ tb --help
+Usage: tb [options] [command]
 
-  Usage
-    $ tb [<options> ...]
+Tasks, boards & notes for the command-line habitat
 
-    Options
-        none             Display board view
-      --archive, -a      Display archived items
-      --begin, -b        Start/pause task
-      --check, -c        Check/uncheck task
-      --clear            Delete all checked items
-      --copy, -y         Copy item description
-      --delete, -d       Delete item
-      --edit, -e         Edit item description
-      --find, -f         Search for items
-      --help, -h         Display help message
-      --list, -l         List items by attributes
-      --move, -m         Move item between boards
-      --note, -n         Create note
-      --priority, -p     Update priority of task
-      --restore, -r      Restore items from archive
-      --star, -s         Star/unstar item
-      --task, -t         Create task
-      --timeline, -i     Display timeline view
-      --version, -v      Display installed version
+Options:
+  -V, --version                   output the version number
+  -h, --help                      output usage information
 
-    Examples
-      $ tb
-      $ tb --archive
-      $ tb --begin 2 3
-      $ tb --check 1 2
-      $ tb --clear
-      $ tb --copy 1 2 3
-      $ tb --delete 4
-      $ tb --edit @3 Merge PR #42
-      $ tb --find documentation
-      $ tb --list pending coding
-      $ tb --move @1 cooking
-      $ tb --note @coding Mergesort worse-case O(nlogn)
-      $ tb --priority @3 2
-      $ tb --restore 4
-      $ tb --star 2
-      $ tb --task @coding @reviews Review PR #42
-      $ tb --task @coding Improve documentation
-      $ tb --task Make some buttercream
-      $ tb --timeline
+Commands:
+  archive|a                       Display archived items
+  begin|b <ids>                   Start/pause task
+  check|c <ids>                   Check/uncheck task
+  clear                           Delete all checked items
+  copy|y <ids>                    Copy description to clipboard
+  delete|d <ids>                  Delete item
+  due <ids> <dueDate>             Update duedateof task
+  edit|e <id> <description>       Edit item description
+  find|f <terms>                  Search for items
+  list|l <terms>                  List items by attributes
+  move|m <ids> <board>            Move item between boards
+  note|n [options] <description>  Create note
+  priority|p <id> <priority>      Update priority of task
+  restore|r <ids>                 Restore items from archive
+  star|s <ids>                    Star/unstar item
+  task|t [options] <description>  Create task
+  timeline|i                      Display timeline view
 ```
-
-## Views
+# Views
 
 ### Board View
 
@@ -160,7 +135,21 @@ The following illustrates all the available options with their respective defaul
 {
   "taskbookDirectory": "~",
   "displayCompleteTasks": true,
-  "displayProgressOverview": true
+  "displayProgressOverview": true`,
+  "storageModule": "local",
+  "firestoreConfig": {
+        "type": "",
+        "project_id": "",
+        "private_key_id": "",
+        "private_key": "",
+        "client_email": "",
+        "client_id": "",
+        "auth_uri": "",
+        "token_uri": "",
+        "auth_provider_x509_cert_url": "",
+        "client_x509_cert_url": "",
+      },
+	"dateformat": "dd.mm.yyyy"
 }
 ```
 
@@ -189,70 +178,85 @@ Display tasks that are marked as complete.
 
 Display progress overview below the timeline and board views.
 
+##### `storageModule`
+
+- Type: `Enum`
+- Default: `local`
+- Values: `local`, `firestore`
+
+##### `firestoreConfig`
+
+- Type: `Google Dienstkontoschlüssel`
+- Default: `Empty`
+
 ## Flight Manual
 
 The following is a minor walkthrough containing a set of examples on how to use taskbook.
-In case you spotted an error or think that an example is not to clear enough and should be further improved, please feel free to open an [issue](https://github.com/klaussinani/taskbook/issues/new/choose) or [pull request](https://github.com/klaussinani/taskbook/compare).
+In case you spotted an error or think that an example is not to clear enough and should be further improved, please feel free to open an [issue](https://github.com/perryrh0dan/taskline/issues/new/choose) or [pull request](https://github.com/perryrh0dan/taskline/compare).
+
+### Setup Firestore
+Follow this instructions:
+https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application
 
 ### Create Task
 
-To create a new task use the `--task`/`-t` option with your task's description following right after.
+To create a new task use the `task`/`t` command with your task's description following right after.
 
 ```
-$ tb -t Improve documentation
+$ tb t "Improve documentation"
 ```
 
 ### Create Note
 
-To create a new note use the `--note`/`-n` option with your note's body following right after.
+To create a new note use the `note`/`n` command with your note's body following right after.
 
 ```
-$ tb -n Mergesort worse-case O(nlogn)
+$ tb n "Mergesort worse-case O(nlogn)"
 ```
 
 ### Create Board
 
-Boards are automatically initialized when creating a new task or note. To create one or more boards, include their names, prefixed by the `@` symbol, in the description of the about-to-be created item. As a result the newly created item will belong to all of the given boards. By default, items that do not contain any board names in their description are automatically added to the general purpose; `My Board`.
+Boards are automatically initialized when creating a new task or note. To create one or more boards, use the `--board`/`-b` option, followed by a list of boardnames, after the description of the about-to-be created item. As a result the newly created item will belong to all of the given boards. By default, items that do not contain any board option are automatically added to the general purpose; `My Board`.
 
 ```
-$ tb -t @coding @docs Update contributing guidelines
+$ tb t "Update contributing guidelines" -b coding,docs
 ```
 
 ### Check Task
 
-To mark a task as complete/incomplete, use the `--check`/`-c` option followed by the ids of the target tasks. Note that the option will update to its opposite the `complete` status of the given tasks, thus checking a complete task will render it as pending and a pending task as complete. Duplicate ids are automatically filtered out.
+To mark a task as complete/incomplete, use the `check`/`c` command followed by the ids of the target tasks. Note that the option will update to its opposite the `complete` status of the given tasks, thus checking a complete task will render it as pending and a pending task as complete. Duplicate ids are automatically filtered out.
 
 ```
-$ tb -c 1 3
+$ tb c 1,3
 ```
 
 ### Begin Task
 
-To mark a task as started/paused, use the `--begin`/`-b` option followed by the ids of the target tasks. The functionality of this option is the same as the one of the above described `--check` option.
+To mark a task as started/paused, use the `begin`/`b` command followed by the ids of the target tasks. The functionality of this option is the same as the one of the above described `check` command.
 
 ```
-$ tb -b 2 3
+$ tb b 2,3
 ```
 
 ### Star Item
 
-To mark one or more items as favorite, use the `--star`/`-s` option followed by the ids of the target items. The functionality of this option is the same as the one of the above described `--check` option.
+To mark one or more items as favorite, use the `star`/`s` command followed by the ids of the target items. The functionality of this option is the same as the one of the above described `check` command.
 
 ```
-$ tb -s 1 2 3
+$ tb s 1,2,3
 ```
 
 ### Copy Item Description
 
-To copy to your system's clipboard the description of one or more items, use the `--copy`/`-y` option followed by the ids of the target items. Note that the option will also include the newline character as a separator to each pair of adjacent copied descriptions, thus resulting in a clear and readable stack of sentences on paste.
+To copy to your system's clipboard the description of one or more items, use the `copy`/`y` option followed by the ids of the target items. Note that the option will also include the newline character as a separator to each pair of adjacent copied descriptions, thus resulting in a clear and readable stack of sentences on paste.
 
 ```
-$ tb -y 1 2 3
+$ tb y 1,2,3
 ```
 
 ### Display Boards
 
-Invoking taskbook without any options will display all of saved items grouped into their respective boards.
+Invoking taskbook without any commands and options will display all of saved items grouped into their respective boards.
 
 ```
 $ tb
@@ -260,76 +264,76 @@ $ tb
 
 ### Display Timeline
 
-In order to display all items in a timeline view, based on their creation date, the `--timeline`/`-i` option can be used.
+In order to display all items in a timeline view, based on their creation date, the `timeline`/`i` command can be used.
 
 ```
-$ tb -i
+$ tb i
 ```
 
 ### Set Priority
 
-To set a priority level for a task while initializing it, include the `p:x` syntax in the task's description, where x can be an integer of value `1`, `2` or `3`. Note that all tasks by default are created with a normal priority - `1`.
+To set a priority level for a task while initializing it, use the `-p` option followed by the priority. Priority can be an integer of value `1`, `2` or `3`. Note that all tasks by default are created with a normal priority - `1`.
 
 - `1` - Normal priority
 - `2` - Medium priority
 - `3` - High priority
 
 ```
-$ tb -t @coding Fix issue `#42` p:3
+$ tb t "Fix issue `#42`" -b coding -p 3
 ```
 
-To update the priority level of a specific task after its creation, use the `--priority`/`-p` option along with the id the target task, prefixed by the `@` symbol, and an integer of value `1`, `2` or `3`. Note that the order in which the target id and priority level are placed is not significant.
+To update the priority level of a specific task after its creation, use the `priority`/`p` command along with the ids of the target tasks and an integer of value `1`, `2` or `3`.
 
 ```
-$ tb -p @1 2
+$ tb p 1,2,23 2
 ```
 
 ### Move Item
 
-To move an item to one or more boards, use the `--move`/`-m` option, followed by the target item id, prefixed by the `@` symbol, and the name of the destination boards. The default `My board` can be accessed through the `myboard` keyword. The order in which the target id and board names are placed is not significant.
+To move items to one or more boards, use the `move`/`m` command, followed by the target items ids and the name of the destination boards. The default `My board` can be accessed through the `myboard` keyword.
 
 ```
-$ tb -m @1 myboard reviews
+$ tb m 1,2 myboard,reviews
 ```
 
 ### Delete Item
 
-To delete one or more items, use the `--delete`/`-d` options followed by the ids of the target items. Note that deleted items are automatically archived, and can be inspected or restored at any moment. Duplicate ids are automatically filtered out.
+To delete one or more items, use the `delete`/`d` command followed by the ids of the target items. Note that deleted items are automatically archived, and can be inspected or restored at any moment. Duplicate ids are automatically filtered out.
 
 ```
-$ tb -d 1 2
+$ tb d 1,2
 ```
 
 ### Delete Checked Tasks
 
-To delete/clear all complete tasks at once across all boards, use the `--clear` option. Note that all deleted tasks are automatically archived, and can be inspected or restored at any moment. In order to discourage any possible accidental usage, the `--clear` option has no available shorter alias.
+To delete/clear all complete tasks at once across all boards, use the `clear` command. Note that all deleted tasks are automatically archived, and can be inspected or restored at any moment. In order to discourage any possible accidental usage, the `clear` command has no available shorter alias.
 
 ```
-$ tb --clear
+$ tb clear
 ```
 
 ### Display Archive
 
-To display all archived items, use the `--archive`/`-a` option. Note that all archived items are displayed in timeline view, based on their creation date.
+To display all archived items, use the `archive`/`a` command. Note that all archived items are displayed in timeline view, based on their creation date.
 
 ```
-$ tb -a
+$ tb a
 ```
 
 ### Restore Items
 
-To restore one or more items, use the `--restore`/`-r` option followed by the ids of the target items. Note that the ids of all archived items can be seen when invoking the `--archive`/`-a` option. Duplicate ids are automatically filtered out.
+To restore one or more items, use the `restore`/`r` command followed by the id of the target items. Note that the ids of all archived items can be seen when invoking the `archive`/`a` option. Duplicate ids are automatically filtered out.
 
 ```
-$ tb -r 1 2
+$ tb r 1,2
 ```
 
 ### List Items
 
-To list a group of items where each item complies with a specific set of attributes, use the `--list`/`-l` option followed by the desired attributes. Board names along with item traits can be considered valid listing attributes. For example to list all items that belong to the default `myboard` and are pending tasks, the following could be used;
+To list a group of items where each item complies with a specific set of attributes, use the `list`/`l` command followed by the desired attributes. Board names along with item traits can be considered valid listing attributes. For example to list all items that belong to the default `myboard` and are pending tasks, the following could be used;
 
 ```
-$ tb -l myboard pending
+$ tb l myboard,pending
 ```
 
 The by default supported listing attributes, together with their respective aliases, are the following;
@@ -344,15 +348,15 @@ The by default supported listing attributes, together with their respective alia
 
 ### Search Items
 
-To search for one of more items, use the `--find`/`-f` option, followed by your search terms.
+To search for one of more items, use the `find`/`f` command, followed by your search terms.
 
 ```
-$ tb -f documentation
+$ tb f documentation
 ```
 
 ## Development
 
-For more info on how to contribute to the project, please read the [contributing guidelines](https://github.com/klaussinani/taskbook/blob/master/contributing.md).
+For more info on how to contribute to the project, please read the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md).
 
 - Fork the repository and clone it to your machine
 - Navigate to your local fork: `cd taskbook`
@@ -362,14 +366,11 @@ For more info on how to contribute to the project, please read the [contributing
 ## Related
 
 - [signale](https://github.com/klaussinani/signale) - Highly configurable logging utility
-- [qoa](https://github.com/klaussinani/qoa) - Minimal interactive command-line prompts
-- [hyperocean](https://github.com/klaussinani/hyperocean) - Deep oceanic blue Hyper terminal theme
 
 ## Team
 
-- Klaus Sinani [(@klaussinani)](https://github.com/klaussinani)
-- Mario Sinani [(@mariosinani)](https://github.com/mariosinani)
+- Thomas Pöhlmann [(@perryrh0dan)](https://github.com/perryrh0dan)
 
 ## License
 
-[MIT](https://github.com/klaussinani/taskbook/blob/master/license.md)
+[MIT](https://github.com/perryrh0dan/taskline/blob/master/license.md)

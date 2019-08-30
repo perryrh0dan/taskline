@@ -16,7 +16,7 @@ class Taskbook {
     } = config.get();
     if (storageModule === 'firestore') {
       this._storage = new FirebaseStorage();
-    } else {
+    } else if (storageModule === 'local') {
       this._storage = new LocalStorage();
     }
   }
@@ -426,6 +426,8 @@ class Taskbook {
 
   async copyToClipboard(ids) {
     render.startLoading()
+    ids = this._splitOption(ids)
+
     const data = await this._getData();
 
     ids = await this._validateIDs(ids);
