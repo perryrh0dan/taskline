@@ -1,5 +1,5 @@
 <h1 align="center">
-  Taskbook
+  Taskline
 </h1>
 
 <h4 align="center">
@@ -18,7 +18,7 @@
 
 ## Description
 
-By utilizing a simple and minimal usage syntax, that requires a flat learning curve, taskbook enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
+By utilizing a simple and minimal usage syntax, that requires a flat learning curve, taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
 
 ## Highlights
 
@@ -47,7 +47,7 @@ By utilizing a simple and minimal usage syntax, that requires a flat learning cu
 - Set duedate for tasks
 - Display loadingspinner while fetching network requests
 
-View highlights in a [taskbook board](https://raw.githubusercontent.com/perryrh0dan/taskbook/master/media/highlights.png).
+View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
 ## Contents
 
@@ -68,13 +68,13 @@ View highlights in a [taskbook board](https://raw.githubusercontent.com/perryrh0
 ### Yarn
 
 ```bash
-yarn global add taskbook
+yarn global add taskline
 ```
 
 ### NPM
 
 ```bash
-npm install --global taskbook
+npm install --global taskline
 ```
 
 ## Usage
@@ -112,7 +112,7 @@ Commands:
 
 ### Board View
 
-Invoking taskbook without any options will display all saved items grouped into their respective boards.
+Invoking taskline without any options will display all saved items grouped into their respective boards.
 
 <div align="center">
   <img alt="Boards" width="60%" src="media/header-boards.png"/>
@@ -128,7 +128,7 @@ In order to display all items in a timeline view, based on their creation date, 
 
 ## Configuration
 
-To configure taskbook navigate to the `~/.taskbook.json` file and modify any of the options to match your own preference. To reset back to the default values, simply delete the config file from your home directory.
+To configure taskline navigate to the `~/.taskbook.json` file and modify any of the options to match your own preference. To reset back to the default values, simply delete the config file from your home directory.
 
 The following illustrates all the available options with their respective default values.
 
@@ -163,7 +163,7 @@ The following illustrates all the available options with their respective defaul
 
 Filesystem path where the storage will be initialized, i.e: `/home/username/the-cloud` or `~/the-cloud`
 
-If left undefined the home directory `~` will be used and taskbook will be set-up under `~/.taskbook/`.
+If left undefined the home directory `~` will be used and taskline will be set-up under `~/.taskbook/`.
 
 ##### `displayCompleteTasks`
 
@@ -203,7 +203,7 @@ Dateformat used for duedate.
 
 ## Flight Manual
 
-The following is a minor walkthrough containing a set of examples on how to use taskbook.
+The following is a minor walkthrough containing a set of examples on how to use taskline.
 In case you spotted an error or think that an example is not to clear enough and should be further improved, please feel free to open an [issue](https://github.com/perryrh0dan/taskline/issues/new/choose) or [pull request](https://github.com/perryrh0dan/taskline/compare).
 
 ### Setup Firestore
@@ -268,7 +268,7 @@ $ tb y 1,2,3
 
 ### Display Boards
 
-Invoking taskbook without any commands and options will display all of saved items grouped into their respective boards.
+Invoking taskline without any commands and options will display all of saved items grouped into their respective boards.
 
 ```
 $ tb
@@ -371,7 +371,7 @@ $ tb f documentation
 For more info on how to contribute to the project, please read the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md).
 
 - Fork the repository and clone it to your machine
-- Navigate to your local fork: `cd taskbook`
+- Navigate to your local fork: `cd taskline`
 - Install the project dependencies: `npm install` or `yarn install`
 - Lint the code for errors: `npm test` or `yarn test`
 
