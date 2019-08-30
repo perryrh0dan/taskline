@@ -9,7 +9,7 @@ const {default: defaultConfig} = pkg.configuration;
 
 class Config {
   constructor() {
-    this._configFile = join(os.homedir(), '.taskbook.json');
+    this._configFile = join(os.homedir(), '.taskline.json');
 
     this._ensureConfigFile();
   }
@@ -23,7 +23,7 @@ class Config {
     fs.writeFileSync(this._configFile, data, 'utf8');
   }
 
-  _formatTaskbookDir(path) {
+  _formatTasklineDir(path) {
     return join(os.homedir(), path.replace(/^~/g, ''));
   }
 
@@ -33,8 +33,8 @@ class Config {
     const content = fs.readFileSync(this._configFile, 'utf8');
     config = JSON.parse(content);
 
-    if (config.taskbookDirectory.startsWith('~')) {
-      config.taskbookDirectory = this._formatTaskbookDir(config.taskbookDirectory);
+    if (config.tasklineDirectory.startsWith('~')) {
+      config.tasklineDirectory = this._formatTasklineDir(config.tasklineDirectory);
     }
 
     return Object.assign({}, defaultConfig, config);

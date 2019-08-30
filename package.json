@@ -1,7 +1,7 @@
 {
-  "name": "taskprompt",
-  "productName": "TaskPrompt",
-  "version": "0.5.8",
+  "name": "@perryrh0dan/taskline",
+  "productName": "Taskline",
+  "version": "0.5.10",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
@@ -11,14 +11,14 @@
     "url": "https://github.com/perryrh0dan"
   },
   "bin": {
-    "tb": "tb.js"
+    "tl": "tl.js"
   },
   "engines": {
     "node": ">=6"
   },
   "files": [
     "src",
-    "tb.js"
+    "cli.js"
   ],
   "keywords": [
     "task",
@@ -34,7 +34,7 @@
   ],
   "configuration": {
     "default": {
-      "taskbookDirectory": "~",
+      "tasklineDirectory": "~",
       "displayCompleteTasks": true,
       "displayProgressOverview": true,
       "storageModule": "local",

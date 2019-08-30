@@ -9,7 +9,7 @@ const render = require('./render');
 const FirebaseStorage = require('./firebase');
 const config = require('./config');
 
-class Taskbook {
+class Taskline {
   constructor() {
     const {
       storageModule
@@ -752,4 +752,4 @@ class Taskbook {
   }
 }
 
-module.exports = new Taskbook();
+module.exports = new Taskline();

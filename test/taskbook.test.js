@@ -1,9 +1,9 @@
 const {
-  taskbook
-} = require('../src/taskbook');
+  taskline
+} = require('../src/taskline');
 
 
 test('Should convert input to an array', () => {
-  const text = taskbook._arrayify('Book');
+  const text = taskline._arrayify('Book');
   expect(text).toBe(['Book']);
 });

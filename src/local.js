@@ -28,20 +28,20 @@ class LocalStorage extends Storage {
 
   get _mainAppDir() {
     const {
-      taskbookDirectory
+      tasklineDirectory
     } = config.get();
-    const defaultAppDirectory = join(os.homedir(), '.taskbook');
+    const defaultAppDirectory = join(os.homedir(), '.taskline');
 
-    if (!taskbookDirectory) {
+    if (!tasklineDirectory) {
       return defaultAppDirectory;
     }
 
-    if (!fs.existsSync(taskbookDirectory)) {
-      render.invalidCustomAppDir(taskbookDirectory);
+    if (!fs.existsSync(tasklineDirectory)) {
+      render.invalidCustomAppDir(tasklineDirectory);
       process.exit(1);
     }
 
-    return join(taskbookDirectory, '.taskbook');
+    return join(tasklineDirectory, '.taskline');
   }
 
   _ensureMainAppDir() {

@@ -1,5 +1,5 @@
 <h1 align="center">
-  TaskPrompt
+  Taskline
 </h1>
 
 <h4 align="center">
@@ -18,7 +18,7 @@
 
 ## Description
 
-By utilizing a simple and minimal usage syntax, that requires a flat learning curve, TaskPrompt enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
+By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions, and are never shared with anyone or anything. Deleted items are automatically archived and can be inspected or restored at any moment.
 
 ## Highlights
 
@@ -35,8 +35,8 @@ By utilizing a simple and minimal usage syntax, that requires a flat learning cu
 - Progress overview
 - Simple & minimal usage syntax
 - Update notifications
-- Configurable through `~/.taskbook.json`
-- Data stored in JSON file at `~/.taskbook/storage`
+- Configurable through `~/.taskline.json`
+- Data stored in JSON file at `~/.taskline/storage`
 
 ### New
 
@@ -68,20 +68,20 @@ View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0
 ### Yarn
 
 ```bash
-yarn global add taskprompt
+yarn global add @perryrh0dan/taskline
 ```
 
 ### NPM
 
 ```bash
-npm install --global taskprompt
+npm install --global @perryrh0dan/taskline
 ```
 
 ## Usage
 
 ```
-$ tb --help
-Usage: tb [options] [command]
+$ tl --help
+Usage: tl [options] [command]
 
 Tasks, boards & notes for the command-line habitat
 
@@ -128,13 +128,13 @@ In order to display all items in a timeline view, based on their creation date, 
 
 ## Configuration
 
-To configure taskline navigate to the `~/.taskbook.json` file and modify any of the options to match your own preference. To reset back to the default values, simply delete the config file from your home directory.
+To configure taskline navigate to the `~/.taskline.json` file and modify any of the options to match your own preference. To reset back to the default values, simply delete the config file from your home directory.
 
 The following illustrates all the available options with their respective default values.
 
 ```json
 {
-  "taskbookDirectory": "~",
+  "tasklineDirectory": "~",
   "displayCompleteTasks": true,
   "displayProgressOverview": true,
   "storageModule": "local",
@@ -156,14 +156,14 @@ The following illustrates all the available options with their respective defaul
 
 ### In Detail
 
-##### `taskbookDirectory`
+##### `tasklineDirectory`
 
 - Type: `String`
 - Default: `~`
 
 Filesystem path where the storage will be initialized, i.e: `/home/username/the-cloud` or `~/the-cloud`
 
-If left undefined the home directory `~` will be used and taskline will be set-up under `~/.taskbook/`.
+If left undefined the home directory `~` will be used and taskline will be set-up under `~/.taskline/`.
 
 ##### `displayCompleteTasks`
 
@@ -215,7 +215,7 @@ https://cloud.google.com/docs/authentication/production#providing_credentials_to
 To create a new task use the `task`/`t` command with your task's description following right after.
 
 ```
-$ tb t "Improve documentation"
+$ tl t "Improve documentation"
 ```
 
 ### Create Note
@@ -223,7 +223,7 @@ $ tb t "Improve documentation"
 To create a new note use the `note`/`n` command with your note's body following right after.
 
 ```
-$ tb n "Mergesort worse-case O(nlogn)"
+$ tl n "Mergesort worse-case O(nlogn)"
 ```
 
 ### Create Board
@@ -231,7 +231,7 @@ $ tb n "Mergesort worse-case O(nlogn)"
 Boards are automatically initialized when creating a new task or note. To create one or more boards, use the `--board`/`-b` option, followed by a list of boardnames, after the description of the about-to-be created item. As a result the newly created item will belong to all of the given boards. By default, items that do not contain any board option are automatically added to the general purpose; `My Board`.
 
 ```
-$ tb t "Update contributing guidelines" -b coding,docs
+$ tl t "Update contributing guidelines" -b coding,docs
 ```
 
 ### Check Task
@@ -239,7 +239,7 @@ $ tb t "Update contributing guidelines" -b coding,docs
 To mark a task as complete/incomplete, use the `check`/`c` command followed by the ids of the target tasks. Note that the option will update to its opposite the `complete` status of the given tasks, thus checking a complete task will render it as pending and a pending task as complete. Duplicate ids are automatically filtered out.
 
 ```
-$ tb c 1,3
+$ tl c 1,3
 ```
 
 ### Begin Task
@@ -247,7 +247,7 @@ $ tb c 1,3
 To mark a task as started/paused, use the `begin`/`b` command followed by the ids of the target tasks. The functionality of this option is the same as the one of the above described `check` command.
 
 ```
-$ tb b 2,3
+$ tl b 2,3
 ```
 
 ### Star Item
@@ -255,7 +255,7 @@ $ tb b 2,3
 To mark one or more items as favorite, use the `star`/`s` command followed by the ids of the target items. The functionality of this option is the same as the one of the above described `check` command.
 
 ```
-$ tb s 1,2,3
+$ tl s 1,2,3
 ```
 
 ### Copy Item Description
@@ -263,7 +263,7 @@ $ tb s 1,2,3
 To copy to your system's clipboard the description of one or more items, use the `copy`/`y` option followed by the ids of the target items. Note that the option will also include the newline character as a separator to each pair of adjacent copied descriptions, thus resulting in a clear and readable stack of sentences on paste.
 
 ```
-$ tb y 1,2,3
+$ tl y 1,2,3
 ```
 
 ### Display Boards
@@ -271,7 +271,7 @@ $ tb y 1,2,3
 Invoking taskline without any commands and options will display all of saved items grouped into their respective boards.
 
 ```
-$ tb
+$ tl
 ```
 
 ### Display Timeline
@@ -279,7 +279,7 @@ $ tb
 In order to display all items in a timeline view, based on their creation date, the `timeline`/`i` command can be used.
 
 ```
-$ tb i
+$ tl i
 ```
 
 ### Set Priority
@@ -291,13 +291,13 @@ To set a priority level for a task while initializing it, use the `-p` option fo
 - `3` - High priority
 
 ```
-$ tb t "Fix issue `#42`" -b coding -p 3
+$ tl t "Fix issue `#42`" -b coding -p 3
 ```
 
 To update the priority level of a specific task after its creation, use the `priority`/`p` command along with the ids of the target tasks and an integer of value `1`, `2` or `3`.
 
 ```
-$ tb p 1,2,23 2
+$ tl p 1,2,23 2
 ```
 
 ### Move Item
@@ -305,7 +305,7 @@ $ tb p 1,2,23 2
 To move items to one or more boards, use the `move`/`m` command, followed by the target items ids and the name of the destination boards. The default `My board` can be accessed through the `myboard` keyword.
 
 ```
-$ tb m 1,2 myboard,reviews
+$ tl m 1,2 myboard,reviews
 ```
 
 ### Delete Item
@@ -313,7 +313,7 @@ $ tb m 1,2 myboard,reviews
 To delete one or more items, use the `delete`/`d` command followed by the ids of the target items. Note that deleted items are automatically archived, and can be inspected or restored at any moment. Duplicate ids are automatically filtered out.
 
 ```
-$ tb d 1,2
+$ tl d 1,2
 ```
 
 ### Delete Checked Tasks
@@ -321,7 +321,7 @@ $ tb d 1,2
 To delete/clear all complete tasks at once across all boards, use the `clear` command. Note that all deleted tasks are automatically archived, and can be inspected or restored at any moment. In order to discourage any possible accidental usage, the `clear` command has no available shorter alias.
 
 ```
-$ tb clear
+$ tl clear
 ```
 
 ### Display Archive
@@ -329,7 +329,7 @@ $ tb clear
 To display all archived items, use the `archive`/`a` command. Note that all archived items are displayed in timeline view, based on their creation date.
 
 ```
-$ tb a
+$ tl a
 ```
 
 ### Restore Items
@@ -337,7 +337,7 @@ $ tb a
 To restore one or more items, use the `restore`/`r` command followed by the id of the target items. Note that the ids of all archived items can be seen when invoking the `archive`/`a` option. Duplicate ids are automatically filtered out.
 
 ```
-$ tb r 1,2
+$ tl r 1,2
 ```
 
 ### List Items
@@ -345,7 +345,7 @@ $ tb r 1,2
 To list a group of items where each item complies with a specific set of attributes, use the `list`/`l` command followed by the desired attributes. Board names along with item traits can be considered valid listing attributes. For example to list all items that belong to the default `myboard` and are pending tasks, the following could be used;
 
 ```
-$ tb l myboard,pending
+$ tl l myboard,pending
 ```
 
 The by default supported listing attributes, together with their respective aliases, are the following;
@@ -363,7 +363,7 @@ The by default supported listing attributes, together with their respective alia
 To search for one of more items, use the `find`/`f` command, followed by your search terms.
 
 ```
-$ tb f documentation
+$ tl f documentation
 ```
 
 ## Development

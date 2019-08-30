@@ -4,17 +4,22 @@
 const program = require('commander');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
-const taskbook = require('./src/taskbook');
+const taskline = require('./src/taskline');
 
 program.version(pkg.version);
 program.description(pkg.description);
+
+program
+  .name("tl")
+  .usage("[command] [options]")
+
 
 program
   .command('archive')
   .alias('a')
   .description('Display archived items')
   .action(() => {
-    taskbook.displayArchive();
+    taskline.displayArchive();
   });
 
 program
@@ -22,7 +27,7 @@ program
   .alias('b')
   .description('Start/pause task')
   .action(ids => {
-    taskbook.beginTasks(ids);
+    taskline.beginTasks(ids);
   });
 
 program
@@ -30,14 +35,14 @@ program
   .alias('c')
   .description('Check/uncheck task')
   .action(ids => {
-    taskbook.checkTasks(ids);
+    taskline.checkTasks(ids);
   });
 
 program
   .command('clear')
   .description('Delete all checked items')
   .action(() => {
-    taskbook.clear();
+    taskline.clear();
   });
 
 program
@@ -45,7 +50,7 @@ program
   .alias('y')
   .description('Copy description to clipboard')
   .action(ids => {
-    taskbook.copyToClipboard(ids);
+    taskline.copyToClipboard(ids);
   });
 
 program
@@ -53,14 +58,14 @@ program
   .alias('d')
   .description('Delete item')
   .action(ids => {
-    taskbook.deleteItems(ids);
+    taskline.deleteItems(ids);
   });
 
 program
   .command('due <ids> <dueDate>')
   .description('Update duedateof task')
   .action((ids, dueDate) => {
-    taskbook.updateDueDate(ids, dueDate)
+    taskline.updateDueDate(ids, dueDate)
   })
 
 program
@@ -68,7 +73,7 @@ program
   .alias('e')
   .description('Edit item description')
   .action((id, description) => {
-    taskbook.editDescription(id, description);
+    taskline.editDescription(id, description);
   });
 
 program
@@ -76,7 +81,7 @@ program
   .alias('f')
   .description('Search for items')
   .action(query => {
-    taskbook.findItems(query);
+    taskline.findItems(query);
   });
 
 program
@@ -84,8 +89,8 @@ program
   .alias('l')
   .description('List items by attributes')
   .action(terms => {
-    taskbook.listByAttributes(terms).then(grouped => {
-      taskbook.displayStats(grouped);
+    taskline.listByAttributes(terms).then(grouped => {
+      taskline.displayStats(grouped);
     });
   });
 
@@ -94,7 +99,7 @@ program
   .alias('m')
   .description('Move item between boards')
   .action((ids, boards) => {
-    taskbook.moveBoards(ids, boards);
+    taskline.moveBoards(ids, boards);
   });
 
 program
@@ -103,7 +108,7 @@ program
   .description('Create note')
   .option('-b, --board <board>', 'Board')
   .action((description, opts) => {
-    taskbook.createNote(description, opts.board);
+    taskline.createNote(description, opts.board);
   });
 
 program
@@ -111,7 +116,7 @@ program
   .alias('p')
   .description('Update priority of task')
   .action((id, priority) => {
-    taskbook.updatePriority(id, priority);
+    taskline.updatePriority(id, priority);
   });
 
 program
@@ -119,7 +124,7 @@ program
   .alias('r')
   .description('Restore items from archive')
   .action(ids => {
-    taskbook.restoreItems(ids);
+    taskline.restoreItems(ids);
   });
 
 program
@@ -127,7 +132,7 @@ program
   .alias('s')
   .description('Star/unstar item')
   .action(ids => {
-    taskbook.starItems(ids);
+    taskline.starItems(ids);
   });
 
 program
@@ -140,7 +145,7 @@ program
 
   // Function to execute when command is uses
   .action((description, opts) => {
-    taskbook.createTask(description, opts.board, opts.priority, opts.due);
+    taskline.createTask(description, opts.board, opts.priority, opts.due);
   });
 
 program
@@ -148,14 +153,14 @@ program
   .alias('i')
   .description('Display timeline view')
   .action(() => {
-    taskbook.displayByDate().then(grouped => {
-      taskbook.displayStats(grouped)
+    taskline.displayByDate().then(grouped => {
+      taskline.displayStats(grouped)
     })
   });
 
 if (process.argv.length === 2) {
-  taskbook.displayByBoard().then(grouped => {
-    return taskbook.displayStats(grouped);
+  taskline.displayByBoard().then(grouped => {
+    return taskline.displayStats(grouped);
   });
 }
 

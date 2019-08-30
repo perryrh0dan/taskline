@@ -1,10 +1,10 @@
-name: taskbook
+name: taskline
 version: '0.0.0'
 version-script: git describe --always | cut -c 2-
 summary: Tasks, boards & notes for the command-line habitat
 description: |
   By utilizing a simple and minimal usage syntax, that requires a flat learning curve,
-  taskbook enables you to effectively manage your tasks and notes across multiple boards
+  taskline enables you to effectively manage your tasks and notes across multiple boards
   from within your terminal.
 
 grade: stable
@@ -15,7 +15,7 @@ architectures:
   - i386
 
 apps:
-  taskbook:
+  taskline:
     command: tb
     plugs:
       - home
@@ -24,7 +24,7 @@ apps:
       - x11
 
 parts:
-  taskbook:
+  taskline:
     plugin: nodejs
     node-engine: 10.15.0
     node-package-manager: yarn
