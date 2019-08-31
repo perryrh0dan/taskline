@@ -263,6 +263,16 @@ class Taskline {
     return data;
   }
 
+  _filterPriority(data, priority) {
+    const prio = priority === "default" ? 1 : (priority === "medium" ? 2 : 3);
+    Object.keys(data).forEach(id => {
+      if (data[id].priority !== prio) {
+        delete data[id];
+      }
+    })
+    return data;
+  }
+
   async _filterByAttributes(attr) {
     let data = await this._getData();
 
@@ -304,6 +314,12 @@ class Taskline {
         case 'note':
         case 'notes':
           data = this._filterNote(data);
+          break;
+
+        case 'default':
+        case 'medium':
+        case 'high':
+          data = this._filterPriority(data, x);
           break;
 
         default:

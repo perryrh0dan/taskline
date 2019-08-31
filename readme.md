@@ -17,15 +17,18 @@
   <a href="https://gitter.im/taskline/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
     <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg"/>
   </a>
+  <a href="https://www.npmjs.com/package/@perryrh0dan/taskline">
+    <img alt="Weekly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline">
+  </a>
 </div>
 
 ## Description
 
 By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules. Local storage where your task and are never shared with anyone or anything, or the firestore module, where your tasks are saved in your firestore database and can be shared across all your devices. Deleted items are automatically archived and can be inspected or restored at any moment.
 
-Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages
+Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
 
-Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) to share your thoughts on the project
+Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) to share your thoughts on the project.
 
 ## Highlights
 
@@ -53,6 +56,7 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) to sh
 * Replaced Meow with commander.js
 * Duedate mechanism
 * Display loadingspinner while fetching network requests
+* New list filter attributes 
 
 View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
@@ -391,6 +395,7 @@ The by default supported listing attributes, together with their respective alia
 * `progress` , `started` , `begun` - Items that are in-progress tasks.
 * `done` , `checked` , `complete` - Items that complete tasks.
 * `star` , `starred` - Items that are starred.
+* `default` , `medium` , `high` - Task that have the given priority.
 
 ### Search Items
 
