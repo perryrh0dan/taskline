@@ -264,12 +264,12 @@ class Taskline {
   }
 
   _filterPriority(data, priority) {
-    const prio = priority === "default" ? 1 : (priority === "medium" ? 2 : 3);
+    const prio = priority === 'default' ? 1 : (priority === 'medium' ? 2 : 3);
     Object.keys(data).forEach(id => {
       if (data[id].priority !== prio) {
         delete data[id];
       }
-    })
+    });
     return data;
   }
 
