@@ -25,7 +25,7 @@ class FirestoreStorage extends Storage {
     const result = [];
 
     for (const key in data) {
-      if (!data.hasOwnProperty(key)) {
+      if (!Object.prototype.hasOwnProperty.call(data, key)) {
         continue;
       }
 

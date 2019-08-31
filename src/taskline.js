@@ -377,7 +377,7 @@ class Taskline {
     const archive = await this._getArchive();
 
     for (const id of ids) {
-      const archiveID = await this._generateID(archive);
+      const archiveID = await this._generateID(archive); // eslint-disable-line no-await-in-loop
       const item = data[id];
       item._id = archiveID;
       archive[archiveID] = item;
@@ -391,7 +391,7 @@ class Taskline {
     const data = await this._getData();
 
     for (const id of ids) {
-      const restoreID = await this._generateID(data);
+      const restoreID = await this._generateID(data); // eslint-disable-line no-await-in-loop
       const item = archive[id];
       item._id = restoreID;
       data[restoreID] = item;

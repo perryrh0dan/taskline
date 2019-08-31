@@ -8,7 +8,7 @@ before_install:
   - npm --version
 jobs:
   include:
-    - stage: eslint
-      script: npm run test-eslint
+    - stage: lint
+      script: npm run test-lint
     - stage: jshint
       script: npm run test-jshint
