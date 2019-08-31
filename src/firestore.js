@@ -8,10 +8,6 @@ const Storage = require('./storage');
 const config = require('./config');
 
 class FirestoreStorage extends Storage {
-  constructor() {
-    super();
-  }
-
   init() {
     const {
       firestoreConfig
@@ -113,7 +109,7 @@ class FirestoreStorage extends Storage {
   async set(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection('storage', pureData).catch(error => {
+    await this._updateCollection('storage', pureData).catch(() => {
       render.invalidFirestoreConfig();
       process.exit(1);
     });
@@ -122,7 +118,7 @@ class FirestoreStorage extends Storage {
   async setArchive(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection('archive', pureData).catch(error => {
+    await this._updateCollection('archive', pureData).catch(() => {
       render.invalidFirestoreConfig();
       process.exit(1);
     });
@@ -130,7 +126,7 @@ class FirestoreStorage extends Storage {
 
   async get() {
     if (!this.data) {
-      this.data = await this._getCollection('storage').catch(error => {
+      this.data = await this._getCollection('storage').catch(() => {
         render.invalidFirestoreConfig();
         process.exit(1);
       });
@@ -141,7 +137,7 @@ class FirestoreStorage extends Storage {
 
   async getArchive() {
     if (!this.archive) {
-      this.archive = await this._getCollection('archive').catch(error => {
+      this.archive = await this._getCollection('archive').catch(() => {
         render.invalidFirestoreConfig();
         process.exit(1);
       });

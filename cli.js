@@ -10,9 +10,8 @@ program.version(pkg.version);
 program.description(pkg.description);
 
 program
-  .name("tl")
-  .usage("[command] [options]")
-
+  .name('tl')
+  .usage('[command] [options]');
 
 program
   .command('archive')
@@ -65,8 +64,8 @@ program
   .command('due <ids> <dueDate>')
   .description('Update duedateof task')
   .action((ids, dueDate) => {
-    taskline.updateDueDate(ids, dueDate)
-  })
+    taskline.updateDueDate(ids, dueDate);
+  });
 
 program
   .command('edit <id> <description>')
@@ -154,8 +153,8 @@ program
   .description('Display timeline view')
   .action(() => {
     taskline.displayByDate().then(grouped => {
-      taskline.displayStats(grouped)
-    })
+      taskline.displayStats(grouped);
+    });
   });
 
 if (process.argv.length === 2) {

@@ -1,7 +1,7 @@
 'use strict';
 const chalk = require('chalk');
 const signale = require('signale');
-const ora = require('ora')
+const ora = require('ora');
 const config = require('./config');
 
 signale.config({
@@ -223,14 +223,15 @@ class Render {
 
   startLoading() {
     if (!this.spinner) {
-      this.spinner = ora()
+      this.spinner = ora();
     }
-    this.spinner.start()
+
+    this.spinner.start();
   }
 
   stopLoading() {
     if (this.spinner) {
-      this.spinner.stop()
+      this.spinner.stop();
     }
   }
 
@@ -318,7 +319,7 @@ class Render {
   }
 
   invalidCustomAppDir(path) {
-    this.stopLoading()
+    this.stopLoading();
     const [prefix, suffix] = ['\n', red(path)];
     const message = 'Custom app directory was not found on your system:';
     error({
@@ -329,18 +330,18 @@ class Render {
   }
 
   invalidFirestoreConfig() {
-    this.stopLoading()
-    const [prefix, suffix] = ['\n', '']
+    this.stopLoading();
+    const [prefix, suffix] = ['\n', ''];
     const message = 'Firestore config contains error';
     error({
       prefix,
       message,
       suffix
-    })
+    });
   }
 
   invalidID(id) {
-    this.stopLoading()
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(id)];
     const message = 'Unable to find item with id:';
     error({
@@ -351,7 +352,7 @@ class Render {
   }
 
   invalidIDsNumber() {
-    this.stopLoading()
+    this.stopLoading();
     const prefix = '\n';
     const message = 'More than one ids were given as input';
     error({
@@ -386,7 +387,7 @@ class Render {
   }
 
   markIncomplete(ids) {
-    this.stopLoading()
+    this.stopLoading();
     if (ids.length === 0) {
       return;
     }
@@ -416,7 +417,7 @@ class Render {
   }
 
   markPaused(ids) {
-    this.stopLoading()
+    this.stopLoading();
     if (ids.length === 0) {
       return;
     }
@@ -446,7 +447,7 @@ class Render {
   }
 
   markUnstarred(ids) {
-    this.stopLoading()
+    this.stopLoading();
     if (ids.length === 0) {
       return;
     }
@@ -461,7 +462,7 @@ class Render {
   }
 
   missingBoards() {
-    this.stopLoading()
+    this.stopLoading();
     const prefix = '\n';
     const message = 'No boards were given as input';
     error({
@@ -471,7 +472,7 @@ class Render {
   }
 
   missingDesc() {
-    this.stopLoading()
+    this.stopLoading();
     const prefix = '\n';
     const message = 'No description was given as input';
     error({
@@ -481,7 +482,7 @@ class Render {
   }
 
   missingID() {
-    this.stopLoading()
+    this.stopLoading();
     const prefix = '\n';
     const message = 'No id was given as input';
     error({
@@ -494,7 +495,7 @@ class Render {
     _id,
     _isTask
   }) {
-    this.stopLoading()
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(_id)];
     const message = `Created ${_isTask ? 'task:' : 'note:'}`;
     success({

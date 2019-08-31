@@ -15,10 +15,6 @@ const {
 } = path;
 
 class LocalStorage extends Storage {
-  constructor() {
-    super();
-  }
-
   init() {
     this._storageDir = join(this._mainAppDir, 'storage');
     this._archiveDir = join(this._mainAppDir, 'archive');

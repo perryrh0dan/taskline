@@ -19,7 +19,8 @@ class Taskline {
     } else if (storageModule === 'local') {
       this._storage = new LocalStorage();
     }
-    this._storage.init()
+
+    this._storage.init();
   }
 
   _getData() {
@@ -180,12 +181,12 @@ class Taskline {
           return item.isComplete ?
             complete++ :
             item.inProgress ?
-            inProgress++ :
-            pending++;
+              inProgress++ :
+              pending++;
         }
 
         return notes++;
-      })
+      });
     });
 
     const total = complete + pending + inProgress;
@@ -375,7 +376,7 @@ class Taskline {
     const data = await this._getData();
     const archive = await this._getArchive();
 
-    for await (const id of ids) {
+    for (const id of ids) {
       const archiveID = await this._generateID(archive);
       const item = data[id];
       item._id = archiveID;
@@ -389,7 +390,7 @@ class Taskline {
     const archive = await this._getArchive();
     const data = await this._getData();
 
-    for await (const id of ids) {
+    for (const id of ids) {
       const restoreID = await this._generateID(data);
       const item = archive[id];
       item._id = restoreID;
@@ -409,7 +410,7 @@ class Taskline {
   }
 
   async createNote(description, boards = 'My Board') {
-    render.startLoading()
+    render.startLoading();
     const id = await this._generateID();
     const data = await this._getData();
 
@@ -426,8 +427,8 @@ class Taskline {
   }
 
   async copyToClipboard(ids) {
-    render.startLoading()
-    ids = this._splitOption(ids)
+    render.startLoading();
+    ids = this._splitOption(ids);
 
     const data = await this._getData();
 
@@ -441,7 +442,7 @@ class Taskline {
   }
 
   async checkTasks(ids) {
-    render.startLoading()
+    render.startLoading();
     const data = await this._getData();
 
     ids = this._splitOption(ids);
@@ -465,7 +466,7 @@ class Taskline {
   }
 
   async beginTasks(ids) {
-    render.startLoading()
+    render.startLoading();
     const data = await this._getData();
 
     ids = this._splitOption(ids);
@@ -489,20 +490,20 @@ class Taskline {
   }
 
   async createTask(description, boards = 'My Board', priority = 1, dueDate = null) {
-    render.startLoading()
+    render.startLoading();
     const id = await this._generateID();
     const data = await this._getData();
     const {
       dateformat
     } = config.get();
 
-    priority = Number(priority)
+    priority = Number(priority);
     boards = this._splitOption(boards);
 
     let dueTime;
     if (dueDate) {
-      dueDate = this._parseDate(dueDate, dateformat)
-      dueDate.setHours(23, 59, 59)
+      dueDate = this._parseDate(dueDate, dateformat);
+      dueDate.setHours(23, 59, 59);
       dueTime = dueDate.getTime();
     }
 
@@ -519,7 +520,7 @@ class Taskline {
   }
 
   async deleteItems(ids) {
-    render.startLoading()
+    render.startLoading();
     const data = await this._getData();
 
     ids = this._splitOption(ids);
@@ -536,7 +537,7 @@ class Taskline {
   }
 
   async displayArchive() {
-    render.startLoading()
+    render.startLoading();
     const archive = await this._getArchive();
     const dates = await this._getDates(archive);
 
@@ -546,14 +547,14 @@ class Taskline {
   }
 
   async displayByBoard() {
-    render.startLoading()
+    render.startLoading();
     const grouped = await this._groupByBoard();
     render.displayByBoard(grouped);
-    return grouped
+    return grouped;
   }
 
   async displayByDate() {
-    render.startLoading()
+    render.startLoading();
     const grouped = await this._groupByDate();
     render.displayByDate(grouped);
     return grouped;
@@ -565,7 +566,7 @@ class Taskline {
   }
 
   async editDescription(id, description) {
-    render.startLoading()
+    render.startLoading();
     if (description.length === 0) {
       render.missingDesc();
       process.exit(1);
@@ -581,8 +582,8 @@ class Taskline {
   }
 
   async findItems(terms) {
-    render.startLoading()
-    terms = this._splitOption(terms)
+    render.startLoading();
+    terms = this._splitOption(terms);
     const data = await this._getData();
     const result = {};
 
@@ -599,7 +600,7 @@ class Taskline {
   }
 
   async listByAttributes(terms) {
-    render.startLoading()
+    render.startLoading();
     terms = this._splitOption(terms);
     let [boards, attributes] = [
       [],
@@ -626,7 +627,7 @@ class Taskline {
   }
 
   async moveBoards(ids, boards) {
-    render.startLoading()
+    render.startLoading();
     ids = this._splitOption(ids);
     boards = this._splitOption(boards);
     ids = await this._validateIDs(ids);
@@ -648,7 +649,7 @@ class Taskline {
   }
 
   async restoreItems(ids) {
-    render.startLoading()
+    render.startLoading();
     const archive = await this._getArchive();
     const existingIDs = await this._getIDs(archive);
 
@@ -666,7 +667,7 @@ class Taskline {
   }
 
   async starItems(ids) {
-    render.startLoading()
+    render.startLoading();
     ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
@@ -688,52 +689,54 @@ class Taskline {
   }
 
   async updatePriority(ids, priority) {
-    render.startLoading()
+    render.startLoading();
     let level = (['1', '2', '3'].indexOf(priority) > -1) ? priority : null;
-    level = Number(level)
+    level = Number(level);
 
     if (!level) {
       render.invalidPriority();
       process.exit(1);
     }
 
-    ids = this._splitOption(ids)
+    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids);
 
     const data = await this._getData();
 
     ids.forEach(id => {
       data[id].priority = level;
-    })
+    });
 
     await this._save(data);
     render.successPriority(ids, level);
   }
 
   async updateDueDate(ids, dueDate) {
-    render.startLoading()
+    render.startLoading();
     const {
       dateformat
     } = config.get();
 
     ids = this._splitOption(ids);
-    ids = await this._validateIDs(ids)
+    ids = await this._validateIDs(ids);
 
     const data = await this._getData();
-    dueDate = this._parseDate(dueDate, dateformat)
-    dueDate.setHours(23, 59, 59)
+    dueDate = this._parseDate(dueDate, dateformat);
+    dueDate.setHours(23, 59, 59);
     const dueTime = dueDate.getTime();
 
     ids.forEach(id => {
-      if (data[id]._isTask) data[id].dueDate = dueTime;
-    })
+      if (data[id]._isTask) {
+        data[id].dueDate = dueTime;
+      }
+    });
 
     await this._save(data);
-    render.successDueDate(ids, dueDate)
+    render.successDueDate(ids, dueDate);
   }
 
   async clear() {
-    render.startLoading()
+    render.startLoading();
     const data = await this._getData();
 
     const ids = [];
@@ -745,7 +748,7 @@ class Taskline {
     });
 
     if (ids.length === 0) {
-      render.stopLoading()
+      render.stopLoading();
       return;
     }
 
