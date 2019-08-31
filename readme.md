@@ -11,6 +11,9 @@
 </div>
 
 <div align="center">
+  <a href="https://travis-ci.org/perryrh0dan/taskline">
+    <img alt="Build Status" src="https://travis-ci.org/perryrh0dan/taskline.svg?branch=master">
+  </a>
   <a href="https://gitter.im/taskline/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
     <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg"/>
   </a>

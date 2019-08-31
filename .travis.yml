@@ -9,6 +9,6 @@ before_install:
 jobs:
   include:
     - stage: eslint
-      script: test-eslint
+      script: npm run test-eslint
     - stage: jshint
-      script: test-jshint
+      script: npm run test-jshint
