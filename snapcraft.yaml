@@ -1,5 +1,5 @@
 name: taskline
-version: '0.0.0'
+version: '0.6.0'
 version-script: git describe --always | cut -c 2-
 summary: Tasks, boards & notes for the command-line habitat
 description: |
