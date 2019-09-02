@@ -12,10 +12,9 @@ describe('Test create functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(done => {
-    helper.clearStorage().then(() => {
-      done();
-    });
+  beforeAll(async done => {
+    await helper.clearStorage()
+    done();
   });
 
   it('should create note', () => {

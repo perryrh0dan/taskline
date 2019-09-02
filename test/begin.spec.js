@@ -12,12 +12,9 @@ describe('Test begin functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(done => {
-    helper.clearStorage().then(() => {
-      done();
-    });
-
-    storage.set({
+  beforeAll(async done => {
+    await helper.clearStorage();
+    await storage.set({
       1: {
         _id: 1,
         _date: 'Mon Sep 02 2019',
@@ -54,6 +51,7 @@ describe('Test begin functionality', () => {
         priority: 1
       }
     });
+    done();
   });
 
   it('should begin one task', () => {

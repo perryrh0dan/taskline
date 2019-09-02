@@ -12,11 +12,9 @@ describe('Test check functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(done => {
-    helper.clearStorage().then(() => {
-      done();
-    });
-    storage.set({
+  beforeAll(async done => {
+    await helper.clearStorage()
+    await storage.set({
       1: {
         _id: 1,
         _date: 'Mon Sep 02 2019',
@@ -65,7 +63,8 @@ describe('Test check functionality', () => {
         inProgress: false,
         priority: 1
       }
-    });
+    })
+    done();
   });
 
   it('should check one task', () => {
@@ -86,7 +85,9 @@ describe('Test check functionality', () => {
   });
 
   it('should delete all checked tasks', () => {
-    return storage.get().then(oldData => {
+    return storage.get().then(data => {
+      const oldData = JSON.parse(JSON.stringify(data));
+
       return taskline.clear().then(() => {
         return storage.get().then(data => {
           return storage.getArchive().then(archive => {
