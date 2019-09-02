@@ -78,16 +78,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^24.9.0",
-    "jshint": "^2.10.2",
-    "xo": "*"
-  },
-  "xo": {
-    "space": 2,
-    "env": [
-      "node",
-      "jest"
-    ],
-    "object-curly-spacing": "always"
+    "jshint": "^2.10.2"
   },
   "jest": {
     "verbose": true

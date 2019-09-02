@@ -13,7 +13,7 @@ describe('Test check functionality', () => {
   //  process.stderr.write = jest.fn();
 
   beforeAll(async done => {
-    await helper.clearStorage()
+    await helper.clearStorage();
     await storage.set({
       1: {
         _id: 1,
@@ -63,7 +63,7 @@ describe('Test check functionality', () => {
         inProgress: false,
         priority: 1
       }
-    })
+    });
     done();
   });
 

@@ -13,7 +13,7 @@ describe('Test output functionality', () => {
   //  process.stderr.write = jest.fn();
 
   beforeAll(async done => {
-    await helper.clearStorage()
+    await helper.clearStorage();
     await storage.set({
       1: {
         _id: 1,
