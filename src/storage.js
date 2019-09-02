@@ -7,7 +7,7 @@ class Storage {
     this.archive = null;
   }
 
-  init() {}
+  getInstance() {}
 
   get() {}
 

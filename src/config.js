@@ -39,6 +39,11 @@ class Config {
 
     return Object.assign({}, defaultConfig, config);
   }
+
+  set(config) {
+    const data = JSON.stringify(config, null, 4);
+    fs.writeFileSync(this._configFile, data, 'utf8');
+  }
 }
 
 module.exports = new Config();

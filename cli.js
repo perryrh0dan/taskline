@@ -4,7 +4,7 @@
 const program = require('commander');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
-const taskline = require('./src/taskline');
+const taskline = new (require('./src/taskline'))();
 
 program.version(pkg.version);
 program.description(pkg.description);

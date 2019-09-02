@@ -15,6 +15,15 @@ const {
 } = path;
 
 class LocalStorage extends Storage {
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new LocalStorage();
+      this.instance.init();
+    }
+
+    return this.instance;
+  }
+
   init() {
     this._storageDir = join(this._mainAppDir, 'storage');
     this._archiveDir = join(this._mainAppDir, 'archive');
@@ -117,12 +126,14 @@ class LocalStorage extends Storage {
   getArchive() {
     let archive = {};
 
-    if (fs.existsSync(this._archiveFile)) {
-      const content = fs.readFileSync(this._archiveFile, 'utf8');
-      archive = JSON.parse(content);
-    }
+    return new Promise(resolve => {
+      if (fs.existsSync(this._archiveFile)) {
+        const content = fs.readFileSync(this._archiveFile, 'utf8');
+        archive = JSON.parse(content);
+      }
 
-    return archive;
+      resolve(archive);
+    });
   }
 
   set(data) {

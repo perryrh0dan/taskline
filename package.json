@@ -39,6 +39,8 @@
       "displayProgressOverview": true,
       "storageModule": "local",
       "firestoreConfig": {
+        "storageName": "storage",
+        "archiveName": "archive",
         "type": "",
         "project_id": "",
         "private_key_id": "",
@@ -55,9 +57,9 @@
     }
   },
   "scripts": {
-    "test-lint": "xo",
-    "test-jshint": "jshint src/",
-    "test-unit": "jest"
+    "lint": "xo",
+    "jshint": "jshint src/",
+    "unit": "jest"
   },
   "dependencies": {
     "chalk": "^2.4.1",
@@ -74,6 +76,10 @@
     "xo": "*"
   },
   "xo": {
-    "space": 2
+    "space": 2,
+    "env": ["node", "jest"]
+  },
+  "jest": {
+    "verbose": true
   }
 }

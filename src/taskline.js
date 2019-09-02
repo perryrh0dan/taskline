@@ -10,17 +10,15 @@ const FirestoreStorage = require('./firestore');
 const config = require('./config');
 
 class Taskline {
-  constructor() { //todo take special configuration for unit tests
+  constructor() {
     const {
       storageModule
     } = config.get();
     if (storageModule === 'firestore') {
-      this._storage = new FirestoreStorage();
+      this._storage = FirestoreStorage.getInstance();
     } else if (storageModule === 'local') {
-      this._storage = new LocalStorage();
+      this._storage = LocalStorage.getInstance();
     }
-
-    this._storage.init();
   }
 
   _getData() {
@@ -36,11 +34,11 @@ class Taskline {
   }
 
   _save(data) {
-    this._storage.set(data);
+    return this._storage.set(data);
   }
 
   _saveArchive(data) {
-    this._storage.setArchive(data);
+    return this._storage.setArchive(data);
   }
 
   _removeDuplicates(x) {
@@ -399,7 +397,7 @@ class Taskline {
       archive[archiveID] = item;
     }
 
-    this._saveArchive(archive);
+    await this._saveArchive(archive);
   }
 
   async _saveItemsToStorage(ids) {
@@ -413,7 +411,7 @@ class Taskline {
       data[restoreID] = item;
     }
 
-    this._save(data);
+    await this._save(data);
   }
 
   _splitOption(option) {
@@ -476,7 +474,7 @@ class Taskline {
       }
     });
 
-    this._save(data);
+    await this._save(data);
     render.markComplete(checked);
     render.markIncomplete(unchecked);
   }
@@ -500,7 +498,7 @@ class Taskline {
       }
     });
 
-    this._save(data);
+    await this._save(data);
     render.markStarted(started);
     render.markPaused(paused);
   }
@@ -531,7 +529,7 @@ class Taskline {
       dueTime
     });
     data[id] = task;
-    this._save(data);
+    await this._save(data);
     render.successCreate(task);
   }
 
@@ -548,7 +546,7 @@ class Taskline {
       delete data[id];
     });
 
-    this._save(data);
+    await this._save(data);
     render.successDelete(ids);
   }
 
@@ -593,7 +591,7 @@ class Taskline {
     const data = await this._getData();
 
     data[id].description = description;
-    this._save(data);
+    await this._save(data);
     render.successEdit(id);
   }
 
@@ -660,7 +658,7 @@ class Taskline {
     ids.forEach(id => {
       data[id].boards = boards;
     });
-    this._save(data);
+    await this._save(data);
     render.successMove(ids, boards);
   }
 
@@ -678,7 +676,7 @@ class Taskline {
       delete archive[id];
     });
 
-    this._saveArchive(archive);
+    await this._saveArchive(archive);
     render.successRestore(ids);
   }
 
@@ -699,7 +697,7 @@ class Taskline {
       return data[id].isStarred ? starred.push(id) : unstarred.push(id);
     });
 
-    this._save(data);
+    await this._save(data);
     render.markStarred(starred);
     render.markUnstarred(unstarred);
   }
@@ -772,4 +770,4 @@ class Taskline {
   }
 }
 
-module.exports = new Taskline(); //todo return constuctor and call it than. 
+module.exports = Taskline;

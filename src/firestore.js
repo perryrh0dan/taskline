@@ -8,10 +8,22 @@ const Storage = require('./storage');
 const config = require('./config');
 
 class FirestoreStorage extends Storage {
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new FirestoreStorage();
+      this.instance.init();
+    }
+
+    return this.instance;
+  }
+
   init() {
     const {
       firestoreConfig
     } = config.get();
+
+    this._storageName = firestoreConfig.storageName;
+    this._archiveName = firestoreConfig.archiveName;
 
     firebase.initializeApp({
       credential: firebase.credential.cert(firestoreConfig),
@@ -109,7 +121,9 @@ class FirestoreStorage extends Storage {
   async set(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection('storage', pureData).catch(() => {
+    await this._updateCollection(this._storageName, pureData).then(() => {
+      this.data = null;
+    }).catch(() => {
       render.invalidFirestoreConfig();
       process.exit(1);
     });
@@ -118,7 +132,9 @@ class FirestoreStorage extends Storage {
   async setArchive(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection('archive', pureData).catch(() => {
+    await this._updateCollection(this._archiveName, pureData).then(() => {
+      this.archive = null;
+    }).catch(() => {
       render.invalidFirestoreConfig();
       process.exit(1);
     });
@@ -126,7 +142,7 @@ class FirestoreStorage extends Storage {
 
   async get() {
     if (!this.data) {
-      this.data = await this._getCollection('storage').catch(() => {
+      this.data = await this._getCollection(this._storageName).catch(() => {
         render.invalidFirestoreConfig();
         process.exit(1);
       });
@@ -137,7 +153,7 @@ class FirestoreStorage extends Storage {
 
   async getArchive() {
     if (!this.archive) {
-      this.archive = await this._getCollection('archive').catch(() => {
+      this.archive = await this._getCollection(this._archiveName).catch(() => {
         render.invalidFirestoreConfig();
         process.exit(1);
       });
