@@ -12,3 +12,5 @@ jobs:
       script: npm run lint
     - stage: jshint
       script: npm run jshint
+    - stage: unit
+      script: npm run unit

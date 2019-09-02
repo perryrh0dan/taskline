@@ -12,14 +12,13 @@ class Helper {
   setConfig() {
     this._originalConfig = config.get();
     let content;
-    
     if (fs.existsSync(contentPath)) {
       content = fs.readFileSync(contentPath, 'utf8');
     } else if (fs.existsSync(sampleContentPath)) {
       content = fs.readFileSync(sampleContentPath, 'utf8');
     } else {
-      throw new Error("No config file for unit tests")
-    };
+      throw new Error('No config file for unit tests');
+    }
 
     const unitTestConfig = JSON.parse(content);
     config.set(unitTestConfig);
