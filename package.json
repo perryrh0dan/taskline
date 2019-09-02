@@ -59,7 +59,7 @@
   "scripts": {
     "lint": "xo",
     "jshint": "jshint src/",
-    "unit": "jest"
+    "unit": "jest --runInBand"
   },
   "dependencies": {
     "chalk": "^2.4.1",
@@ -71,6 +71,12 @@
     "update-notifier": "^2.5.0"
   },
   "devDependencies": {
+    "eslint": "^6.3.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "jest": "^24.9.0",
     "jshint": "^2.10.2",
     "xo": "*"
@@ -80,7 +86,8 @@
     "env": [
       "node",
       "jest"
-    ]
+    ],
+    "object-curly-spacing": "always"
   },
   "jest": {
     "verbose": true
