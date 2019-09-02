@@ -4,7 +4,7 @@ const helper = require('./helper');
 helper.setConfig();
 const taskline = new Taskline();
 
-describe('Test edit functionality', () => {
+describe('Test Taskline module', () => {
   const storage = helper.getStorage();
 
   //  Disable output
@@ -43,19 +43,20 @@ describe('Test edit functionality', () => {
     });
   });
 
-  it('should edit description of one item', () => {
-    return taskline.editDescription('2', 'Edited Test Task').then(() => {
+  it('should star one item', () => {
+    return taskline.starItems('1').then(() => {
       return storage.get().then(data => {
-        expect(data[2].description).toBe('Edited Test Task');
+        expect(data[1].isStarred).toBe(true);
       });
     });
   });
 
-  it('should try to edit description if nonexistent item', () => {
-    return expect(
-      taskline.editDescription('4', 'Try Edit Test Task')
-    ).rejects.toMatchObject({
-      message: 'Invalid InputIDs'
+  it('should star multiple items', () => {
+    return taskline.starItems('1,2').then(() => {
+      return storage.get().then(data => {
+        expect(data[1].isStarred).toBe(false);
+        expect(data[2].isStarred).toBe(true);
+      });
     });
   });
 
@@ -63,12 +64,4 @@ describe('Test edit functionality', () => {
     helper.resetConfig();
     done();
   });
-  // It("should display By Board", () => {
-  //   process.stdout.write = jest.fn();
-
-  //   taskline.displayByBoard().then(() => {
-  //     expect(process.stdout.write.mock.calls[0][0]).toBe("\n  [4mMy Board[24m [90m[0/0][39m\n")
-  //     expect(process.stdout.write.mock.calls[1][0]).toBe("    [90m1.[39m [34m* [39m Test Note\n")
-  //   })
-  // })
 });

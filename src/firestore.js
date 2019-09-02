@@ -18,9 +18,7 @@ class FirestoreStorage extends Storage {
   }
 
   init() {
-    const {
-      firestoreConfig
-    } = config.get();
+    const { firestoreConfig } = config.get();
 
     this._storageName = firestoreConfig.storageName;
     this._archiveName = firestoreConfig.archiveName;
@@ -53,10 +51,12 @@ class FirestoreStorage extends Storage {
     const batch = this.db.batch();
 
     return self._deleteCollection(path).then(() => {
-      return new Promise(((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         dataArray.forEach(element => {
           // Create a ref
-          const elementRef = self.db.collection(path).doc(element._id.toString());
+          const elementRef = self.db
+            .collection(path)
+            .doc(element._id.toString());
           batch.set(elementRef, element);
         });
 
@@ -68,14 +68,14 @@ class FirestoreStorage extends Storage {
           .catch(error => {
             reject(error);
           });
-      }));
+      });
     });
   }
 
   _getCollection(path) {
     const self = this;
 
-    return new Promise(((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       self.db
         .collection(path)
         .get()
@@ -91,14 +91,14 @@ class FirestoreStorage extends Storage {
         .catch(error => {
           reject(error);
         });
-    }));
+    });
   }
 
   _deleteCollection(path) {
     // Get a new write batch
     const batch = this.db.batch();
 
-    return new Promise(((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       firebase
         .firestore()
         .collection(path)
@@ -115,29 +115,33 @@ class FirestoreStorage extends Storage {
         .catch(error => {
           reject(error);
         });
-    }));
+    });
   }
 
   async set(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection(this._storageName, pureData).then(() => {
-      this.data = null;
-    }).catch(() => {
-      render.invalidFirestoreConfig();
-      process.exit(1);
-    });
+    await this._updateCollection(this._storageName, pureData)
+      .then(() => {
+        this.data = null;
+      })
+      .catch(() => {
+        render.invalidFirestoreConfig();
+        process.exit(1);
+      });
   }
 
   async setArchive(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection(this._archiveName, pureData).then(() => {
-      this.archive = null;
-    }).catch(() => {
-      render.invalidFirestoreConfig();
-      process.exit(1);
-    });
+    await this._updateCollection(this._archiveName, pureData)
+      .then(() => {
+        this.archive = null;
+      })
+      .catch(() => {
+        render.invalidFirestoreConfig();
+        process.exit(1);
+      });
   }
 
   async get() {

@@ -1,7 +1,8 @@
 module.exports = {
   env: {
-    browser: true,
-    es6: true
+    node: true,
+    es6: true,
+    jest: true
   },
   extends: [
     'standard'
@@ -15,6 +16,7 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    semi: "error"
+    "semi": [2, "always"],
+    "space-before-function-paren": [2, "never"]
   }
 }

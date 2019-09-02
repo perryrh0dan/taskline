@@ -4,7 +4,7 @@ const helper = require('./helper');
 helper.setConfig();
 const taskline = new Taskline();
 
-describe('Test Taskline module', () => {
+describe('Test output functionality', () => {
   const storage = helper.getStorage();
 
   //  Disable output

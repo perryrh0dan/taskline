@@ -4,8 +4,8 @@ const os = require('os');
 const path = require('path');
 const pkg = require('../package.json');
 
-const {join} = path;
-const {'default': defaultConfig} = pkg.configuration; //  eslint-disable-line quote-props
+const { join } = path;
+const { 'default': defaultConfig } = pkg.configuration; //  eslint-disable-line quote-props
 
 class Config {
   constructor() {
@@ -34,7 +34,9 @@ class Config {
     config = JSON.parse(content);
 
     if (config.tasklineDirectory.startsWith('~')) {
-      config.tasklineDirectory = this._formatTasklineDir(config.tasklineDirectory);
+      config.tasklineDirectory = this._formatTasklineDir(
+        config.tasklineDirectory
+      );
     }
 
     return Object.assign({}, defaultConfig, config);
