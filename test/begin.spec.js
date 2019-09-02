@@ -85,6 +85,12 @@ describe('Test begin functionality', () => {
     });
   });
 
+  it('should try to begin nonexisting item', () => {
+    expect(taskline.beginTasks('4')).rejects.toMatchObject({
+      message: 'Invalid InputIDs'
+    });
+  });
+
   afterAll(done => {
     helper.resetConfig();
     done();

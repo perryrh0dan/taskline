@@ -79,10 +79,6 @@ class Taskline {
     return inputIDs;
   }
 
-  _isPriorityOpt(x) {
-    return ['p:1', 'p:2', 'p:3'].indexOf(x) > -1;
-  }
-
   async _getBoards() {
     const data = await this._getData();
     const boards = ['My Board'];
@@ -118,11 +114,6 @@ class Taskline {
     return Object.keys(data).map(id => parseInt(id, 10));
   }
 
-  _getPriority(desc) {
-    const opt = desc.find(x => this._isPriorityOpt(x));
-    return opt ? opt[opt.length - 1] : 1;
-  }
-
   _parseDate(input, format) {
     format = format || 'yyyy-mm-dd'; // Default format
     const parts = input.match(/(\d+)/g);
@@ -134,37 +125,6 @@ class Taskline {
     });
 
     return new Date(parts[fmt.yyyy], parts[fmt.mm] - 1, parts[fmt.dd]);
-  }
-
-  async _getOptions(input) {
-    const [boards, desc] = [[], []];
-
-    if (input.length === 0) {
-      render.missingDesc();
-      process.exit(1);
-    }
-
-    const id = await this._generateID();
-    const priority = this._getPriority(input);
-
-    input.forEach(x => {
-      if (!this._isPriorityOpt(x)) {
-        return x.startsWith('@') && x.length > 1 ? boards.push(x) : desc.push(x);
-      }
-    });
-
-    const description = desc.join(' ');
-
-    if (boards.length === 0) {
-      boards.push('My Board');
-    }
-
-    return {
-      boards,
-      description,
-      id,
-      priority
-    };
   }
 
   _getStats(grouped) {
@@ -783,7 +743,7 @@ class Taskline {
       return;
     }
 
-    this.deleteItems(ids);
+    await this.deleteItems(ids);
   }
 }
 

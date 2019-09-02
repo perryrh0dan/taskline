@@ -60,49 +60,53 @@ describe('Test create functionality', () => {
     });
   });
 
-  it('should create a task with duedate', () => {
-    return taskline.createTask('Second Test Task').then(() => {
+  it('should create a task with priority', () => {
+    return taskline.createTask('Third Test Task', undefined, 3).then(() => {
       return storage.get().then(data => {
         expect(data[4]._isTask).toBe(true);
-        expect(data[4].description).toBe('Second Test Task');
+        expect(data[4].description).toBe('Third Test Task');
         expect(data[4].boards).toMatchObject(['My Board']);
         expect(data[4].dueDate).toBe(null);
         expect(data[4].isComplete).toBe(false);
         expect(data[4].inProgress).toBe(false);
         expect(data[4].isStarred).toBe(false);
-        expect(data[4].priority).toBe(1);
+        expect(data[4].priority).toBe(3);
       });
     });
   });
 
-  it('should create a task with boards', () => {
-    return taskline.createTask('Second Test Task').then(() => {
-      return storage.get().then(data => {
-        expect(data[5]._isTask).toBe(true);
-        expect(data[5].description).toBe('Second Test Task');
-        expect(data[5].boards).toMatchObject(['My Board']);
-        expect(data[5].dueDate).toBe(null);
-        expect(data[5].isComplete).toBe(false);
-        expect(data[5].inProgress).toBe(false);
-        expect(data[5].isStarred).toBe(false);
-        expect(data[5].priority).toBe(1);
+  it('should create a task with a duedate', () => {
+    return taskline
+      .createTask('Fourth Test Task', undefined, undefined, '02.09.2019')
+      .then(() => {
+        return storage.get().then(data => {
+          expect(data[5]._isTask).toBe(true);
+          expect(data[5].description).toBe('Fourth Test Task');
+          expect(data[5].boards).toMatchObject(['My Board']);
+          expect(data[5].dueDate).toBe(1567461599000);
+          expect(data[5].isComplete).toBe(false);
+          expect(data[5].inProgress).toBe(false);
+          expect(data[5].isStarred).toBe(false);
+          expect(data[5].priority).toBe(1);
+        });
       });
-    });
   });
 
   it('should create a task with duedate, priority and boards', () => {
-    return taskline.createTask('Second Test Task').then(() => {
-      return storage.get().then(data => {
-        expect(data[6]._isTask).toBe(true);
-        expect(data[6].description).toBe('Second Test Task');
-        expect(data[6].boards).toMatchObject(['My Board']);
-        expect(data[6].dueDate).toBe(null);
-        expect(data[6].isComplete).toBe(false);
-        expect(data[6].inProgress).toBe(false);
-        expect(data[6].isStarred).toBe(false);
-        expect(data[6].priority).toBe(1);
+    return taskline
+      .createTask('Fives Test Task', 'test2,test3', 2, '03.09.2019')
+      .then(() => {
+        return storage.get().then(data => {
+          expect(data[6]._isTask).toBe(true);
+          expect(data[6].description).toBe('Fives Test Task');
+          expect(data[6].boards).toMatchObject(['test2', 'test3']);
+          expect(data[6].dueDate).toBe(1567547999000);
+          expect(data[6].isComplete).toBe(false);
+          expect(data[6].inProgress).toBe(false);
+          expect(data[6].isStarred).toBe(false);
+          expect(data[6].priority).toBe(2);
+        });
       });
-    });
   });
 
   afterAll(done => {
