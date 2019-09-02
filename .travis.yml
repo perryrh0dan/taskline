@@ -9,6 +9,8 @@ before_install:
 jobs:
   include:
     - stage: lint
-      script: npm run test-lint
+      script: npm run lint
     - stage: jshint
-      script: npm run test-jshint
+      script: npm run jshint
+    - stage: unit
+      script: npm run unit

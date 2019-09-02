@@ -4,21 +4,19 @@
 const program = require('commander');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
-const taskline = require('./src/taskline');
+const taskline = new (require('./src/taskline'))();
 
 program.version(pkg.version);
 program.description(pkg.description);
 
-program
-  .name('tl')
-  .usage('[command] [options]');
+program.name('tl').usage('[command] [options]');
 
 program
   .command('archive')
   .alias('a')
   .description('Display archived items')
   .action(() => {
-    taskline.displayArchive();
+    taskline.displayArchive().catch(() => {});
   });
 
 program
@@ -26,7 +24,7 @@ program
   .alias('b')
   .description('Start/pause task')
   .action(ids => {
-    taskline.beginTasks(ids);
+    taskline.beginTasks(ids).catch(() => {});
   });
 
 program
@@ -34,14 +32,14 @@ program
   .alias('c')
   .description('Check/uncheck task')
   .action(ids => {
-    taskline.checkTasks(ids);
+    taskline.checkTasks(ids).catch(() => {});
   });
 
 program
   .command('clear')
   .description('Delete all checked items')
   .action(() => {
-    taskline.clear();
+    taskline.clear().catch(() => {});
   });
 
 program
@@ -49,7 +47,7 @@ program
   .alias('y')
   .description('Copy description to clipboard')
   .action(ids => {
-    taskline.copyToClipboard(ids);
+    taskline.copyToClipboard(ids).catch(() => {});
   });
 
 program
@@ -57,14 +55,14 @@ program
   .alias('d')
   .description('Delete item')
   .action(ids => {
-    taskline.deleteItems(ids);
+    taskline.deleteItems(ids).catch(() => {});
   });
 
 program
   .command('due <ids> <dueDate>')
   .description('Update duedateof task')
   .action((ids, dueDate) => {
-    taskline.updateDueDate(ids, dueDate);
+    taskline.updateDueDate(ids, dueDate).catch(() => {});
   });
 
 program
@@ -72,7 +70,7 @@ program
   .alias('e')
   .description('Edit item description')
   .action((id, description) => {
-    taskline.editDescription(id, description);
+    taskline.editDescription(id, description).catch(() => {});
   });
 
 program
@@ -80,7 +78,7 @@ program
   .alias('f')
   .description('Search for items')
   .action(query => {
-    taskline.findItems(query);
+    taskline.findItems(query).catch(() => {});
   });
 
 program
@@ -98,7 +96,7 @@ program
   .alias('m')
   .description('Move item between boards')
   .action((ids, boards) => {
-    taskline.moveBoards(ids, boards);
+    taskline.moveBoards(ids, boards).catch(() => {});
   });
 
 program
@@ -107,7 +105,7 @@ program
   .description('Create note')
   .option('-b, --board <board>', 'Board')
   .action((description, opts) => {
-    taskline.createNote(description, opts.board);
+    taskline.createNote(description, opts.board).catch(() => {});
   });
 
 program
@@ -115,15 +113,16 @@ program
   .alias('p')
   .description('Update priority of task')
   .action((id, priority) => {
-    taskline.updatePriority(id, priority);
+    taskline.updatePriority(id, priority).catch(() => {});
   });
 
 program
   .command('restore <ids>')
+
   .alias('r')
   .description('Restore items from archive')
   .action(ids => {
-    taskline.restoreItems(ids);
+    taskline.restoreItems(ids).catch(() => {});
   });
 
 program
@@ -131,7 +130,7 @@ program
   .alias('s')
   .description('Star/unstar item')
   .action(ids => {
-    taskline.starItems(ids);
+    taskline.starItems(ids).catch(() => {});
   });
 
 program
@@ -144,7 +143,9 @@ program
 
   // Function to execute when command is uses
   .action((description, opts) => {
-    taskline.createTask(description, opts.board, opts.priority, opts.due);
+    taskline
+      .createTask(description, opts.board, opts.priority, opts.due)
+      .catch(() => {});
   });
 
 program

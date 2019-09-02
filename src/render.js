@@ -371,6 +371,16 @@ class Render {
     });
   }
 
+  invalidDateFormat() {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = 'Date has wrong format';
+    error({
+      prefix,
+      message
+    });
+  }
+
   markComplete(ids) {
     this.stopLoading();
     if (ids.length === 0) {
@@ -540,6 +550,10 @@ class Render {
 
   successPriority(ids, level) {
     this.stopLoading();
+    if (ids.length === 0) {
+      return;
+    }
+
     const prefix = '\n';
     const message = `Updated priority of ${ids.length > 1 ? 'tasks' : 'task'}: ${grey(ids.join(', '))} to`;
     const suffix = level === 3 ? red('high') : (level === 2 ? yellow('medium') : green('normal'));
@@ -552,6 +566,10 @@ class Render {
 
   successDueDate(ids, dueDate) {
     this.stopLoading();
+    if (ids.length === 0) {
+      return;
+    }
+
     const prefix = '\n';
     const message = `Updated duedate of ${ids.length > 1 ? 'tasks' : 'task'}: ${grey(ids.join(', '))} to`;
     const suffix = dueDate;

@@ -8,10 +8,20 @@ const Storage = require('./storage');
 const config = require('./config');
 
 class FirestoreStorage extends Storage {
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new FirestoreStorage();
+      this.instance.init();
+    }
+
+    return this.instance;
+  }
+
   init() {
-    const {
-      firestoreConfig
-    } = config.get();
+    const { firestoreConfig } = config.get();
+
+    this._storageName = firestoreConfig.storageName;
+    this._archiveName = firestoreConfig.archiveName;
 
     firebase.initializeApp({
       credential: firebase.credential.cert(firestoreConfig),
@@ -41,10 +51,12 @@ class FirestoreStorage extends Storage {
     const batch = this.db.batch();
 
     return self._deleteCollection(path).then(() => {
-      return new Promise(((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         dataArray.forEach(element => {
           // Create a ref
-          const elementRef = self.db.collection(path).doc(element._id.toString());
+          const elementRef = self.db
+            .collection(path)
+            .doc(element._id.toString());
           batch.set(elementRef, element);
         });
 
@@ -56,14 +68,14 @@ class FirestoreStorage extends Storage {
           .catch(error => {
             reject(error);
           });
-      }));
+      });
     });
   }
 
   _getCollection(path) {
     const self = this;
 
-    return new Promise(((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       self.db
         .collection(path)
         .get()
@@ -79,14 +91,14 @@ class FirestoreStorage extends Storage {
         .catch(error => {
           reject(error);
         });
-    }));
+    });
   }
 
   _deleteCollection(path) {
     // Get a new write batch
     const batch = this.db.batch();
 
-    return new Promise(((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       firebase
         .firestore()
         .collection(path)
@@ -103,30 +115,38 @@ class FirestoreStorage extends Storage {
         .catch(error => {
           reject(error);
         });
-    }));
+    });
   }
 
   async set(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection('storage', pureData).catch(() => {
-      render.invalidFirestoreConfig();
-      process.exit(1);
-    });
+    await this._updateCollection(this._storageName, pureData)
+      .then(() => {
+        this.data = null;
+      })
+      .catch(() => {
+        render.invalidFirestoreConfig();
+        process.exit(1);
+      });
   }
 
   async setArchive(data) {
     const pureData = this._parse(data);
 
-    await this._updateCollection('archive', pureData).catch(() => {
-      render.invalidFirestoreConfig();
-      process.exit(1);
-    });
+    await this._updateCollection(this._archiveName, pureData)
+      .then(() => {
+        this.archive = null;
+      })
+      .catch(() => {
+        render.invalidFirestoreConfig();
+        process.exit(1);
+      });
   }
 
   async get() {
     if (!this.data) {
-      this.data = await this._getCollection('storage').catch(() => {
+      this.data = await this._getCollection(this._storageName).catch(() => {
         render.invalidFirestoreConfig();
         process.exit(1);
       });
@@ -137,7 +157,7 @@ class FirestoreStorage extends Storage {
 
   async getArchive() {
     if (!this.archive) {
-      this.archive = await this._getCollection('archive').catch(() => {
+      this.archive = await this._getCollection(this._archiveName).catch(() => {
         render.invalidFirestoreConfig();
         process.exit(1);
       });
