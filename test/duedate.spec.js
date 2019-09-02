@@ -57,7 +57,7 @@ describe('Test duedate functionality', () => {
   it('should update duedate of task', () => {
     return taskline.updateDueDate('2', '02.09.2019').then(() => {
       return storage.get().then(data => {
-        expect(data[2].dueDate).toBe(1567461599000);
+        expect(data[2].dueDate).toBe(new Date('2019-09-02').setHours(23, 59, 59));
       });
     });
   });
