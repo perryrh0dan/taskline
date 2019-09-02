@@ -5,7 +5,7 @@ const path = require('path');
 const pkg = require('../package.json');
 
 const {join} = path;
-const {defaultConfig} = pkg.configuration;
+const {default: defaultConfig} = pkg.configuration;
 
 class Config {
   constructor() {
