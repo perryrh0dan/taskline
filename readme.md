@@ -7,7 +7,7 @@
 </h4>
 
 <div align="center">
-  <img alt="Boards" width="60%" src="media/header-boards.png"/>
+  <img alt="Boards" width="70%" src="media/header-boards.png"/>
 </div>
 
 <div align="center">
@@ -18,7 +18,7 @@
     <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg"/>
   </a>
   <a href="https://www.npmjs.com/package/@perryrh0dan/taskline">
-    <img alt="Weekly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline">
+    <img alt="Monthly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline">
   </a>
 </div>
 
@@ -128,7 +128,7 @@ Commands:
 Invoking taskline without any options will display all saved items grouped into their respective boards.
 
 <div align="center">
-  <img alt="Boards" width="60%" src="media/header-boards.png"/>
+  <img alt="Boards" width="70%" src="media/header-boards.png"/>
 </div>
 
 ### Timeline View
@@ -136,7 +136,7 @@ Invoking taskline without any options will display all saved items grouped into 
 In order to display all items in a timeline view, based on their creation date, the `--timeline` / `-i` option can be used.
 
 <div align="center">
-  <img alt="Timeline View" width="62%" src="media/timeline.png"/>
+  <img alt="Timeline View" width="70%" src="media/timeline.png"/>
 </div>
 
 ## Configuration
