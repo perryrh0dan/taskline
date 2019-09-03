@@ -224,7 +224,7 @@ When you want to use the local storage module there is no further configuration 
 2. Create a new service account for this project.
 3. Download the authorization.json file and insert all the lines to the corresponding lines in the taskline configuration.
 
-or follow this [instruction page](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application)
+or follow this [instruction page](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
 ## Flight Manual
 
 The following is a minor walkthrough containing a set of examples on how to use taskline.
