@@ -12,13 +12,16 @@
 
 <div align="center">
   <a href="https://travis-ci.org/perryrh0dan/taskline">
-    <img alt="Build Status" src="https://travis-ci.org/perryrh0dan/taskline.svg?branch=master">
+    <img alt="Build Status" src="https://travis-ci.org/perryrh0dan/taskline.svg?branch=master" />
   </a>
   <a href="https://gitter.im/taskline/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
-    <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg"/>
+    <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg" />
   </a>
   <a href="https://www.npmjs.com/package/@perryrh0dan/taskline">
-    <img alt="Weekly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline">
+    <img alt="Weekly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline" />
+  </a>
+  <a href="https://snapcraft.io/taskline">
+    <img alt="taskline" src="https://snapcraft.io/taskline/badge.svg" />
   </a>
 </div>
 

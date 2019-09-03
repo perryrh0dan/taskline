@@ -21,6 +21,7 @@ parts
 stage
 snap
 *.snap
+*.bz2
 
 test/config.json
 coverage
