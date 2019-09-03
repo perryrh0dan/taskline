@@ -163,7 +163,7 @@ The following illustrates all the available options with their respective defaul
         "auth_provider_x509_cert_url": "",
         "client_x509_cert_url": "",
       },
-	"dateformat": "dd.mm.yyyy"
+  "dateformat": "dd.mm.yyyy"
 }
 ```
 
