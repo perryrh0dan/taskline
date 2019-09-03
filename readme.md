@@ -92,6 +92,15 @@ yarn global add @perryrh0dan/taskline
 npm install --global @perryrh0dan/taskline
 ```
 
+### Snapcraft
+
+```bash
+snap install taskline
+snap alias taskline tl # set alias
+```
+
+**Note:** Due to the snap's strictly confined nature, both the storage & configuration files will be saved under the [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) environment variable instead of the generic `$HOME` one.
+
 ## Usage
 
 ``` 
@@ -331,7 +340,7 @@ To set a duedate for a task while initializing it, use the `-d` option followed 
 $ tl t "Solve puzzle" -b coding -d 23.08.2019
 ```
 
-To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date.
+To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date. The `due` command has no available shorter alias.
 
 ``` 
 $ tl due 1,2,23 15.09.2019
