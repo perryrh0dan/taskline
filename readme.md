@@ -28,7 +28,7 @@ By utilizing a simple and minimal usage syntax, that requires a flat learning cu
 
 Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
 
-Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) to share your thoughts on the project.
+Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [Twitter](https://twitter.com/perryrh0dan1) to share your thoughts on the project.
 
 ## Highlights
 
