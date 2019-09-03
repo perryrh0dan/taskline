@@ -58,11 +58,6 @@ class Taskline {
       existingIDs = await this._getIDs();
     }
 
-    if (inputIDs.length === 0) {
-      render.missingID();
-      return Promise.reject(new Error('Invalid InputIDs'));
-    }
-
     inputIDs = this._removeDuplicates(inputIDs);
 
     try {
@@ -604,11 +599,6 @@ class Taskline {
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
-
-    if (boards.length === 0) {
-      render.missingBoards();
-      process.exit(1);
-    }
 
     boards = this._removeDuplicates(boards);
 

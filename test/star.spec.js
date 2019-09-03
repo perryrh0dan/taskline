@@ -58,6 +58,12 @@ describe('Test Taskline module', () => {
     });
   });
 
+  it('should try to star nonexisting item', () => {
+    expect(taskline.starItems('3')).rejects.toMatchObject({
+      message: 'Invalid InputIDs'
+    });
+  });
+
   afterAll(done => {
     helper.resetConfig();
     done();

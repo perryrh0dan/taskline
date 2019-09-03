@@ -351,16 +351,6 @@ class Render {
     });
   }
 
-  invalidIDsNumber() {
-    this.stopLoading();
-    const prefix = '\n';
-    const message = 'More than one ids were given as input';
-    error({
-      prefix,
-      message
-    });
-  }
-
   invalidPriority() {
     this.stopLoading();
     const prefix = '\n';
@@ -468,36 +458,6 @@ class Render {
       prefix,
       message,
       suffix
-    });
-  }
-
-  missingBoards() {
-    this.stopLoading();
-    const prefix = '\n';
-    const message = 'No boards were given as input';
-    error({
-      prefix,
-      message
-    });
-  }
-
-  missingDesc() {
-    this.stopLoading();
-    const prefix = '\n';
-    const message = 'No description was given as input';
-    error({
-      prefix,
-      message
-    });
-  }
-
-  missingID() {
-    this.stopLoading();
-    const prefix = '\n';
-    const message = 'No id was given as input';
-    error({
-      prefix,
-      message
     });
   }
 
