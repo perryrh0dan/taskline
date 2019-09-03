@@ -218,19 +218,17 @@ Dateformat used for duedate.
 
 When you want to use the local storage module there is no further configuration need. When you want to use the firestore module follow this steps:
 
+### Setup Firestore
+
 1. Create a new Project on the google cloud platform.
 2. Create a new service account for this project.
 3. Download the authorization.json file and insert all the lines to the corresponding lines in the taskline configuration.
 
+or follow this [instruction page](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application)
 ## Flight Manual
 
 The following is a minor walkthrough containing a set of examples on how to use taskline.
 In case you spotted an error or think that an example is not to clear enough and should be further improved, please feel free to open an [issue](https://github.com/perryrh0dan/taskline/issues/new/choose) or [pull request](https://github.com/perryrh0dan/taskline/compare).
-
-### Setup Firestore
-
-Follow this instructions:
-https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application
 
 ### Create Task
 
