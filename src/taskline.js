@@ -565,6 +565,7 @@ class Taskline {
 
     const grouped = await this._groupByBoard(result);
     render.displayByBoard(grouped);
+    return grouped;
   }
 
   async listByAttributes(terms) {

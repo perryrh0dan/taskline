@@ -88,7 +88,7 @@ describe('Test output functionality', () => {
   it('should display by board', () => {
     process.stdout.write = jest.fn();
 
-    taskline.displayByBoard().then(() => {
+    return taskline.displayByBoard().then(() => {
       expect(process.stdout.write.mock.calls.length).toBe(6);
       expect(process.stdout.write.mock.calls[0][0]).toBe(
         '\n  [4mMy Board[24m [90m[1/2][39m\n'
@@ -114,7 +114,7 @@ describe('Test output functionality', () => {
   it('should display by date', () => {
     process.stdout.write = jest.fn();
 
-    taskline.displayByDate().then(() => {
+    return taskline.displayByDate().then(() => {
       expect(process.stdout.write.mock.calls[0][0]).toBe(
         '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/2][39m\n'
       );
@@ -137,7 +137,7 @@ describe('Test output functionality', () => {
   });
 
   it('should display stats', () => {
-    taskline.displayByBoard().then(grouped => {
+    return taskline.displayByBoard().then(grouped => {
       process.stdout.write = jest.fn();
 
       taskline.displayStats(grouped);
@@ -153,7 +153,7 @@ describe('Test output functionality', () => {
   it('should display archive', () => {
     process.stdout.write = jest.fn();
 
-    taskline.displayArchive().then(() => {
+    return taskline.displayArchive().then(() => {
       expect(process.stdout.write.mock.calls[0][0]).toBe(
         '\n  [4mTue Sep 03 2019[24m [90m[Today][39m [90m[1/1][39m\n'
       );
@@ -166,7 +166,7 @@ describe('Test output functionality', () => {
   it('should display only tasks', () => {
     process.stdout.write = jest.fn();
 
-    taskline.listByAttributes('tasks').then(grouped => {
+    return taskline.listByAttributes('tasks').then(grouped => {
       expect(grouped['My Board'].length).toBe(2);
     });
   });
@@ -174,7 +174,7 @@ describe('Test output functionality', () => {
   it('should display only notes', () => {
     process.stdout.write = jest.fn();
 
-    taskline.listByAttributes('note').then(grouped => {
+    return taskline.listByAttributes('note').then(grouped => {
       expect(grouped['My Board'].length).toBe(1);
     });
   });
@@ -182,7 +182,7 @@ describe('Test output functionality', () => {
   it('should display only starred items', () => {
     process.stdout.write = jest.fn();
 
-    taskline.listByAttributes('star').then(grouped => {
+    return taskline.listByAttributes('star').then(grouped => {
       expect(grouped).toMatchObject({});
     });
   });
@@ -190,7 +190,7 @@ describe('Test output functionality', () => {
   it('should display only done tasks', () => {
     process.stdout.write = jest.fn();
 
-    taskline.listByAttributes('done').then(grouped => {
+    return taskline.listByAttributes('done').then(grouped => {
       expect(grouped['My Board'].length).toBe(1);
     });
   });
@@ -198,7 +198,7 @@ describe('Test output functionality', () => {
   it('should display only high priority tasks', () => {
     process.stdout.write = jest.fn();
 
-    taskline.listByAttributes('high').then(grouped => {
+    return taskline.listByAttributes('high').then(grouped => {
       expect(grouped['My Board']).toBe(undefined);
       expect(grouped['Other Board'].length).toBe(1);
     });
@@ -207,7 +207,7 @@ describe('Test output functionality', () => {
   it('should display only pending tasks', () => {
     process.stdout.write = jest.fn();
 
-    taskline.listByAttributes('pending').then(grouped => {
+    return taskline.listByAttributes('pending').then(grouped => {
       expect(grouped['My Board'].length).toBe(1);
       expect(grouped['Other Board'].length).toBe(1);
     });
@@ -216,16 +216,16 @@ describe('Test output functionality', () => {
   it('should display only items with the keyword Third', () => {
     process.stdout.write = jest.fn();
 
-    taskline.findItems('Third').then(grouped => {
-      expect(grouped['My Board'].length).toBe(1);
-      expect(grouped['Other Board']).toBe(undefined);
+    return taskline.findItems('Third').then(grouped => {
+      expect(grouped['Other Board'].length).toBe(1);
+      expect(grouped['My Board']).toBe(undefined);
     });
   });
 
   it('should try to display items with the keyword Fourth', () => {
     process.stdout.write = jest.fn();
 
-    taskline.findItems('Fourth').then(grouped => {
+    return taskline.findItems('Fourth').then(grouped => {
       expect(grouped['My Board']).toBe(undefined);
       expect(grouped['Other Board']).toBe(undefined);
     });

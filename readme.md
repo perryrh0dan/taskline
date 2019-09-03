@@ -7,7 +7,7 @@
 </h4>
 
 <div align="center">
-  <img alt="Boards" width="60%" src="media/header-boards.png"/>
+  <img alt="Boards" width="70%" src="media/header-boards.png"/>
 </div>
 
 <div align="center">
@@ -31,7 +31,7 @@ By utilizing a simple and minimal usage syntax, that requires a flat learning cu
 
 Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
 
-Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) to share your thoughts on the project.
+Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [Twitter](https://twitter.com/perryrh0dan1) to share your thoughts on the project.
 
 ## Highlights
 
@@ -131,7 +131,7 @@ Commands:
 Invoking taskline without any options will display all saved items grouped into their respective boards.
 
 <div align="center">
-  <img alt="Boards" width="60%" src="media/header-boards.png"/>
+  <img alt="Boards" width="70%" src="media/header-boards.png"/>
 </div>
 
 ### Timeline View
@@ -139,7 +139,7 @@ Invoking taskline without any options will display all saved items grouped into 
 In order to display all items in a timeline view, based on their creation date, the `--timeline` / `-i` option can be used.
 
 <div align="center">
-  <img alt="Timeline View" width="62%" src="media/timeline.png"/>
+  <img alt="Timeline View" width="70%" src="media/timeline.png"/>
 </div>
 
 ## Configuration
@@ -166,7 +166,7 @@ The following illustrates all the available options with their respective defaul
         "auth_provider_x509_cert_url": "",
         "client_x509_cert_url": "",
       },
-	"dateformat": "dd.mm.yyyy"
+  "dateformat": "dd.mm.yyyy"
 }
 ```
 
