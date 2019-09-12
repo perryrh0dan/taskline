@@ -12,19 +12,22 @@
 
 <div align="center">
   <a href="https://travis-ci.org/perryrh0dan/taskline">
-    <img alt="Build Status" src="https://travis-ci.org/perryrh0dan/taskline.svg?branch=master">
+    <img alt="Build Status" src="https://travis-ci.org/perryrh0dan/taskline.svg?branch=master" />
   </a>
   <a href="https://gitter.im/taskline/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
-    <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg"/>
+    <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg" />
   </a>
   <a href="https://www.npmjs.com/package/@perryrh0dan/taskline">
-    <img alt="Monthly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline">
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dt/@perryrh0dan/taskline" />
+  </a>
+  <a href="https://snapcraft.io/taskline">
+    <img alt="taskline" src="https://snapcraft.io/taskline/badge.svg" />
   </a>
 </div>
 
 ## Description
 
-By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules. Local storage where your task and are never shared with anyone or anything, or the firestore module, where your tasks are saved in your firestore database and can be shared across all your devices. Deleted items are automatically archived and can be inspected or restored at any moment.
+By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data is written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules. The Local storage module where your task and are never shared with anyone or anything, or the firestore module, where your tasks are saved in your firestore database and can be shared across all your devices. Deleted items are automatically archived and can be inspected or restored at any moment.
 
 Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
 
@@ -58,6 +61,16 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 * Display loadingspinner while fetching network requests
 * New list filter attributes 
 
+### Coming
+
+* Extended duedate functionality
+* Possibility to use ID ranges
+* Possibility to cancel tasks
+* Subtask functionality
+* Functionality to download and upload local storage to firestore
+* Snap support for armhf
+* More unit tests
+
 View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
 ## Contents
@@ -88,6 +101,15 @@ yarn global add @perryrh0dan/taskline
 ``` bash
 npm install --global @perryrh0dan/taskline
 ```
+
+### Snapcraft
+
+```bash
+snap install taskline
+snap alias taskline tl # set alias
+```
+
+**Note:** Due to the snap's strictly confined nature, both the storage & configuration files will be saved under the [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) environment variable instead of the generic `$HOME` one.
 
 ## Usage
 
@@ -328,7 +350,7 @@ To set a duedate for a task while initializing it, use the `-d` option followed 
 $ tl t "Solve puzzle" -b coding -d 23.08.2019
 ```
 
-To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date.
+To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date. The `due` command has no available shorter alias.
 
 ``` 
 $ tl due 1,2,23 15.09.2019
@@ -411,6 +433,10 @@ For more info on how to contribute to the project, please read the [contributing
 * Navigate to your local fork: `cd taskline` 
 * Install the project dependencies: `npm install` or `yarn install` 
 * Lint the code for errors: `npm test` or `yarn test` 
+
+### Test
+
+To run unit tests for other modules than the local storage module you have to edit the `test/config.json` file and insert your db credentials.
 
 ## Related
 

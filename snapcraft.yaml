@@ -1,11 +1,36 @@
 name: taskline
 version: '0.6.0'
-version-script: git describe --always | cut -c 2-
 summary: Tasks, boards & notes for the command-line habitat
 description: |
-  By utilizing a simple and minimal usage syntax, that requires a flat learning curve,
-  taskline enables you to effectively manage your tasks and notes across multiple boards
-  from within your terminal.
+  By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you
+  to effectively manage your tasks and notes across multiple boards from within your terminal. All data are
+  written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules.
+  Local storage where your task and are never shared with anyone or anything, or the firestore module, where your
+  tasks are saved in your firestore database and can be shared across all your devices.
+  Deleted items are automatically archived and can be inspected or restored at any moment.
+
+  Highlighted Features
+
+  * Organize tasks & notes to boards
+  * Board & timeline views
+  * Priority & favorite mechanisms
+  * Search & filter items
+  * Archive & restore deleted items
+  * Lightweight & fast
+  * Data written atomically to storage
+  * Custom storage location
+  * Progress overview
+  * Simple & minimal usage syntax
+  * Update notifications
+  * Configurable through `~/.taskline.json`
+  * Data stored in JSON file at `~/.taskline/storage`
+  * Modular data storage.
+  * Firestore module to save data in google firestore.
+  * Sync tasks across all your devices with firestore.
+  * Replaced Meow with commander.js
+  * Duedate mechanism
+  * Display loadingspinner while fetching network requests
+  * New list filter attributes
 
 grade: stable
 confinement: strict
@@ -16,7 +41,7 @@ architectures:
 
 apps:
   taskline:
-    command: tb
+    command: tl
     plugs:
       - home
       - network

@@ -158,11 +158,20 @@ program
     });
   });
 
+program.on('--help', function() {
+  console.log('');
+  console.log('Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual');
+});
+
 if (process.argv.length === 2) {
   taskline.displayByBoard().then(grouped => {
     return taskline.displayStats(grouped);
   });
 }
+
+// if (process.argv.length >= 2) {
+//   program.help();
+// }
 
 updateNotifier({
   pkg,

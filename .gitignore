@@ -21,7 +21,7 @@ parts
 stage
 snap
 *.snap
-*bz2
+*.bz2
 
 # more
 test/config.json
