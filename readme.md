@@ -63,13 +63,13 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 
 ### Coming
 
-* Extend duedate functionality
-* possibility to use ID ranges
+* Extended duedate functionality
+* Possibility to use ID ranges
 * Possibility to cancel tasks
 * Subtask functionality
 * Functionality to download and upload local storage to firestore
 * Snap support for armhf
-* more unit tests
+* More unit tests
 
 View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
