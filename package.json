@@ -1,7 +1,7 @@
 {
   "name": "@perryrh0dan/taskline",
   "productName": "Taskline",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "tl": "cli.js"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "files": [
     "src",
@@ -57,6 +57,7 @@
     }
   },
   "scripts": {
+    "test": "eslint ./ && jshint src/ && jest --runInBand",
     "lint": "eslint ./",
     "jshint": "jshint src/",
     "unit": "jest --runInBand"

@@ -18,7 +18,7 @@
     <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg" />
   </a>
   <a href="https://www.npmjs.com/package/@perryrh0dan/taskline">
-    <img alt="Weekly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline" />
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dt/@perryrh0dan/taskline" />
   </a>
   <a href="https://snapcraft.io/taskline">
     <img alt="taskline" src="https://snapcraft.io/taskline/badge.svg" />
@@ -27,7 +27,7 @@
 
 ## Description
 
-By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data are written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules. Local storage where your task and are never shared with anyone or anything, or the firestore module, where your tasks are saved in your firestore database and can be shared across all your devices. Deleted items are automatically archived and can be inspected or restored at any moment.
+By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data is written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules. The Local storage module where your task and are never shared with anyone or anything, or the firestore module, where your tasks are saved in your firestore database and can be shared across all your devices. Deleted items are automatically archived and can be inspected or restored at any moment.
 
 Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
 
@@ -60,6 +60,16 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 * Duedate mechanism
 * Display loadingspinner while fetching network requests
 * New list filter attributes 
+
+### Coming
+
+* Extended duedate functionality
+* Possibility to use ID ranges
+* Possibility to cancel tasks
+* Subtask functionality
+* Functionality to download and upload local storage to firestore
+* Snap support for armhf
+* More unit tests
 
 View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
@@ -423,6 +433,10 @@ For more info on how to contribute to the project, please read the [contributing
 * Navigate to your local fork: `cd taskline` 
 * Install the project dependencies: `npm install` or `yarn install` 
 * Lint the code for errors: `npm test` or `yarn test` 
+
+### Test
+
+To run unit tests for other modules than the local storage module you have to edit the `test/config.json` file and insert your db credentials.
 
 ## Related
 
