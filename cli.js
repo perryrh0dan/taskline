@@ -165,7 +165,8 @@ if (process.argv.length === 2) {
 }
 
 updateNotifier({
-  pkg
+  pkg,
+  isGlobal: true
 }).notify();
 
 program.parse(process.argv);
