@@ -169,9 +169,9 @@ if (process.argv.length === 2) {
   });
 }
 
-if (process.argv.length >= 2) {
-  program.help();
-}
+// if (process.argv.length >= 2) {
+//   program.help();
+// }
 
 updateNotifier({
   pkg
