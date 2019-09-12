@@ -155,7 +155,7 @@ describe('Test output functionality', () => {
 
     return taskline.displayArchive().then(() => {
       expect(process.stdout.write.mock.calls[0][0]).toBe(
-        '\n  [4mTue Sep 03 2019[24m [90m[Today][39m [90m[1/1][39m\n'
+        '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/1][39m\n'
       );
       expect(process.stdout.write.mock.calls[1][0]).toBe(
         '    [90m1.[39m [32m✔ [39m [90mDeleted Task[39m  \n'

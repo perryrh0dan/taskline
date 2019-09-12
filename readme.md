@@ -18,7 +18,7 @@
     <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg" />
   </a>
   <a href="https://www.npmjs.com/package/@perryrh0dan/taskline">
-    <img alt="Weekly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline" />
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dt/@perryrh0dan/taskline" />
   </a>
   <a href="https://snapcraft.io/taskline">
     <img alt="taskline" src="https://snapcraft.io/taskline/badge.svg" />
@@ -60,6 +60,16 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 * Duedate mechanism
 * Display loadingspinner while fetching network requests
 * New list filter attributes 
+
+### Coming
+
+* Extend duedate functionality
+* possibility to use ID ranges
+* Possibility to cancel tasks
+* Subtask functionality
+* Functionality to download and upload local storage to firestore
+* Snap support for armhf
+* more unit tests
 
 View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
@@ -423,6 +433,10 @@ For more info on how to contribute to the project, please read the [contributing
 * Navigate to your local fork: `cd taskline` 
 * Install the project dependencies: `npm install` or `yarn install` 
 * Lint the code for errors: `npm test` or `yarn test` 
+
+### Test
+
+To run unit tests for other modules than the local storage module you have to edit the `test/config.json` file and insert your db credentials.
 
 ## Related
 
