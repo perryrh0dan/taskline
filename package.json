@@ -14,7 +14,7 @@
     "tl": "cli.js"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "files": [
     "src",
