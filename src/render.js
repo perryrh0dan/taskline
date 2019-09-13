@@ -1,30 +1,23 @@
 'use strict';
+const IntlRelativeTimeFormat = require('@formatjs/intl-relativetimeformat')
+  .default;
+const relativeFormat = new IntlRelativeTimeFormat();
+
 const chalk = require('chalk');
 const signale = require('signale');
 const ora = require('ora');
+const addWeeks = require('date-fns/addWeeks');
+const isBefore = require('date-fns/isBefore');
+const endOfDay = require('date-fns/endOfDay');
+const toDate = require('date-fns/toDate');
 const config = require('./config');
 
 signale.config({
   displayLabel: false
 });
 
-const {
-  await: wait,
-  error,
-  log,
-  note,
-  pending,
-  success
-} = signale;
-const {
-  blue,
-  green,
-  grey,
-  magenta,
-  red,
-  underline,
-  yellow
-} = chalk;
+const { await: wait, error, log, note, pending, success } = signale;
+const { blue, green, grey, magenta, red, underline, yellow } = chalk;
 
 const priorities = {
   2: 'yellow',
@@ -41,39 +34,67 @@ class Render {
   }
 
   _isBoardComplete(items) {
-    const {
-      tasks,
-      complete,
-      notes
-    } = this._getItemStats(items);
+    const { tasks, complete, notes } = this._getItemStats(items);
     return tasks === complete && notes === 0;
   }
 
   _getAge(birthday) {
     const daytime = 24 * 60 * 60 * 1000;
     const age = Math.round(Math.abs((birthday - Date.now()) / daytime));
-    return (age === 0) ? '' : grey(`${age}d`);
+    return age === 0 ? '' : grey(`${age}d`);
   }
 
-  _getDueDays(dueDate) {
-    const daytime = 24 * 60 * 60 * 1000;
-    const dueDays = Math.round(((dueDate - Date.now())) / daytime);
-    if (dueDays <= 0) {
-      return red(`${dueDays}d left`);
+  _getDueDate(dueTimestamp) {
+    const now = new Date();
+    const dueDate = toDate(dueTimestamp);
+
+    // get date diff
+    const diffTime = dueDate.getTime() - now.getTime();
+    const diffSeconds = Math.ceil(diffTime / 1000);
+    let unit = '';
+    let value = 0;
+    // let isSoon = false;
+    // let isUrgent = false;
+
+    if (Math.abs(diffSeconds) < 60) {
+      value = diffSeconds;
+      unit = 'seconds';
+    } else if (Math.abs(diffSeconds) < 60 * 60) {
+      value = Math.round(diffSeconds / 60);
+      unit = 'minutes';
+    } else if (Math.abs(diffSeconds) < 60 * 60 * 24) {
+      value = Math.round(diffSeconds / (60 * 60));
+      unit = 'hours';
+    } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 7) {
+      value = Math.round(diffSeconds / (60 * 60 * 24));
+      unit = 'days';
+    } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 30) {
+      value = Math.round(diffSeconds / (60 * 60 * 24 * 7));
+      unit = 'weeks';
+    } else {
+      value = Math.round(diffSeconds / (60 * 60 * 24 * 30));
+      unit = 'months';
     }
 
-    if (dueDays === 1) {
-      return yellow(`${dueDays}d left`);
+    const humanizedDate = relativeFormat.format(value, unit);
+    const text = `(Due ${humanizedDate})`;
+
+    const isSoon = isBefore(dueDate, addWeeks(now, 1));
+    const isUrgent = isBefore(dueDate, endOfDay(now));
+
+    if (isUrgent) {
+      return red(underline(text));
     }
 
-    return grey(`${dueDays}d left`);
+    if (isSoon) {
+      return yellow(text);
+    }
+
+    return grey(text);
   }
 
   _getCorrelation(items) {
-    const {
-      tasks,
-      complete
-    } = this._getItemStats(items);
+    const { tasks, complete } = this._getItemStats(items);
     return grey(`[${complete}/${tasks}]`);
   }
 
@@ -103,7 +124,10 @@ class Render {
   }
 
   _buildTitle(key, items) {
-    const title = (key === new Date().toDateString()) ? `${underline(key)} ${grey('[Today]')}` : underline(key);
+    const title =
+      key === new Date().toDateString()
+        ? `${underline(key)} ${grey('[Today]')}`
+        : underline(key);
     const correlation = this._getCorrelation(items);
     return {
       title,
@@ -114,9 +138,7 @@ class Render {
   _buildPrefix(item) {
     const prefix = [];
 
-    const {
-      _id
-    } = item;
+    const { _id } = item;
     prefix.push(' '.repeat(4 - String(_id).length));
     prefix.push(grey(`${_id}.`));
 
@@ -126,10 +148,7 @@ class Render {
   _buildMessage(item) {
     const message = [];
 
-    const {
-      isComplete,
-      description
-    } = item;
+    const { isComplete, description } = item;
     const priority = parseInt(item.priority, 10);
 
     if (!isComplete && priority > 1) {
@@ -146,10 +165,10 @@ class Render {
   }
 
   _displayTitle(board, items) {
-    const {
-      title: message,
-      correlation: suffix
-    } = this._buildTitle(board, items);
+    const { title: message, correlation: suffix } = this._buildTitle(
+      board,
+      items
+    );
     const titleObj = {
       prefix: '\n ',
       message,
@@ -160,15 +179,11 @@ class Render {
   }
 
   _displayItemByBoard(item) {
-    const {
-      _isTask,
-      isComplete,
-      inProgress
-    } = item;
+    const { _isTask, isComplete, inProgress } = item;
     const age = this._getAge(item._timestamp);
-    let dueDays;
+    let dueDate;
     if (item.dueDate && !item.isComplete) {
-      dueDays = this._getDueDays(item.dueDate);
+      dueDate = this._getDueDate(item.dueDate);
     }
 
     const star = this._getStar(item);
@@ -176,10 +191,10 @@ class Render {
     const prefix = this._buildPrefix(item);
     const message = this._buildMessage(item);
     let suffix;
-    if (dueDays) {
-      suffix = `${dueDays} ${star}`;
+    if (dueDate) {
+      suffix = `${dueDate} ${star}`;
     } else {
-      suffix = (age.length === 0) ? star : `${age} ${star}`;
+      suffix = age.length === 0 ? star : `${age} ${star}`;
     }
 
     const msgObj = {
@@ -189,18 +204,18 @@ class Render {
     };
 
     if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : pending(msgObj);
+      return isComplete
+        ? success(msgObj)
+        : inProgress
+        ? wait(msgObj)
+        : pending(msgObj);
     }
 
     return note(msgObj);
   }
 
   _displayItemByDate(item) {
-    const {
-      _isTask,
-      isComplete,
-      inProgress
-    } = item;
+    const { _isTask, isComplete, inProgress } = item;
     const boards = item.boards.filter(x => x !== 'My Board');
     const star = this._getStar(item);
 
@@ -215,7 +230,11 @@ class Render {
     };
 
     if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : pending(msgObj);
+      return isComplete
+        ? success(msgObj)
+        : inProgress
+        ? wait(msgObj)
+        : pending(msgObj);
     }
 
     return note(msgObj);
@@ -238,13 +257,20 @@ class Render {
   displayByBoard(data) {
     this.stopLoading();
     Object.keys(data).forEach(board => {
-      if (this._isBoardComplete(data[board]) && !this._configuration.displayCompleteTasks) {
+      if (
+        this._isBoardComplete(data[board]) &&
+        !this._configuration.displayCompleteTasks
+      ) {
         return;
       }
 
       this._displayTitle(board, data[board]);
       data[board].forEach(item => {
-        if (item._isTask && item.isComplete && !this._configuration.displayCompleteTasks) {
+        if (
+          item._isTask &&
+          item.isComplete &&
+          !this._configuration.displayCompleteTasks
+        ) {
           return;
         }
 
@@ -256,13 +282,20 @@ class Render {
   displayByDate(data) {
     this.stopLoading();
     Object.keys(data).forEach(date => {
-      if (this._isBoardComplete(data[date]) && !this._configuration.displayCompleteTasks) {
+      if (
+        this._isBoardComplete(data[date]) &&
+        !this._configuration.displayCompleteTasks
+      ) {
         return;
       }
 
       this._displayTitle(date, data[date]);
       data[date].forEach(item => {
-        if (item._isTask && item.isComplete && !this._configuration.displayCompleteTasks) {
+        if (
+          item._isTask &&
+          item.isComplete &&
+          !this._configuration.displayCompleteTasks
+        ) {
           return;
         }
 
@@ -271,18 +304,17 @@ class Render {
     });
   }
 
-  displayStats({
-    percent,
-    complete,
-    inProgress,
-    pending,
-    notes
-  }) {
+  displayStats({ percent, complete, inProgress, pending, notes }) {
     if (!this._configuration.displayProgressOverview) {
       return;
     }
 
-    percent = percent >= 75 ? green(`${percent}%`) : percent >= 50 ? yellow(`${percent}%`) : `${percent}%`;
+    percent =
+      percent >= 75
+        ? green(`${percent}%`)
+        : percent >= 50
+        ? yellow(`${percent}%`)
+        : `${percent}%`;
 
     const status = [
       `${green(complete)} ${grey('done')}`,
@@ -351,6 +383,17 @@ class Render {
     });
   }
 
+  invalidIDRange(range) {
+    this.stopLoading();
+    const [prefix, suffix] = ['\n', grey(range)];
+    const message = 'Unable to resolve ID range:';
+    error({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
   invalidPriority() {
     this.stopLoading();
     const prefix = '\n';
@@ -361,13 +404,14 @@ class Render {
     });
   }
 
-  invalidDateFormat() {
+  invalidDateFormat(date) {
     this.stopLoading();
-    const prefix = '\n';
-    const message = 'Date has wrong format';
+    const [prefix, suffix] = ['\n', grey(date)];
+    const message = 'Unable to parse date:';
     error({
       prefix,
-      message
+      message,
+      suffix
     });
   }
 
@@ -461,10 +505,7 @@ class Render {
     });
   }
 
-  successCreate({
-    _id,
-    _isTask
-  }) {
+  successCreate({ _id, _isTask }) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(_id)];
     const message = `Created ${_isTask ? 'task:' : 'note:'}`;
@@ -497,10 +538,10 @@ class Render {
     });
   }
 
-  successMove(id, boards) {
+  successMove(ids, boards) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(boards.join(', '))];
-    const message = `Move item: ${grey(id)} to`;
+    const message = `Move item: ${grey(ids.join(', '))} to`;
     success({
       prefix,
       message,
@@ -515,8 +556,15 @@ class Render {
     }
 
     const prefix = '\n';
-    const message = `Updated priority of ${ids.length > 1 ? 'tasks' : 'task'}: ${grey(ids.join(', '))} to`;
-    const suffix = level === 3 ? red('high') : (level === 2 ? yellow('medium') : green('normal'));
+    const message = `Updated priority of ${
+      ids.length > 1 ? 'tasks' : 'task'
+    }: ${grey(ids.join(', '))} to`;
+    const suffix =
+      level === 3
+        ? red('high')
+        : level === 2
+        ? yellow('medium')
+        : green('normal');
     success({
       prefix,
       message,
@@ -531,7 +579,9 @@ class Render {
     }
 
     const prefix = '\n';
-    const message = `Updated duedate of ${ids.length > 1 ? 'tasks' : 'task'}: ${grey(ids.join(', '))} to`;
+    const message = `Updated duedate of ${
+      ids.length > 1 ? 'tasks' : 'task'
+    }: ${grey(ids.join(', '))} to`;
     const suffix = dueDate;
     success({
       prefix,
@@ -554,7 +604,9 @@ class Render {
   successCopyToClipboard(ids) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
-    const message = `Copied the ${ids.length > 1 ? 'descriptions of items' : 'description of item'}:`;
+    const message = `Copied the ${
+      ids.length > 1 ? 'descriptions of items' : 'description of item'
+    }:`;
     success({
       prefix,
       message,

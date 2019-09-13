@@ -84,6 +84,26 @@ describe('Test check functionality', () => {
     });
   });
 
+  it('should check multiple tasks by id range', () => {
+    return taskline.checkTasks('2-4').then(() => {
+      return storage.get().then(data => {
+        expect(data[2].isComplete).toBe(false);
+        expect(data[3].isComplete).toBe(false);
+        expect(data[4].isComplete).toBe(false);
+      });
+    });
+  });
+
+  it('should check multiple tasks by id range and list', () => {
+    return taskline.checkTasks('2,3-4').then(() => {
+      return storage.get().then(data => {
+        expect(data[2].isComplete).toBe(true);
+        expect(data[3].isComplete).toBe(true);
+        expect(data[4].isComplete).toBe(true);
+      });
+    });
+  });
+
   it('should delete all checked tasks', () => {
     return storage.get().then(data => {
       const oldData = JSON.parse(JSON.stringify(data));
@@ -117,6 +137,12 @@ describe('Test check functionality', () => {
   it('should try to check a nonexisting item', () => {
     expect(taskline.checkTasks('5')).rejects.toMatchObject({
       message: 'Invalid InputIDs'
+    });
+  });
+
+  it('should try to check with invalid id range', () => {
+    expect(taskline.checkTasks('1-b')).rejects.toMatchObject({
+      message: 'Invalid Input ID Range'
     });
   });
 
