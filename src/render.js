@@ -125,9 +125,7 @@ class Render {
 
   _buildTitle(key, items) {
     const title =
-      key === new Date().toDateString()
-        ? `${underline(key)} ${grey('[Today]')}`
-        : underline(key);
+      key === new Date().toDateString() ? `${underline(key)} ${grey('[Today]')}` : underline(key);
     const correlation = this._getCorrelation(items);
     return {
       title,
@@ -204,11 +202,7 @@ class Render {
     };
 
     if (_isTask) {
-      return isComplete
-        ? success(msgObj)
-        : inProgress
-        ? wait(msgObj)
-        : pending(msgObj);
+      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : pending(msgObj);
     }
 
     return note(msgObj);
@@ -230,11 +224,7 @@ class Render {
     };
 
     if (_isTask) {
-      return isComplete
-        ? success(msgObj)
-        : inProgress
-        ? wait(msgObj)
-        : pending(msgObj);
+      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : pending(msgObj);
     }
 
     return note(msgObj);
@@ -310,11 +300,7 @@ class Render {
     }
 
     percent =
-      percent >= 75
-        ? green(`${percent}%`)
-        : percent >= 50
-        ? yellow(`${percent}%`)
-        : `${percent}%`;
+      percent >= 75 ? green(`${percent}%`) : percent >= 50 ? yellow(`${percent}%`) : `${percent}%`;
 
     const status = [
       `${green(complete)} ${grey('done')}`,
@@ -560,11 +546,7 @@ class Render {
       ids.length > 1 ? 'tasks' : 'task'
     }: ${grey(ids.join(', '))} to`;
     const suffix =
-      level === 3
-        ? red('high')
-        : level === 2
-        ? yellow('medium')
-        : green('normal');
+      level === 3 ? red('high') : level === 2 ? yellow('medium') : green('normal');
     success({
       prefix,
       message,

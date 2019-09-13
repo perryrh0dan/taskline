@@ -82,7 +82,7 @@ describe('Test create functionality', () => {
           expect(data[5]._isTask).toBe(true);
           expect(data[5].description).toBe('Fourth Test Task');
           expect(data[5].boards).toMatchObject(['My Board']);
-          expect(data[5].dueDate).toBe(new Date('2019-09-02').setHours(23, 59, 59));
+          expect(data[5].dueDate).toBe(new Date('2019-09-02').setHours(0));
           expect(data[5].isComplete).toBe(false);
           expect(data[5].inProgress).toBe(false);
           expect(data[5].isStarred).toBe(false);
@@ -99,7 +99,7 @@ describe('Test create functionality', () => {
           expect(data[6]._isTask).toBe(true);
           expect(data[6].description).toBe('Fives Test Task');
           expect(data[6].boards).toMatchObject(['test2', 'test3']);
-          expect(data[6].dueDate).toBe(new Date('2019-09-03').setHours(23, 59, 59));
+          expect(data[6].dueDate).toBe(new Date('2019-09-03').setHours(0));
           expect(data[6].isComplete).toBe(false);
           expect(data[6].inProgress).toBe(false);
           expect(data[6].isStarred).toBe(false);

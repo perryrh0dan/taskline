@@ -48,6 +48,12 @@ class Helper {
       return this._storage.setArchive({});
     });
   }
+
+  changeConfig(key, value) {
+    const localConfig = config.get();
+    localConfig[key] = value;
+    config.set(localConfig);
+  }
 }
 
 module.exports = new Helper();

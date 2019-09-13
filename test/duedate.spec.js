@@ -54,15 +54,27 @@ describe('Test duedate functionality', () => {
     done();
   });
 
-  it('should update duedate of task', () => {
+  it('should update duedate of a task', () => {
     return taskline.updateDueDate('2', '02.09.2019').then(() => {
       return storage.get().then(data => {
-        expect(data[2].dueDate).toBe(new Date('2019-09-02').setHours(23, 59, 59));
+        expect(data[2].dueDate).toBe(new Date('2019-09-02').setHours(0));
       });
     });
   });
 
-  it('should try to update duedate of note', () => {
+  it('should change date format', () => {
+    helper.changeConfig('dateformat', 'dd.mm.yyyy HH:MM');
+  });
+
+  it('should update duedate of a task with hours and minutes', () => {
+    return taskline.updateDueDate('2', '02.09.2019 12:30').then(() => {
+      return storage.get().then(data => {
+        expect(data[2].dueDate).toBe(new Date('2019-09-02').setHours(12, 30));
+      });
+    });
+  });
+
+  it('should try to update duedate of a note', () => {
     return taskline.updateDueDate('1', '02.09.2019').then(() => {
       return storage.get().then(data => {
         expect(data[1].dueDate).toBe(undefined);
