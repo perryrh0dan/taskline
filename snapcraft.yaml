@@ -1,5 +1,5 @@
 name: taskline
-version: '0.6.0'
+version: '0.6.3'
 summary: Tasks, boards & notes for the command-line habitat
 description: |
   By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you
@@ -32,12 +32,15 @@ description: |
   * Display loadingspinner while fetching network requests
   * New list filter attributes
 
+  For more informations visit https://github.com/perryrh0dan/taskline.
+
 grade: stable
 confinement: strict
 
 architectures:
   - amd64
   - i386
+  - armhf
 
 apps:
   taskline:

@@ -169,10 +169,12 @@ if (process.argv.length === 2) {
   });
 }
 
-// if (process.argv.length >= 2) {
-//   program.help();
-// }
+program.on('command:*', function() {
+  console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
+  process.exit(1);
+});
 
+// disable this for snap
 updateNotifier({
   pkg,
   isGlobal: true
