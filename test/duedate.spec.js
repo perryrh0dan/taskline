@@ -62,11 +62,8 @@ describe('Test duedate functionality', () => {
     });
   });
 
-  it('should change date format', () => {
-    helper.changeConfig('dateformat', 'dd.mm.yyyy HH:MM');
-  });
-
   it('should update duedate of a task with hours and minutes', () => {
+    helper.changeConfig('dateformat', 'dd.mm.yyyy HH:MM');
     return taskline.updateDueDate('2', '02.09.2019 12:30').then(() => {
       return storage.get().then(data => {
         expect(data[2].dueDate).toBe(new Date('2019-09-02').setHours(12, 30));

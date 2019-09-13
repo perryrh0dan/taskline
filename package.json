@@ -1,7 +1,7 @@
 {
   "name": "@perryrh0dan/taskline",
   "productName": "Taskline",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
@@ -53,7 +53,7 @@
         "client_x509_cert_url": "",
         "databaseURL": ""
       },
-      "dateformat": "dd.mm.yyyy HH:mm"
+      "dateformat": "dd.mm.yyyy HH:MM"
     }
   },
   "scripts": {

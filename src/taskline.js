@@ -133,7 +133,7 @@ class Taskline {
       if (parts[fmt.MM]) {
         date.setMinutes(parts[fmt.MM]);
         if (parts[fmt.SS]) {
-          date.setMinutes(parts[fmt.SS]);
+          date.setSeconds(parts[fmt.SS]);
         }
       }
     }
