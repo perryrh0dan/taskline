@@ -130,9 +130,7 @@ class Render {
 
   _buildTitle(key, items) {
     const title =
-      key === new Date().toDateString()
-        ? `${underline(key)} ${grey('[Today]')}`
-        : underline(key);
+      key === new Date().toDateString() ? `${underline(key)} ${grey('[Today]')}` : underline(key);
     const correlation = this._getCorrelation(items);
     return {
       title,
