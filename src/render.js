@@ -1,8 +1,4 @@
 'use strict';
-const IntlRelativeTimeFormat = require('@formatjs/intl-relativetimeformat')
-  .default;
-const relativeFormat = new IntlRelativeTimeFormat();
-
 const chalk = require('chalk');
 const signale = require('signale');
 const ora = require('ora');
@@ -76,7 +72,9 @@ class Render {
       unit = 'months';
     }
 
-    const humanizedDate = relativeFormat.format(value, unit);
+    const absValue = Math.abs(value);
+    unit = (absValue === 1) ? unit.slice(0, unit.length - 1) : unit;
+    const humanizedDate = (value >= 1) ? `in ${value} ${unit}` : `${absValue} ${unit} ago`;
     const text = `(Due ${humanizedDate})`;
 
     const isSoon = isBefore(dueDate, addWeeks(now, 1));
