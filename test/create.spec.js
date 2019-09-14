@@ -60,7 +60,7 @@ describe('Test create functionality', () => {
   });
 
   it('should create a task with priority', () => {
-    return taskline.createTask('Third Test Task', undefined, 3).then(() => {
+    return taskline.createTask('Third Test Task', undefined, '3').then(() => {
       return storage.get().then(data => {
         expect(data[4]._isTask).toBe(true);
         expect(data[4].description).toBe('Third Test Task');
@@ -113,7 +113,7 @@ describe('Test create functionality', () => {
 
   it('should create a task with duedate, priority and boards', () => {
     return taskline
-      .createTask('Sixth Test Task', 'test2,test3', 2, '03.09.2019')
+      .createTask('Sixth Test Task', 'test2,test3', '2', '03.09.2019')
       .then(() => {
         return storage.get().then(data => {
           expect(data[7]._isTask).toBe(true);
@@ -135,7 +135,7 @@ describe('Test create functionality', () => {
   });
 
   it('should try to create a task with wrong duedate', () => {
-    expect(taskline.createTask('Eighth Test Task', undefined, undefined, "2019-30-3")).rejects.toMatchObject({
+    expect(taskline.createTask('Eighth Test Task', undefined, undefined, '2019-30-3')).rejects.toMatchObject({
       message: 'Invalid Date Format'
     });
   });

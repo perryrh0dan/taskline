@@ -14,6 +14,11 @@ cp -r ../src ./src
 cp ../cli.js ./
 cp ../license.md ./
 
+# Comment out update notifier for snap
+echo 'Comment out update notifier'
+sed -i "/START SNAPCRAFT IGNORE/,/END SNAPCRAFT IGNORE/"' s/^/\/\/ /' cli.js
+# sed -i '2,4 s/^/#/' cli.js
+
 # Install npm packages
 echo 'Run npm install'
 npm install
@@ -22,10 +27,10 @@ npm install
 echo 'Build snap'
 sudo snapcraft cleanbuild
 
-# Copy snap and bz2 to main directory
-echo 'Copy snap and bz2 file to main directory'
+# Copy snap to main directory
+echo 'Copy snap to main directory'
 find ./ -iname '*.snap' -exec cp {} ../ \;
-find ./ -iname '*.bz2' -exec cp {} ../ \;
+# find ./ -iname '*.bz2' -exec cp {} ../ \;
 # for /R ./ %%f in (*.snap) do copy %%f ../
 
 # Navigate out and delete temp directory

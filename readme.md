@@ -232,7 +232,7 @@ Configuration of the firestore module.
 ##### `dateformat` 
 
 * Type: `String` 
-* Default: `dd.mm.yyyy` 
+* Default: `dd.mm.yyyy HH:MM` 
 
 Dateformat used for duedate.
 

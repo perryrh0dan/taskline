@@ -16,7 +16,7 @@ signale.config({
   displayLabel: false
 });
 
-const { await: wait, error, log, note, pending, success } = signale;
+const { await: wait, error, log, note, pending, success, fatal } = signale;
 const { blue, green, grey, magenta, red, underline, yellow } = chalk;
 
 const priorities = {
@@ -177,7 +177,7 @@ class Render {
   }
 
   _displayItemByBoard(item) {
-    const { _isTask, isComplete, inProgress } = item;
+    const { _isTask, isComplete, inProgress, isCanceled } = item;
     const age = this._getAge(item._timestamp);
     let dueDate;
     if (item.dueDate && !item.isComplete) {
@@ -202,14 +202,14 @@ class Render {
     };
 
     if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : pending(msgObj);
+      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : isCanceled ? fatal(msgObj) : pending(msgObj);
     }
 
     return note(msgObj);
   }
 
   _displayItemByDate(item) {
-    const { _isTask, isComplete, inProgress } = item;
+    const { _isTask, isComplete, inProgress, isCanceled } = item;
     const boards = item.boards.filter(x => x !== 'My Board');
     const star = this._getStar(item);
 
@@ -224,7 +224,7 @@ class Render {
     };
 
     if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : pending(msgObj);
+      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : isCanceled ? fatal(msgObj) : pending(msgObj);
     }
 
     return note(msgObj);
@@ -454,6 +454,36 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Paused ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    success({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
+  markCanceled(ids) {
+    this.stopLoading();
+    if (ids.length === 0) {
+      return;
+    }
+
+    const [prefix, suffix] = ['\n', grey(ids.join(', '))];
+    const message = `Canceled ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    success({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
+  markRevived(ids) {
+    this.stopLoading();
+    if (ids.length === 0) {
+      return;
+    }
+
+    const [prefix, suffix] = ['\n', grey(ids.join(', '))];
+    const message = `Revived ${ids.length > 1 ? 'tasks' : 'task'}:`;
     success({
       prefix,
       message,

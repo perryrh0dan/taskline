@@ -5,7 +5,7 @@ const path = require('path');
 const pkg = require('../package.json');
 
 const { join } = path;
-const { default: defaultConfig } = pkg.configuration; //  eslint-disable-line quote-props
+const { 'default': defaultConfig } = pkg.configuration; //  eslint-disable-line quote-props
 
 class Config {
   constructor() {

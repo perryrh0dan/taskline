@@ -58,6 +58,7 @@ describe('Test begin functionality', () => {
     return taskline.beginTasks('2').then(() => {
       return storage.get().then(data => {
         expect(data[2].inProgress).toBe(true);
+        expect(data[2].isCanceled).toBe(false || undefined);
         expect(data[2].isComplete).toBe(false);
       });
     });
@@ -67,8 +68,10 @@ describe('Test begin functionality', () => {
     return taskline.beginTasks('2,3').then(() => {
       return storage.get().then(data => {
         expect(data[2].inProgress).toBe(false);
+        expect(data[2].isCanceled).toBe(false || undefined);
         expect(data[2].isComplete).toBe(false);
         expect(data[3].inProgress).toBe(true);
+        expect(data[3].isCanceled).toBe(false || undefined);
         expect(data[3].isComplete).toBe(false);
       });
     });
@@ -110,7 +113,7 @@ describe('Test begin functionality', () => {
     expect(taskline.checkTasks('ö')).rejects.toMatchObject({
       message: 'Invalid InputIDs'
     });
-  })
+  });
 
   afterAll(done => {
     helper.resetConfig();

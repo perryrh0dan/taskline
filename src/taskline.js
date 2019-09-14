@@ -74,6 +74,18 @@ class Taskline {
     return inputIDs;
   }
 
+  _validatePriority(priority) {
+    let level = ['1', '2', '3'].indexOf(priority) > -1 ? priority : null;
+    level = Number(level);
+
+    if (!level) {
+      render.invalidPriority();
+      throw new Error('Invalid Priority');
+    }
+
+    return level;
+  }
+
   async _getBoards() {
     const data = await this._getData();
     const boards = ['My Board'];
@@ -120,6 +132,9 @@ class Taskline {
     format.replace(/(yyyy|dd|mm|HH|MM|SS)/g, part => {
       fmt[part] = i++;
     });
+
+    // Some simple date checks
+    if (parts[fmt.yyyy] < 0 || parts[fmt.mm] > 11 || parts[fmt.dd] > 31) throw new Error('Cant parse to date');
 
     try {
       date = new Date(parts[fmt.yyyy], parts[fmt.mm] - 1, parts[fmt.dd]);
@@ -518,10 +533,41 @@ class Taskline {
     render.markPaused(paused);
   }
 
+  async cancelTasks(ids) {
+    render.startLoading();
+
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    const data = await this._getData();
+
+    ids = await this._validateIDs(ids).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const [canceled, revived] = [[], []];
+
+    ids.forEach(id => {
+      if (data[id]._isTask) {
+        data[id].isComplete = false;
+        data[id].inProgress = false;
+        data[id].isCanceled = !data[id].isCanceled;
+        return data[id].isCanceled ? canceled.push(id) : revived.push(id);
+      }
+    });
+
+    await this._save(data);
+    render.markCanceled(canceled);
+    render.markRevived(revived);
+  }
+
   async createTask(
     description,
     boards = 'My Board',
-    priority = 1,
+    priority = '1',
     dueDate = null
   ) {
     render.startLoading();
@@ -529,7 +575,12 @@ class Taskline {
     const data = await this._getData();
     const { dateformat } = config.get();
 
-    priority = Number(priority);
+    try {
+      priority = this._validatePriority(priority);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Priority'));
+    }
+
     boards = this._parseOptions(boards);
 
     let dueTime;
@@ -744,11 +795,11 @@ class Taskline {
 
   async updatePriority(ids, priority) {
     render.startLoading();
-    let level = ['1', '2', '3'].indexOf(priority) > -1 ? priority : null;
-    level = Number(level);
+    let level;
 
-    if (!level) {
-      render.invalidPriority();
+    try {
+      level = this._validatePriority(priority);
+    } catch (error) {
       return Promise.reject(new Error('Invalid Priority'));
     }
 
@@ -820,7 +871,7 @@ class Taskline {
     const ids = [];
 
     Object.keys(data).forEach(id => {
-      if (data[id].isComplete) {
+      if (data[id].isComplete || data[id].isCanceled) {
         ids.push(id);
       }
     });

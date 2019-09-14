@@ -2,7 +2,9 @@
 
 'use strict';
 const program = require('commander');
+// START SNAPCRAFT IGNORE
 const updateNotifier = require('update-notifier');
+// END SNAPCRAFT IGNORE
 const pkg = require('./package.json');
 const taskline = new (require('./src/taskline'))();
 
@@ -25,6 +27,13 @@ program
   .description('Start/pause task')
   .action(ids => {
     taskline.beginTasks(ids).catch(() => {});
+  });
+
+program
+  .command('cancel <ids>')
+  .description('Cancel/revive task')
+  .action(ids => {
+    taskline.cancelTasks(ids).catch(() => {});
   });
 
 program
@@ -174,10 +183,11 @@ program.on('command:*', function() {
   process.exit(1);
 });
 
-// disable this for snap
+// START SNAPCRAFT IGNORE disable this for snap
 updateNotifier({
   pkg,
   isGlobal: true
 }).notify();
+// END SNAPCRAFT IGNORE
 
 program.parse(process.argv);

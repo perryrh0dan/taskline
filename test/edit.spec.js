@@ -61,12 +61,4 @@ describe('Test edit functionality', () => {
     helper.resetConfig();
     done();
   });
-  // It("should display By Board", () => {
-  //   process.stdout.write = jest.fn();
-
-  //   taskline.displayByBoard().then(() => {
-  //     expect(process.stdout.write.mock.calls[0][0]).toBe("\n  [4mMy Board[24m [90m[0/0][39m\n")
-  //     expect(process.stdout.write.mock.calls[1][0]).toBe("    [90m1.[39m [34m* [39m Test Note\n")
-  //   })
-  // })
 });
