@@ -40,9 +40,8 @@ class Render {
     return age === 0 ? '' : grey(`${age}d`);
   }
 
-  _getDueDate(dueTimestamp) {
-    const now = new Date();
-    const dueDate = toDate(dueTimestamp);
+  _getRelativeHumanizedDate(dueDate, now) {
+    if (!now) now = new Date();
 
     // get date diff
     const diffTime = dueDate.getTime() - now.getTime();
@@ -73,8 +72,16 @@ class Render {
     }
 
     const absValue = Math.abs(value);
-    unit = (absValue === 1) ? unit.slice(0, unit.length - 1) : unit;
-    const humanizedDate = (value >= 1) ? `in ${value} ${unit}` : `${absValue} ${unit} ago`;
+    unit = absValue === 1 ? unit.slice(0, unit.length - 1) : unit;
+    const humanizedDate = value >= 1 ? `in ${value} ${unit}` : `${absValue} ${unit} ago`;
+    return humanizedDate;
+  }
+
+  _getDueDate(dueTimestamp) {
+    const now = new Date();
+    const dueDate = toDate(dueTimestamp);
+
+    const humanizedDate = this._getRelativeHumanizedDate(dueDate);
     const text = `(Due ${humanizedDate})`;
 
     const isSoon = isBefore(dueDate, addWeeks(now, 1));
@@ -123,7 +130,9 @@ class Render {
 
   _buildTitle(key, items) {
     const title =
-      key === new Date().toDateString() ? `${underline(key)} ${grey('[Today]')}` : underline(key);
+      key === new Date().toDateString()
+        ? `${underline(key)} ${grey('[Today]')}`
+        : underline(key);
     const correlation = this._getCorrelation(items);
     return {
       title,
