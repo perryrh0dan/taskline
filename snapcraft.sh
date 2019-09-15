@@ -21,7 +21,7 @@ sed -i "/START SNAPCRAFT IGNORE/,/END SNAPCRAFT IGNORE/"' s/^/\/\/ /' cli.js
 
 # Install npm packages
 echo 'Run npm install'
-npm install
+npm install --production
 
 # Build Snap
 echo 'Build snap'
