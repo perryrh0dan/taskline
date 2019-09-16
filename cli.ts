@@ -22,20 +22,20 @@ program.name('tl').usage('[command] [options]');
 //     taskline.displayArchive().catch(() => {});
 //   });
 
-// program
-//   .command('begin <ids>')
-//   .alias('b')
-//   .description('Start/pause task')
-//   .action(ids => {
-//     taskline.beginTasks(ids).catch(() => {});
-//   });
+program
+  .command('begin <ids>')
+  .alias('b')
+  .description('Start/pause task')
+  .action(ids => {
+    taskline.beginTasks(ids).catch(() => {});
+  });
 
-// program
-//   .command('cancel <ids>')
-//   .description('Cancel/revive task')
-//   .action(ids => {
-//     taskline.cancelTasks(ids).catch(() => {});
-//   });
+program
+  .command('cancel <ids>')
+  .description('Cancel/revive task')
+  .action(ids => {
+    taskline.cancelTasks(ids).catch(() => {});
+  });
 
 program
   .command('check <ids>')
@@ -45,43 +45,43 @@ program
     taskline.checkTasks(ids).catch(() => {});
   });
 
-// program
-//   .command('clear')
-//   .description('Delete all checked items')
-//   .action(() => {
-//     taskline.clear().catch(() => {});
-//   });
+program
+  .command('clear')
+  .description('Delete all checked items')
+  .action(() => {
+    taskline.clear().catch(() => {});
+  });
 
-// program
-//   .command('copy <ids>')
-//   .alias('y')
-//   .description('Copy description to clipboard')
-//   .action(ids => {
-//     taskline.copyToClipboard(ids).catch(() => {});
-//   });
+program
+  .command('copy <ids>')
+  .alias('y')
+  .description('Copy description to clipboard')
+  .action(ids => {
+    taskline.copyToClipboard(ids).catch(() => {});
+  });
 
-// program
-//   .command('delete <ids>')
-//   .alias('d')
-//   .description('Delete item')
-//   .action(ids => {
-//     taskline.deleteItems(ids).catch(() => {});
-//   });
+program
+  .command('delete <ids>')  
+  .alias('d')
+  .description('Delete item')
+  .action(ids => {
+    taskline.deleteItems(ids).catch(() => {});
+  });
 
-// program
-//   .command('due <ids> <dueDate>')
-//   .description('Update duedateof task')
-//   .action((ids, dueDate) => {
-//     taskline.updateDueDate(ids, dueDate).catch(() => {});
-//   });
+program
+  .command('due <ids> <dueDate>')
+  .description('Update duedateof task')
+  .action((ids, dueDate) => {
+    taskline.updateDueDate(ids, dueDate).catch(() => {});
+  });
 
-// program
-//   .command('edit <id> <description>')
-//   .alias('e')
-//   .description('Edit item description')
-//   .action((id, description) => {
-//     taskline.editDescription(id, description).catch(() => {});
-//   });
+program
+  .command('edit <id> <description>')
+  .alias('e')
+  .description('Edit item description')
+  .action((id, description) => {
+    taskline.editDescription(id, description).catch(() => {});
+  });
 
 // program
 //   .command('find <terms>')
@@ -109,22 +109,22 @@ program
 //     taskline.moveBoards(ids, boards).catch(() => {});
 //   });
 
-// program
-//   .command('note <description>')
-//   .alias('n')
-//   .description('Create note')
-//   .option('-b, --board <board>', 'Board')
-//   .action((description, opts) => {
-//     taskline.createNote(description, opts.board).catch(() => {});
-//   });
+program
+  .command('note <description>')
+  .alias('n')
+  .description('Create note')
+  .option('-b, --board <board>', 'Board')
+  .action((description, opts) => {
+    taskline.createNote(description, opts.board).catch(() => {});
+  });
 
-// program
-//   .command('priority <id> <priority>')
-//   .alias('p')
-//   .description('Update priority of task')
-//   .action((id, priority) => {
-//     taskline.updatePriority(id, priority).catch(() => {});
-//   });
+program
+  .command('priority <id> <priority>')
+  .alias('p')
+  .description('Update priority of task')
+  .action((id, priority) => {
+    taskline.updatePriority(id, priority).catch(() => {});
+  });
 
 // program
 //   .command('restore <ids>')
