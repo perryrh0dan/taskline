@@ -6,16 +6,16 @@ import pkg = require('../package.json');
 const defaultConfig = pkg.configuration.default;
 
 export class Config {
-  static instance: Config
-  config: any;
-  configFile: string;
+  private static _instance: Config
+  private config: any;
+  private configFile: string;
 
-  public static getInstance() {
-    if (!this.instance) {
-      this.instance = new Config();
+  public static get instance() {
+    if (!this._instance) {
+      this._instance = new Config();
     }
 
-    return this.instance;
+    return this._instance;
   }
 
   private constructor() {

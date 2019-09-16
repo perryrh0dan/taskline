@@ -1,16 +1,32 @@
 import { LocalStorage } from './local'
+import { Item } from './item';
+import { Task } from './task';
+import { Renderer } from './renderer';
+import { Config } from './config';
 
-// const render = require('./render')
+
 
 export class Taskline {
   private storage;
 
   constructor() {
-    this.storage = LocalStorage.getInstance();
+    this.storage = LocalStorage.instance;
   }
 
-  private getData() {
-    return this.storage.get()
+  private getData(ids?: Array<number>): Promise<Array<Item>> {
+    return this.storage.get(ids)
+  }
+
+  private getArchive(ids?: Array<number>): Promise<Array<Item>> {
+    return this.storage.getArchive(ids);
+  }
+
+  private save(data: Array<Item>) {
+    return this.storage.set(data)
+  }
+
+  private saveArchive(archive: Array<Item>) {
+    return this.storage.setArchive(archive);
   }
 
   private arrayify(x) {
@@ -58,6 +74,15 @@ export class Taskline {
     return Object.keys(data).map(id => parseInt(id, 10));
   }
 
+  private async generateID(data?: Array<Item>) {
+    if (!data) {
+      data = await this.getData();
+    }
+
+    const max = Math.max.apply(Math, data.map(function(item) { return item.id; }))
+    return max + 1;
+  }
+
   private async validateIDs(inputIDs: Array<number>, existingIDs?) {
     if (!existingIDs) {
       existingIDs = await this.getIDs();
@@ -66,8 +91,24 @@ export class Taskline {
     inputIDs = this.removeDuplicates(inputIDs);
   }
 
-  async checkTasks(ids: string) {
-    // render.startLoading();
+  private async validatePriority(priority: string) {
+    
+  }
+
+  public async createTask(description: string, boards: string, priority: string, dueDate: string) {
+    Renderer.instance.startLoading();
+
+    const id = await this.generateID();
+    const data = await this.getData();
+    const { dataformat } = Config.instance.get();
+
+    try {
+      priority = this.
+    }
+  }
+
+  public async checkTasks(ids: string) {
+    Renderer.instance.startLoading();
 
     let parsedIDs: Array<number>;
 
@@ -77,14 +118,44 @@ export class Taskline {
       return Promise.reject(new Error('Invalid Input ID Range'));
     }
 
-    const data = await this.getData()
+    const items = await this.getData(parsedIDs)
 
-    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
-      return Promise.reject(new Error('Invalid InputIDs'));
+    const [checked, unchecked] = [new Array<number>(), new Array<number>()];
+
+    items.forEach(item => {
+      if (item instanceof Task) {
+        return item.isComplete ? checked.push(item.id) : unchecked.push(item.id);
+      };
     });
 
-    const [checked, unchecked] = [[], []];
+    await this.save(items);
+    Renderer.instance.markComplete(checked);
+    Renderer.instance.markInComplete(unchecked);
+  }
 
+  public async beginTask(ids: string) {
+    Renderer.instance.startLoading();
 
+    let parsedIDs: Array<number>;
+
+    try {
+      parsedIDs = this.parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    const items = await this.getData(parsedIDs);
+
+    const [ started, paused ] = [ new Array<number>(), new Array<number>()];
+  
+    items.forEach(item => {
+      if (item instanceof Task) {
+        return item.inProgress ? started.push(item.id) : paused.push(item.id);
+      }
+    })
+
+    await this.save(items);
+    Renderer.instance.markStarted(started);
+    Renderer.instance.markPaused(paused);
   }
 }

@@ -12,7 +12,7 @@ import { Note } from './note';
 // const render = require('./render')
 
 export class LocalStorage extends Storage {
-  static instance: LocalStorage;
+  private static _instance: LocalStorage;
   private storageDir: string;
   private archiveDir: string;
   private tempDir: string;
@@ -23,13 +23,13 @@ export class LocalStorage extends Storage {
     super();
   };
 
-  public static getInstance() {
-    if (!this.instance) {
-      this.instance = new LocalStorage();
-      this.instance.init();
+  public static get instance(): LocalStorage {
+    if (!this._instance) {
+      this._instance = new LocalStorage();
+      this._instance.init();
     }
 
-    return this.instance;
+    return this._instance;
   }
 
   init() {
@@ -45,7 +45,7 @@ export class LocalStorage extends Storage {
   private get mainAppDir() {
     const {
       tasklineDirectory
-    } = Config.getInstance().get();
+    } = Config.instance.get();
     const defaultAppDirectory = join(os.homedir(), '.taskline');
 
     if (!tasklineDirectory) {
@@ -118,7 +118,7 @@ export class LocalStorage extends Storage {
 
   private parseJson(data): Array<Item> {
     const items = new Array<Item>();
-    
+
     Object.keys(data).forEach(id => {
       if (data[id].isTask) {
         items.push(new Task(data[id]));
@@ -130,7 +130,14 @@ export class LocalStorage extends Storage {
     return items;
   }
 
-  public async get(): Promise<Array<Item>> {
+  private filterData(data: Array<Item>, ids: Array<number>): Array<Item> {
+    if (ids) {
+      return data.filter(item => { return ids.indexOf(item.id) != -1 })
+    }
+    return data;
+  }
+
+  public async get(ids?: Array<number>): Promise<Array<Item>> {
     let data: Array<Item>;
     if (fs.existsSync(this.mainStorageFile)) {
       const content = fs.readFileSync(this.mainStorageFile, 'utf8');
@@ -138,10 +145,12 @@ export class LocalStorage extends Storage {
       data = this.parseJson(jsonData);
     }
 
-    return data;
+    const filteredData = this.filterData(data, ids)
+
+    return filteredData;
   }
 
-  public async getArchive(): Promise<Array<Item>> {
+  public async getArchive(ids?: Array<number>): Promise<Array<Item>> {
     let archive: Array<Item>;
 
     if (fs.existsSync(this.archiveFile)) {
@@ -150,7 +159,9 @@ export class LocalStorage extends Storage {
       archive = this.parseJson(jsonArchive);
     }
 
-    return archive;
+    const filteredArchive = this.filterData(archive, ids)
+
+    return filteredArchive;
   }
 
   public async set(data: Array<Item>) {
