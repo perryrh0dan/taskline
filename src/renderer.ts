@@ -1,19 +1,20 @@
-import { Chalk } from 'chalk';
 import { Signale } from 'signale';
 import { Ora } from 'ora';
 import { addWeeks, isBefore, endOfDay, toDate } from 'date-fns';
+
+const chalk = require('chalk');
+
 import { Config } from './config';
 import ora = require('ora');
 import { Item } from './item';
 import { TaskPriority, Task } from './task';
 
-const signal = new Signale({
+const signale = new Signale({
   config: {
-    displayLabel: false;
+    displayLabel: false
   }
 })
 
-const { await: wait, error, log, note, pending, success, fatal } = signale;
 const { blue, green, grey, magenta, red, underline, yellow } = chalk;
 
 const priorities = {
@@ -192,7 +193,7 @@ export class Renderer {
       suffix
     };
 
-    return log(titleObj);
+    return signale.log(titleObj);
   }
 
   private displayItemByBoard(item) {
@@ -221,10 +222,10 @@ export class Renderer {
     };
 
     if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : isCanceled ? fatal(msgObj) : pending(msgObj);
+      return isComplete ? signale.success(msgObj) : inProgress ? signale.await(msgObj) : isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
     }
 
-    return note(msgObj);
+    return signale.note(msgObj);
   }
 
   private displayItemByDate(item) {
@@ -243,10 +244,10 @@ export class Renderer {
     };
 
     if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : isCanceled ? fatal(msgObj) : pending(msgObj);
+      return isComplete ? signale.success(msgObj) : inProgress ? signale.await(msgObj) : isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
     }
 
-    return note(msgObj);
+    return signale.note(msgObj);
   }
 
   public startLoading() {
@@ -259,7 +260,7 @@ export class Renderer {
 
   public displayByBoard(data) {
     this.stopLoading();
-    Object, keys(data).forEach(board => {
+    Object.keys(data).forEach(board => {
       if (
         this.isBoardComplete(data[board]) &&
         !this.configuration.displayCompleteTasks
@@ -283,7 +284,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Checked ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -298,7 +299,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Unchecked ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -313,7 +314,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Started ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -328,7 +329,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Paused ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -343,7 +344,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Canceled ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -358,7 +359,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Revived ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -373,7 +374,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Starred ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -388,7 +389,7 @@ export class Renderer {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Unstarred ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -399,7 +400,7 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(id)];
     const message = 'Unable to find item with id:';
-    error({
+    signale.error({
       prefix,
       message,
       suffix
@@ -410,7 +411,7 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(range)];
     const message = 'Unable to resolve ID range:';
-    error({
+    signale.error({
       prefix,
       message,
       suffix
@@ -421,7 +422,7 @@ export class Renderer {
     this.stopLoading();
     const prefix = '\n';
     const message = 'Priority can only be 1, 2 or 3';
-    error({
+    signale.error({
       prefix,
       message
     });
@@ -431,7 +432,7 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(date)];
     const message = 'Unable to parse date:';
-    error({
+    signale.error({
       prefix,
       message,
       suffix
@@ -442,7 +443,7 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(item.id)];
     const message = `Created ${item.isTask ? 'task:' : 'note:'}`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -453,7 +454,7 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(id)];
     const message = 'Updated description of item:';
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -464,7 +465,7 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Deleted ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -483,14 +484,14 @@ export class Renderer {
       }: ${grey(ids.join(', '))} to`;
     const suffix =
       priority === 3 ? red(priority.toString()) : priority === 2 ? yellow(priority.toString()) : green(priority.toString());
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  public successDueDate(ids: Array<number>, dueDate: number) {
+  public successDueDate(ids: Array<number>, dueDate: Date) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -501,7 +502,7 @@ export class Renderer {
       ids.length > 1 ? 'tasks' : 'task'
       }: ${grey(ids.join(', '))} to`;
     const suffix = dueDate;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -512,7 +513,7 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Restored ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
@@ -525,7 +526,7 @@ export class Renderer {
     const message = `Copied the ${
       ids.length > 1 ? 'descriptions of items' : 'description of item'
       }:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix

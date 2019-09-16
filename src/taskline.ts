@@ -67,7 +67,7 @@ export class Taskline {
     return dates;
   }
 
-  private async groupByBoard(data: Array<Item>, boards: Array<string>) {
+  private async groupByBoard(data?: Array<Item>, boards?: Array<string>) {
     if (!data) {
       data = await this.getData();
     }
@@ -157,7 +157,7 @@ export class Taskline {
     return options.split(',');
   }
 
-  private parseDate(input: string, format: string) {
+  private parseDate(input: string, format: string): Date {
     format = format || 'yyyy-mm-dd HH:MM' // Default format
     const parts: Array<number> = input.match(/(\d+)/g).map((item: string) => {
       return parseInt(item, 10);
@@ -232,6 +232,10 @@ export class Taskline {
     return Object.keys(data).map(id => parseInt(id, 10));
   }
 
+  private async getStats(grouped) {
+
+  }
+
   private async generateID(data?: Array<Item>) {
     if (!data) {
       data = await this.getData();
@@ -262,7 +266,7 @@ export class Taskline {
     return inputIDs;
   }
 
-  private validatePriority(priority: string) {
+  private validatePriority(priority: string): TaskPriority {
     const level = Number(priority)
     if (Object.values(TaskPriority).includes(level)) {
       Renderer.instance.invalidPriority();
@@ -349,7 +353,7 @@ export class Taskline {
     });
 
     clipboardy.writeSync(description.join('\n'));
-    Renderer.instance.successCopyToClipboard(ids);
+    Renderer.instance.successCopyToClipboard(parsedIDs);
   }
 
   public async checkTasks(ids: string) {
@@ -452,6 +456,97 @@ export class Taskline {
     Renderer.instance.successDelete(validatedIDs);
   }
 
+  public async clear() {
+    Renderer.instance.startLoading();
+    const data = await this.getData();
+
+    const ids: Array<number> = new Array<number>();
+
+    data.forEach(item => {
+      if (item instanceof Task && (item.isTask || item.isCanceled)) {
+        ids.push(item.id);
+      }
+    });
+
+    if (ids.length === 0) {
+      return Renderer.instance.stopLoading();
+    }
+
+    await this.deleteItems(ids.join(','));
+  }
+
+  public async updateDueDate(ids: string, dueDate: string) {
+    Renderer.instance.startLoading();
+    const { dateformat } = Config.instance.get();
+
+    let parsedIDs: Array<number> = new Array<number>();
+    try {
+      parsedIDs = this.parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    })
+
+    const data = await this.getData(validatedIDs);
+    let dueTime: number, parsedDueDate: Date;
+
+    try {
+      parsedDueDate = this.parseDate(dueDate, dateformat)
+      dueTime = parsedDueDate.getTime();
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Date Format'));
+    }
+
+    const updated: Array<number> = new Array<number>();
+    data.forEach((item: Item) => {
+      if (item instanceof Task) {
+        item.duedate = dueTime;
+        return updated.push(item.id);
+      }
+    });
+
+    await this.save(data);
+    Renderer.instance.successDueDate(updated, parsedDueDate);
+  }
+
+  public async updatePriority(ids: string, priority: string) {
+    Renderer.instance.startLoading();
+    
+    let level: TaskPriority;
+    try {
+      level = this.validatePriority(priority);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Priority'));
+    }
+
+    let parsedIDs: Array<number>;
+    try {
+      parsedIDs = this.parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const data = await this.getData(validatedIDs);
+    const updated: Array<number> = new Array<number>();
+
+    data.forEach((item: Item) => {
+      if (item instanceof Task) {
+        item.priority = level;
+        return updated.push(item.id);
+      }
+    });
+
+    await this.save(data);
+    Renderer.instance.successPriority(updated, level)
+  }
+
   public async displayArchive() {
     Renderer.instance.startLoading();
     const archive = await this.getArchive();
@@ -471,8 +566,9 @@ export class Taskline {
 
   }
 
-  public displayStats() {
-
+  public displayStats(grouped) {
+    // const states = this.getStats(grouped);
+    // Renderer.instance.displayStats(states);
   }
 
   public async editDescription(id, description) {

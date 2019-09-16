@@ -168,16 +168,16 @@ program
 //     });
 //   });
 
-// program.on('--help', function() {
-//   console.log('');
-//   console.log('Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual');
-// });
+program.on('--help', function() {
+  console.log('');
+  console.log('Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual');
+});
 
-// if (process.argv.length === 2) {
-//   taskline.displayByBoard().then(grouped => {
-//     return taskline.displayStats(grouped);
-//   });
-// }
+if (process.argv.length === 2) {
+  taskline.displayByBoard().then(grouped => {
+    // return taskline.displayStats(grouped);
+  });
+}
 
 program.on('command:*', function() {
   console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
