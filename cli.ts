@@ -126,14 +126,14 @@ program
     taskline.updatePriority(id, priority).catch(() => {});
   });
 
-// program
-//   .command('restore <ids>')
+program
+  .command('restore <ids>')
 
-//   .alias('r')
-//   .description('Restore items from archive')
-//   .action(ids => {
-//     taskline.restoreItems(ids).catch(() => {});
-//   });
+  .alias('r')
+  .description('Restore items from archive')
+  .action(ids => {
+    taskline.restoreItems(ids).catch(() => {});
+  });
 
 // program
 //   .command('star <ids>')
@@ -186,8 +186,7 @@ program.on('command:*', function() {
 
 // START SNAPCRAFT IGNORE disable this for snap
 updateNotifier({
-  pkg,
-  isGlobal: true
+  pkg
 }).notify();
 // END SNAPCRAFT IGNORE
 

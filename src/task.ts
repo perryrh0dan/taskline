@@ -16,16 +16,16 @@ export type TaskOptions = {
   priority?: TaskPriority;
   inProgress?: Boolean;
   isCanceled?: Boolean;
-  isCompleted?: Boolean;
-  duedate?: number;
+  isComplete?: Boolean;
+  dueDate?: number;
 }
 
 export class Task extends Item {
   private _priority: number;
   private _inProgress: Boolean;
   private _isCanceled: Boolean;
-  private _isCompleted: Boolean;
-  private _duedate: number;
+  private _isComplete: Boolean;
+  private _dueDate: number;
 
   constructor(options: TaskOptions) {
     super(options);
@@ -33,8 +33,8 @@ export class Task extends Item {
     this._priority = options.priority || TaskPriority.Normal;
     this._inProgress = options.inProgress || false;
     this._isCanceled = options.isCanceled || false;
-    this._isCompleted = options.isCompleted || false;
-    this._duedate = options.duedate || null;
+    this._isComplete = options.isComplete || false;
+    this._dueDate = options.dueDate || 0;
   }
 
   public get priority() {
@@ -62,26 +62,36 @@ export class Task extends Item {
   }
 
   public get isComplete() {
-    return this._isCompleted;
+    return this._isComplete;
   }
 
   public set isComplete(isCompleted: Boolean) {
-    this._isCanceled = isCompleted;
+    this._isComplete = isCompleted;
   }
 
-  public get duedate() {
-    return this._duedate
+  public get dueDate() {
+    return this._dueDate
   }
 
-  public set duedate(duedate: number) {
-    this._duedate = duedate;
-  }  
+  public set dueDate(dueDate: number) {
+    this._dueDate = dueDate;
+  }
 
   public begin() {
     this._inProgress = !this._inProgress;
+    this._isComplete = false;
+    this._isCanceled = false;
   }
 
   public check() {
-    this._isCompleted = !this._isCompleted;
+    this._isComplete = !this._isComplete;
+    this._inProgress = false;
+    this._isCanceled = false;
+  }
+
+  public cancel() {
+    this._isCanceled = !this._isCanceled;
+    this._inProgress = false;
+    this._isComplete = false;
   }
 }

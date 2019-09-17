@@ -1,5 +1,6 @@
 import * as clipboardy from 'clipboardy';
 
+import { Storage } from './storage'
 import { LocalStorage } from './local'
 import { Item } from './item';
 import { Task, TaskPriority } from './task';
@@ -7,21 +8,19 @@ import { Renderer } from './renderer';
 import { Config } from './config';
 import { Note } from './note';
 
-
-
 export class Taskline {
-  private storage;
+  private storage: Storage;
 
   constructor() {
     this.storage = LocalStorage.instance;
   }
 
-  private getData(ids?: Array<number>): Promise<Array<Item>> {
-    return this.storage.get(ids)
+  private getData(): Promise<Array<Item>> {
+    return this.storage.get()
   }
 
-  private getArchive(ids?: Array<number>): Promise<Array<Item>> {
-    return this.storage.getArchive(ids);
+  private getArchive(): Promise<Array<Item>> {
+    return this.storage.getArchive();
   }
 
   private save(data: Array<Item>) {
@@ -32,11 +31,11 @@ export class Taskline {
     return this.storage.setArchive(archive);
   }
 
-  private arrayify(x) {
+  private arrayify(x: any) {
     return Array.isArray(x) ? x : [x];
   }
 
-  private removeDuplicates(x) {
+  private removeDuplicates(x: any) {
     return [...new Set(this.arrayify(x))];
   }
 
@@ -67,7 +66,7 @@ export class Taskline {
     return dates;
   }
 
-  private async groupByBoard(data?: Array<Item>, boards?: Array<string>) {
+  private async groupByBoard(data?: Array<Item>, boards?: Array<string>): Promise<any> {
     if (!data) {
       data = await this.getData();
     }
@@ -76,14 +75,14 @@ export class Taskline {
       boards = await this.getBoards();
     }
 
-    const grouped = {};
+    const grouped: any = {};
 
     if (boards.length === 0) {
       boards = await this.getBoards();
     }
 
     data.forEach((item: Item) => {
-      boards.forEach((board: string) => {
+      boards!.forEach((board: string) => {
         if (item.boards.includes(board)) {
           if (Array.isArray(grouped[board])) {
             return grouped[board].push(item)
@@ -98,7 +97,7 @@ export class Taskline {
     return grouped;
   }
 
-  private async groupByDate(data: Array<Item>, dates: Array<string>) {
+  private async groupByDate(data: Array<Item>, dates: Array<string>): Promise<any> {
     if (!data) {
       data = await this.getData();
     }
@@ -107,9 +106,9 @@ export class Taskline {
       dates = await this.getDates();
     }
 
-    const grouped = {}
+    const grouped: any = {};
 
-    data.forEach((item: Item) => {
+    data.forEach((item: Item): void => {
       dates.forEach((date: string) => {
         if (item.date === date) {
           if (Array.isArray(grouped[date])) {
@@ -132,6 +131,7 @@ export class Taskline {
     for (const id of ids) {
       const archiveID = await this.generateID(archive);
       const item = data.find(x => x.id === id);
+      if (!item) continue;
       item.id = archiveID;
       archive.push(item);
     }
@@ -139,13 +139,14 @@ export class Taskline {
     await this.saveArchive(archive);
   }
 
-  private async saveItemsToStorage(ids: Array<number>) {
+  private async saveItemsToStorage(ids: Array<number>): Promise<void> {
     const data = await this.getData();
     const archive = await this.getArchive();
 
     for (const id of ids) {
       const restoreID = await this.generateID(data);
       const item = archive.find(x => x.id === id);
+      if (!item) continue;
       item.id = restoreID;
       data.push(item);
     }
@@ -159,7 +160,7 @@ export class Taskline {
 
   private parseDate(input: string, format: string): Date {
     format = format || 'yyyy-mm-dd HH:MM' // Default format
-    const parts: Array<number> = input.match(/(\d+)/g).map((item: string) => {
+    const parts: Array<number> = input.match(/(\d+)/g)!.map((item: string) => {
       return parseInt(item, 10);
     });
     const fmt: any = {};
@@ -195,11 +196,9 @@ export class Taskline {
     return date;
   }
 
-  private parseIDs(IDs: String) {
-    if (Array.isArray(IDs)) return IDs;
-
+  private parseIDs(IDs: String): Array<number> {
     const temp = IDs.split(',');
-    let ids = [];
+    let ids = new Array<number>();
 
     temp.forEach(element => {
       if (element.includes('-')) {
@@ -217,26 +216,26 @@ export class Taskline {
           throw new Error('Wrong parameters in ID Range');
         }
       } else {
-        ids.push(element);
+        ids.push(parseInt(element));
       }
     });
 
     return ids;
   }
 
-  private async getIDs(data?) {
+  private async getIDs(data?: Array<Item>): Promise<Array<number>> {
     if (!data) {
       data = await this.getData();
     }
 
-    return Object.keys(data).map(id => parseInt(id, 10));
+    return data.map((item: Item) => item.id);
   }
 
-  private getStats(grouped) {
+  private getStats(grouped: any) {
     let [complete, inProgress, pending, notes] = [0, 0, 0, 0];
 
     Object.keys(grouped).forEach(group => {
-      grouped[group].forEach(item => {
+      grouped[group].forEach((item: Item) => {
         if (item instanceof Task) {
           return item.isComplete ? complete++ : item.inProgress ? inProgress++ : pending++;
         }
@@ -266,7 +265,7 @@ export class Taskline {
     return max + 1;
   }
 
-  private async validateIDs(inputIDs: Array<number>, existingIDs?) {
+  private async validateIDs(inputIDs: Array<number>, existingIDs?: Array<number>) {
     if (!existingIDs) {
       existingIDs = await this.getIDs();
     }
@@ -275,7 +274,7 @@ export class Taskline {
 
     try {
       inputIDs.forEach((id: number) => {
-        if (existingIDs.indexOf(id) === -1) {
+        if (existingIDs!.indexOf(id) === -1) {
           Renderer.instance.invalidID(id);
           throw new Error('Invalid InputIds')
         }
@@ -297,7 +296,7 @@ export class Taskline {
     return level;
   }
 
-  public async createTask(description: string, boards: string, priority: string, dueDate: string) {
+  public async createTask(description: string, boards: string, priority: string, dueDate: string): Promise<void> {
     Renderer.instance.startLoading();
 
     const id = await this.generateID();
@@ -318,18 +317,18 @@ export class Taskline {
     let dueTime;
     if (dueDate) {
       try {
-        dueTime = this.parseDate(dueDate, dateformat)
+        dueTime = this.parseDate(dueDate, dateformat).getTime()
       } catch (error) {
         return Promise.reject(new Error('Invalid Date Format'));
       }
     }
 
     const task = new Task({
-      id,
-      description,
+      id: id,
+      description: description,
       boards: parsedBoards,
       priority: validatedPriority,
-      duedate: dueTime,
+      dueDate: dueTime,
     })
 
     data.push(task);
@@ -337,7 +336,7 @@ export class Taskline {
     Renderer.instance.successCreate(task);
   }
 
-  public async createNote(description, boards: string) {
+  public async createNote(description: string, boards: string) {
     Renderer.instance.startLoading();
     const id = await this.generateID();
     const data = await this.getData();
@@ -345,8 +344,8 @@ export class Taskline {
     const parsedBoards = this.parseOptions(boards);
 
     const note = new Note({
-      id,
-      description,
+      id: id,
+      description: description,
       boards: parsedBoards
     });
 
@@ -355,7 +354,7 @@ export class Taskline {
     Renderer.instance.successCreate(note);
   }
 
-  public async copyToClipboard(ids: string) {
+  public async copyToClipboard(ids: string): Promise<void> {
     Renderer.instance.startLoading();
 
     let parsedIDs: Array<number>;
@@ -366,10 +365,15 @@ export class Taskline {
       return Promise.reject(new Error('Invalid Input ID Range'));
     }
 
-    const items = await this.getData(parsedIDs)
+    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const items = await this.getData()
     const description: Array<string> = new Array<string>();
 
     items.forEach(item => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
       return description.push(item.description);
     });
 
@@ -377,24 +381,28 @@ export class Taskline {
     Renderer.instance.successCopyToClipboard(parsedIDs);
   }
 
-  public async checkTasks(ids: string) {
+  public async checkTasks(ids: string): Promise<void> {
     Renderer.instance.startLoading();
 
     let parsedIDs: Array<number>;
-
     try {
       parsedIDs = this.parseIDs(ids);
     } catch (error) {
       return Promise.reject(new Error('Invalid Input ID Range'));
     }
 
-    const items = await this.getData(parsedIDs)
+    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const items = await this.getData()
 
     const [checked, unchecked] = [new Array<number>(), new Array<number>()];
 
-    items.forEach(item => {
+    items.forEach((item: Item): void => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
       if (item instanceof Task) {
-        return item.isComplete ? checked.push(item.id) : unchecked.push(item.id);
+        item.isComplete ? checked.push(item.id) : unchecked.push(item.id);
       };
     });
 
@@ -403,7 +411,7 @@ export class Taskline {
     Renderer.instance.markInComplete(unchecked);
   }
 
-  public async beginTasks(ids: string) {
+  public async beginTasks(ids: string): Promise<void> {
     Renderer.instance.startLoading();
 
     let parsedIDs: Array<number>;
@@ -414,13 +422,19 @@ export class Taskline {
       return Promise.reject(new Error('Invalid Input ID Range'));
     }
 
-    const items = await this.getData(parsedIDs);
+    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const items = await this.getData();
 
     const [started, paused] = [new Array<number>(), new Array<number>()];
 
-    items.forEach((item: Item) => {
+    items.forEach((item: Item): void => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
       if (item instanceof Task) {
-        return item.inProgress ? started.push(item.id) : paused.push(item.id);
+        item.begin();
+        item.inProgress ? started.push(item.id) : paused.push(item.id);
       }
     })
 
@@ -429,7 +443,7 @@ export class Taskline {
     Renderer.instance.markPaused(paused);
   }
 
-  public async cancelTasks(ids: string) {
+  public async cancelTasks(ids: string): Promise<void> {
     Renderer.instance.startLoading();
 
     let parsedIDs: Array<number>;
@@ -440,18 +454,28 @@ export class Taskline {
       return Promise.reject(new Error('Invalid Input ID Range'));
     }
 
-    const items = await this.getData(parsedIDs);
+    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const data = await this.getData();
 
     const [canceled, revived] = [new Array<number>(), new Array<number>()];
 
-    items.forEach((item: Item) => {
+    data.forEach((item: Item): void => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
       if (item instanceof Task) {
-        return item.isCanceled ? canceled.push(item.id) : revived.push(item.id);
+        item.cancel()
+        item.isCanceled ? canceled.push(item.id) : revived.push(item.id);
       }
     })
+
+    await this.save(data);
+    Renderer.instance.markCanceled(canceled);
+    Renderer.instance.markRevived(revived)
   }
 
-  public async deleteItems(ids: string) {
+  public async deleteItems(ids: string): Promise<void> {
     Renderer.instance.startLoading();
 
     let parsedIDs: Array<number>;
@@ -462,7 +486,7 @@ export class Taskline {
       return Promise.reject(new Error('Invalid Input ID Range'))
     }
 
-    let items = await this.getData();
+    let data = await this.getData();
 
     const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
@@ -470,14 +494,13 @@ export class Taskline {
 
     this.saveItemsToArchive(validatedIDs);
 
+    data = data.filter(item => { return validatedIDs.indexOf(item.id) !== -1 });
 
-    items = items.filter(item => { return validatedIDs.indexOf(item.id) !== -1 });
-
-    await this.save(items);
+    await this.save(data);
     Renderer.instance.successDelete(validatedIDs);
   }
 
-  public async clear() {
+  public async clear(): Promise<void> {
     Renderer.instance.startLoading();
     const data = await this.getData();
 
@@ -496,7 +519,7 @@ export class Taskline {
     await this.deleteItems(ids.join(','));
   }
 
-  public async updateDueDate(ids: string, dueDate: string) {
+  public async updateDueDate(ids: string, dueDate: string): Promise<void> {
     Renderer.instance.startLoading();
     const { dateformat } = Config.instance.get();
 
@@ -511,7 +534,7 @@ export class Taskline {
       return Promise.reject(new Error('Invalid InputIDs'));
     })
 
-    const data = await this.getData(validatedIDs);
+    const data = await this.getData();
     let dueTime: number, parsedDueDate: Date;
 
     try {
@@ -522,10 +545,11 @@ export class Taskline {
     }
 
     const updated: Array<number> = new Array<number>();
-    data.forEach((item: Item) => {
+    data.forEach((item: Item): void => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
       if (item instanceof Task) {
-        item.duedate = dueTime;
-        return updated.push(item.id);
+        item.dueDate = dueTime;
+        updated.push(item.id);
       }
     });
 
@@ -533,7 +557,33 @@ export class Taskline {
     Renderer.instance.successDueDate(updated, parsedDueDate);
   }
 
-  public async updatePriority(ids: string, priority: string) {
+  async restoreItems(ids: string): Promise<void> {
+    Renderer.instance.startLoading();
+
+    let archive = await this.getArchive();
+    const existingIDs = await this.getIDs(archive);
+
+    let parsedIDs: Array<number>;
+    try {
+      parsedIDs = this.parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    let validatedIDs: Array<number>;
+    validatedIDs = await this.validateIDs(parsedIDs, existingIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    await this.saveItemsToStorage(validatedIDs);
+
+    archive = archive.filter(item => { return validatedIDs.indexOf(item.id) !== -1 });
+
+    await this.saveArchive(archive);
+    Renderer.instance.successRestore(validatedIDs);
+  }
+
+  public async updatePriority(ids: string, priority: string): Promise<void> {
     Renderer.instance.startLoading();
 
     let level: TaskPriority;
@@ -554,13 +604,14 @@ export class Taskline {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
 
-    const data = await this.getData(validatedIDs);
+    const data = await this.getData();
     const updated: Array<number> = new Array<number>();
 
-    data.forEach((item: Item) => {
+    data.forEach((item: Item): void => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
       if (item instanceof Task) {
         item.priority = level;
-        return updated.push(item.id);
+        updated.push(item.id);
       }
     });
 
@@ -574,6 +625,8 @@ export class Taskline {
     const dates = await this.getDates(archive);
 
     const grouped = await this.groupByDate(archive, dates);
+
+    Renderer.instance.displayByDate(grouped);
   }
 
   public async displayByBoard() {
@@ -589,7 +642,7 @@ export class Taskline {
 
   public displayStats(grouped: any) {
     const states = this.getStats(grouped);
-    Renderer.instance.displayStats(states);
+    Renderer.instance.displayStats(states.percent, states.complete, states.inProgress, states.pending, states.notes);
   }
 
   public async editDescription(id: string, description: string) {

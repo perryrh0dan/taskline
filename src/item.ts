@@ -13,13 +13,13 @@ export abstract class Item {
   protected _id: number;
   protected _date: string;
   protected _timestamp: number;
-  protected _isTask: Boolean;
+  protected _isTask: Boolean = false;
   protected _description: string;
   protected _isStarred: Boolean;
   protected _boards: Array<string>;
 
   constructor(options: ItemOptions) {
-    this._id = options.id;
+    this._id = options.id || 0;
     this._date = options.date || now.toDateString();
     this._timestamp = options.timestamp || now.getTime();
     this._description = options.description || '';
@@ -27,7 +27,7 @@ export abstract class Item {
     this._boards = options.boards || ['My Board'];
   }
 
-  get id(): number {  
+  get id(): number {
     return this._id;
   }
 
@@ -81,5 +81,30 @@ export abstract class Item {
 
   set boards(boards: Array<string>) {
     this._boards = boards;
-  } 
+  }
+
+  public toJSON() {
+    const protos: Array<any> = new Array<any>();
+    protos.push(Object.getPrototypeOf(Object.getPrototypeOf(this)));
+    protos.push(Object.getPrototypeOf(this));
+    const jsonObj: any = {};
+    // const jsonObj: any = Object.assign({}, this);
+
+    protos.forEach(proto => {
+      Object.entries(Object.getOwnPropertyDescriptors(proto))
+        .filter(([key, descriptor]) => typeof descriptor.get === 'function')
+        .map(([key, descriptor]) => {
+          if (descriptor && key[0] !== '_') {
+            try {
+              const val = (this as any)[key];
+              jsonObj[key] = val;
+            } catch (error) {
+              console.error(`Error calling getter ${key}`, error);
+            }
+          }
+        });
+    })
+
+    return jsonObj;
+  }
 }

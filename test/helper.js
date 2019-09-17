@@ -3,7 +3,7 @@ const path = require('path');
 
 const config = require('../src/config');
 const LocalStorage = require('../src/local');
-const FirestoreStorage = require('../src/firestore');
+// const FirestoreStorage = require('../src/firestore');
 
 const contentPath = path.resolve(__dirname, './config.json');
 const sampleContentPath = path.resolve(__dirname, './sample.config.json');
@@ -34,7 +34,7 @@ class Helper {
         storageModule
       } = config.get();
       if (storageModule === 'firestore') {
-        this._storage = FirestoreStorage.getInstance();
+        // this._storage = FirestoreStorage.getInstance();
       } else if (storageModule === 'local') {
         this._storage = LocalStorage.getInstance();
       }

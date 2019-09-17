@@ -1,4 +1,4 @@
-const Taskline = require('../src/taskline');
+import { Taskline } from '../dist/src/taskline';
 const helper = require('./helper');
 
 helper.setConfig();

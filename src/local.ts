@@ -13,11 +13,11 @@ import { Note } from './note';
 
 export class LocalStorage extends Storage {
   private static _instance: LocalStorage;
-  private storageDir: string;
-  private archiveDir: string;
-  private tempDir: string;
-  private archiveFile: string;
-  private mainStorageFile: string;
+  private storageDir: string = '';
+  private archiveDir: string = '';
+  private tempDir: string = '';
+  private archiveFile: string = '';
+  private mainStorageFile: string = '';
 
   private constructor() {
     super();
@@ -108,7 +108,7 @@ export class LocalStorage extends Storage {
       .slice(0, length);
   }
 
-  private getTempFile(filePath) {
+  private getTempFile(filePath: string) {
     const randomString = this.getRandomHexString();
     const tempFilename = basename(filePath)
       .split('.')
@@ -116,10 +116,10 @@ export class LocalStorage extends Storage {
     return join(this.tempDir, tempFilename);
   }
 
-  private parseJson(data): Array<Item> {
+  private parseJson(data: any): Array<Item> {
     const items = new Array<Item>();
 
-    Object.keys(data).forEach(id => {
+    Object.keys(data).forEach((id: string) => {
       if (data[id].isTask) {
         items.push(new Task(data[id]));
       } else {
@@ -130,7 +130,7 @@ export class LocalStorage extends Storage {
     return items;
   }
 
-  private filterData(data: Array<Item>, ids: Array<number>): Array<Item> {
+  private filterData(data: Array<Item>, ids?: Array<number>): Array<Item> {
     if (ids) {
       return data.filter(item => { return ids.indexOf(item.id) != -1 })
     }
@@ -138,7 +138,8 @@ export class LocalStorage extends Storage {
   }
 
   public async get(ids?: Array<number>): Promise<Array<Item>> {
-    let data: Array<Item>;
+    let data: Array<Item> = new Array<Item>();
+
     if (fs.existsSync(this.mainStorageFile)) {
       const content = fs.readFileSync(this.mainStorageFile, 'utf8');
       const jsonData = JSON.parse(content);
@@ -151,7 +152,7 @@ export class LocalStorage extends Storage {
   }
 
   public async getArchive(ids?: Array<number>): Promise<Array<Item>> {
-    let archive: Array<Item>;
+    let archive: Array<Item> = new Array<Item>();
 
     if (fs.existsSync(this.archiveFile)) {
       const content = fs.readFileSync(this.archiveFile, 'utf8');
@@ -166,7 +167,7 @@ export class LocalStorage extends Storage {
 
   public async set(data: Array<Item>) {
     try {
-      const jsonData = JSON.stringify(data, null, 4);
+      const jsonData = JSON.stringify(data.map((item: Item) => item.toJSON()), null, 4);
       const tempStorageFile = this.getTempFile(this.mainStorageFile);
 
       fs.writeFileSync(tempStorageFile, jsonData, 'utf8');
@@ -180,7 +181,7 @@ export class LocalStorage extends Storage {
 
   public async setArchive(archive: Array<Item>) {
     try {
-      const jsonArchive = JSON.stringify(archive, null, 4);
+      const jsonArchive = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
       const tempArchiveFile = this.getTempFile(this.archiveFile);
 
       fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');

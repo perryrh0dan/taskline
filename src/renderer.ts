@@ -18,6 +18,7 @@ const signale = new Signale({
 const { blue, green, grey, magenta, red, underline, yellow } = chalk;
 
 const priorities = {
+  1: 'green',
   2: 'yellow',
   3: 'red'
 };
@@ -42,16 +43,16 @@ export class Renderer {
     return Config.instance.get();
   }
 
-  private colorBoards(boards) {
-    return boards.map(x => grey(x)).join(' ');
+  private colorBoards(boards: any) {
+    return boards.map((x: any) => grey(x)).join(' ');
   }
 
-  private isBoardComplete(items) {
+  private isBoardComplete(items: Array<Item>) {
     const { tasks, complete, notes } = this.getItemStats(items);
     return tasks === complete && notes === 0;
   }
 
-  private getAge(birthday) {
+  private getAge(birthday: number) {
     const daytime = 24 * 60 * 60 * 1000;
     const age = Math.round(Math.abs(birthday - Date.now()) / daytime);
     return age === 0 ? '' : grey(`${age}d`);
@@ -139,7 +140,7 @@ export class Renderer {
     };
   }
 
-  private getStar(item) {
+  private getStar(item: Item): string {
     return item.isStarred ? yellow('★') : '';
   }
 
@@ -153,12 +154,11 @@ export class Renderer {
     };
   }
 
-  private buildPrefix(item) {
+  private buildPrefix(item: Item) {
     const prefix = [];
 
-    const { _id } = item;
-    prefix.push(' '.repeat(4 - String(_id).length));
-    prefix.push(grey(`${_id}.`));
+    prefix.push(' '.repeat(4 - String(item.id).length));
+    prefix.push(grey(`${item.id}.`));
 
     return prefix.join(' ');
   }
@@ -167,21 +167,18 @@ export class Renderer {
     const message = [];
 
     if (item instanceof Task) {
-      const priority = parseInt(item.priority.toString(), 10);  
-
-      if (!item.isComplete && priority > 1) {
-        message.push(underline[priorities[priority]](item.description));
+      if (!item.isComplete && item.priority > 1) {
+          message.push(underline[priorities[item.priority]](item.description));
       } else {
         message.push(item.isComplete ? grey(item.description) : item.description);
       }
-  
-      if (!isComplete && priority > 1) {
-        message.push(priority === 2 ? yellow('(!)') : red('(!!)'));
-      }  
+
+      if (!item.isComplete && item.priority > 1) {
+        message.push(item.priority === 2 ? yellow('(!)') : red('(!!)'));
+      }
     } else {
       message.push(item.description);
     }
-
 
     return message.join(' ');
   }
@@ -200,11 +197,10 @@ export class Renderer {
     return signale.log(titleObj);
   }
 
-  private displayItemByBoard(item) {
-    const { _isTask, isComplete, inProgress, isCanceled } = item;
-    const age = this.getAge(item._timestamp);
+  private displayItemByBoard(item: Item) {
+    const age = this.getAge(item.timestamp);
     let dueDate;
-    if (item.dueDate && !item.isComplete) {
+    if (item instanceof Task && item.dueDate && !item.isComplete) {
       dueDate = this.getDueDate(item.dueDate);
     }
 
@@ -225,8 +221,8 @@ export class Renderer {
       suffix
     };
 
-    if (_isTask) {
-      return isComplete ? signale.success(msgObj) : inProgress ? signale.await(msgObj) : isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
+    if (item instanceof Task) {
+      return item.isComplete ? signale.success(msgObj) : item.inProgress ? signale.await(msgObj) : item.isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
     }
 
     return signale.note(msgObj);
@@ -273,7 +269,7 @@ export class Renderer {
 
       this.displayTitle(board, data[board]);
       data[board].forEach((item: Item) => {
-        if (item instanceof Task && item.isComplete && ! Config.instance.get().displayCompleteTasks) {
+        if (item instanceof Task && item.isComplete && !Config.instance.get().displayCompleteTasks) {
           return;
         }
 
@@ -293,13 +289,14 @@ export class Renderer {
       }
 
       this.displayTitle(date, data[date]);
-      data[date].forEach(item => {
+      data[date].forEach((item: Item) => {
         if (
-          item._isTask &&
+          item instanceof Task &&
+          item.isTask &&
           item.isComplete &&
           !Config.instance.get().displayCompleteTasks
         ) {
-          return; 
+          return;
         }
 
         this.displayItemByDate(item);
@@ -307,7 +304,7 @@ export class Renderer {
     })
   }
 
-  public displayStats({ percent, complete, inProgress, pending, notes }) {
+  public displayStats(percent: number, complete: number, inProgress: number, pending: number, notes: number) {
     if (!Config.instance.get().displayProgressOverview) {
       return;
     }
@@ -468,7 +465,7 @@ export class Renderer {
     });
   }
 
-  public invalidID(id) {
+  public invalidID(id: number) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(id)];
     const message = 'Unable to find item with id:';
@@ -479,7 +476,7 @@ export class Renderer {
     });
   }
 
-  public invalidIDRange(range) {
+  public invalidIDRange(range: string) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(range)];
     const message = 'Unable to resolve ID range:';
@@ -500,7 +497,7 @@ export class Renderer {
     });
   }
 
-  public invalidDateFormat(date) {
+  public invalidDateFormat(date: string) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(date)];
     const message = 'Unable to parse date:';

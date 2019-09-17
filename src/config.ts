@@ -52,7 +52,7 @@ export class Config {
     return Object.assign({}, defaultConfig, this.config);
   }
 
-  set(config) {
+  set(config: any) {
     const data = JSON.stringify(config, null, 4);
     fs.writeFileSync(this.configFile, data, 'utf8');
     this.config = null;
