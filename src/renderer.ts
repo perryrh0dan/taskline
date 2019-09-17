@@ -163,21 +163,25 @@ export class Renderer {
     return prefix.join(' ');
   }
 
-  private buildMessage(item) {
+  private buildMessage(item: Item) {
     const message = [];
 
-    const { isComplete, description } = item;
-    const priority = parseInt(item.priority, 10);
+    if (item instanceof Task) {
+      const priority = parseInt(item.priority.toString(), 10);  
 
-    if (!isComplete && priority > 1) {
-      message.push(underline[priorities[priority]](description));
+      if (!item.isComplete && priority > 1) {
+        message.push(underline[priorities[priority]](item.description));
+      } else {
+        message.push(item.isComplete ? grey(item.description) : item.description);
+      }
+  
+      if (!isComplete && priority > 1) {
+        message.push(priority === 2 ? yellow('(!)') : red('(!!)'));
+      }  
     } else {
-      message.push(isComplete ? grey(description) : description);
+      message.push(item.description);
     }
 
-    if (!isComplete && priority > 1) {
-      message.push(priority === 2 ? yellow('(!)') : red('(!!)'));
-    }
 
     return message.join(' ');
   }
@@ -228,8 +232,7 @@ export class Renderer {
     return signale.note(msgObj);
   }
 
-  private displayItemByDate(item) {
-    const { _isTask, isComplete, inProgress, isCanceled } = item;
+  private displayItemByDate(item: Item) {
     const boards = item.boards.filter(x => x !== 'My Board');
     const star = this.getStar(item);
 
@@ -243,8 +246,8 @@ export class Renderer {
       suffix
     };
 
-    if (_isTask) {
-      return isComplete ? signale.success(msgObj) : inProgress ? signale.await(msgObj) : isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
+    if (item instanceof Task) {
+      return item.isComplete ? signale.success(msgObj) : item.inProgress ? signale.await(msgObj) : item.isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
     }
 
     return signale.note(msgObj);
@@ -258,7 +261,7 @@ export class Renderer {
     this.spinner.stop();
   }
 
-  public displayByBoard(data) {
+  public displayByBoard(data: any) {
     this.stopLoading();
     Object.keys(data).forEach(board => {
       if (
@@ -269,11 +272,80 @@ export class Renderer {
       }
 
       this.displayTitle(board, data[board]);
+      data[board].forEach((item: Item) => {
+        if (item instanceof Task && item.isComplete && ! Config.instance.get().displayCompleteTasks) {
+          return;
+        }
+
+        this.displayItemByBoard(item);
+      })
     })
   }
 
-  public displayByDate(data) {
+  public displayByDate(data: any) {
     this.stopLoading();
+    Object.keys(data).forEach(date => {
+      if (
+        this.isBoardComplete(data[date]) &&
+        !Config.instance.get().displayCompleteTasks
+      ) {
+        return;
+      }
+
+      this.displayTitle(date, data[date]);
+      data[date].forEach(item => {
+        if (
+          item._isTask &&
+          item.isComplete &&
+          !Config.instance.get().displayCompleteTasks
+        ) {
+          return; 
+        }
+
+        this.displayItemByDate(item);
+      });
+    })
+  }
+
+  public displayStats({ percent, complete, inProgress, pending, notes }) {
+    if (!Config.instance.get().displayProgressOverview) {
+      return;
+    }
+
+    percent = percent >= 75 ? green(`${percent}%`) : percent >= 50 ? yellow(`${percent}%`) : `${percent}%`;
+
+    const status = [
+      `${green(complete)} ${grey('done')}`,
+      `${blue(inProgress)} ${grey('in-progress')}`,
+      `${magenta(pending)} ${grey('pending')}`,
+      `${blue(notes)} ${grey(notes === 1 ? 'note' : 'notes')}`
+    ];
+
+    if (complete !== 0 && inProgress === 0 && pending === 0 && notes === 0) {
+      signale.log({
+        prefix: '\n ',
+        message: 'All done!',
+        suffix: yellow('★')
+      });
+    }
+
+    if (pending + inProgress + complete + notes === 0) {
+      signale.log({
+        prefix: '\n ',
+        message: 'Type `tl --help` to get started!',
+        suffix: yellow('★')
+      });
+    }
+
+    signale.log({
+      prefix: '\n ',
+      message: grey(`${percent} of all tasks complete.`)
+    });
+    signale.log({
+      prefix: ' ',
+      message: status.join(grey(' · ')),
+      suffix: '\n'
+    });
   }
 
   public markComplete(ids: Array<number>) {

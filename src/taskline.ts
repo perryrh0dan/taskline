@@ -232,8 +232,29 @@ export class Taskline {
     return Object.keys(data).map(id => parseInt(id, 10));
   }
 
-  private async getStats(grouped) {
+  private getStats(grouped) {
+    let [complete, inProgress, pending, notes] = [0, 0, 0, 0];
 
+    Object.keys(grouped).forEach(group => {
+      grouped[group].forEach(item => {
+        if (item instanceof Task) {
+          return item.isComplete ? complete++ : item.inProgress ? inProgress++ : pending++;
+        }
+
+        return notes++;
+      })
+    })
+
+    const total = complete + pending + inProgress;
+    const percent = total === 0 ? 0 : Math.floor((complete * 100) / total);
+
+    return {
+      percent,
+      complete,
+      inProgress,
+      pending,
+      notes
+    };
   }
 
   private async generateID(data?: Array<Item>) {
@@ -397,7 +418,7 @@ export class Taskline {
 
     const [started, paused] = [new Array<number>(), new Array<number>()];
 
-    items.forEach((item: Item)=> {
+    items.forEach((item: Item) => {
       if (item instanceof Task) {
         return item.inProgress ? started.push(item.id) : paused.push(item.id);
       }
@@ -421,7 +442,7 @@ export class Taskline {
 
     const items = await this.getData(parsedIDs);
 
-    const [canceled, revived] = [ new Array<number>(), new Array<number>()];
+    const [canceled, revived] = [new Array<number>(), new Array<number>()];
 
     items.forEach((item: Item) => {
       if (item instanceof Task) {
@@ -449,9 +470,9 @@ export class Taskline {
 
     this.saveItemsToArchive(validatedIDs);
 
-    
-    items = items.filter(item => { return validatedIDs.indexOf(item.id) !== -1});
-  
+
+    items = items.filter(item => { return validatedIDs.indexOf(item.id) !== -1 });
+
     await this.save(items);
     Renderer.instance.successDelete(validatedIDs);
   }
@@ -514,7 +535,7 @@ export class Taskline {
 
   public async updatePriority(ids: string, priority: string) {
     Renderer.instance.startLoading();
-    
+
     let level: TaskPriority;
     try {
       level = this.validatePriority(priority);
@@ -566,12 +587,12 @@ export class Taskline {
 
   }
 
-  public displayStats(grouped) {
-    // const states = this.getStats(grouped);
-    // Renderer.instance.displayStats(states);
+  public displayStats(grouped: any) {
+    const states = this.getStats(grouped);
+    Renderer.instance.displayStats(states);
   }
 
-  public async editDescription(id, description) {
+  public async editDescription(id: string, description: string) {
 
   }
 }

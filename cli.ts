@@ -175,7 +175,7 @@ program.on('--help', function() {
 
 if (process.argv.length === 2) {
   taskline.displayByBoard().then(grouped => {
-    // return taskline.displayStats(grouped);
+    return taskline.displayStats(grouped);
   });
 }
 

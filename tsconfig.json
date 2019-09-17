@@ -3,6 +3,9 @@
     "target": "es6",
     "module": "commonjs",
     "resolveJsonModule": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "noUnusedLocals": true,
     "outDir": "dist",
     "sourceMap": true
   },
