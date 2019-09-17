@@ -22,6 +22,11 @@ stage
 snap
 *.snap
 *.bz2
+temp
 
+# build
+dist
+
+# more
 test/config.json
 coverage

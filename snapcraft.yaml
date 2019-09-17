@@ -1,5 +1,5 @@
 name: taskline
-version: '0.6.0'
+version: '0.7.0'
 summary: Tasks, boards & notes for the command-line habitat
 description: |
   By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you
@@ -9,13 +9,21 @@ description: |
   tasks are saved in your firestore database and can be shared across all your devices.
   Deleted items are automatically archived and can be inspected or restored at any moment.
 
+  Important!
+
+  To bind taskline to the alias tl use following command 'snap alias taskline tl'
+
   Highlighted Features
 
   * Organize tasks & notes to boards
   * Board & timeline views
   * Priority & favorite mechanisms
+  * Advanced duedate mechanism
   * Search & filter items
   * Archive & restore deleted items
+  * Multiple storage modules.
+  * Save date on your local machine at `~/.taskline/storage` or
+  * Use the firestore module to sync your tasks across all your devices.
   * Lightweight & fast
   * Data written atomically to storage
   * Custom storage location
@@ -23,14 +31,8 @@ description: |
   * Simple & minimal usage syntax
   * Update notifications
   * Configurable through `~/.taskline.json`
-  * Data stored in JSON file at `~/.taskline/storage`
-  * Modular data storage.
-  * Firestore module to save data in google firestore.
-  * Sync tasks across all your devices with firestore.
-  * Replaced Meow with commander.js
-  * Duedate mechanism
-  * Display loadingspinner while fetching network requests
-  * New list filter attributes
+
+More informations under https://github.com/perryrh0dan/taskline.
 
 grade: stable
 confinement: strict
@@ -38,6 +40,7 @@ confinement: strict
 architectures:
   - amd64
   - i386
+  - armhf
 
 apps:
   taskline:

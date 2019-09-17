@@ -7,6 +7,7 @@ class Task extends Item {
     this._isTask = true;
     this.dueDate = options.dueTime || null;
     this.isComplete = options.isComplete || false;
+    this.isCanceled = options.isCanceled || false;
     this.inProgress = options.inProgress || false;
     this.isStarred = options.isStarred || false;
     this.priority = options.priority || 1;

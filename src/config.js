@@ -9,6 +9,7 @@ const { 'default': defaultConfig } = pkg.configuration; //  eslint-disable-line 
 
 class Config {
   constructor() {
+    this._config = null;
     this._configFile = join(os.homedir(), '.taskline.json');
 
     this._ensureConfigFile();
@@ -28,23 +29,24 @@ class Config {
   }
 
   get() {
-    let config = {};
+    if (!this._config) {
+      const content = fs.readFileSync(this._configFile, 'utf8');
+      this._config = JSON.parse(content);
 
-    const content = fs.readFileSync(this._configFile, 'utf8');
-    config = JSON.parse(content);
-
-    if (config.tasklineDirectory.startsWith('~')) {
-      config.tasklineDirectory = this._formatTasklineDir(
-        config.tasklineDirectory
-      );
+      if (this._config.tasklineDirectory.startsWith('~')) {
+        this._config.tasklineDirectory = this._formatTasklineDir(
+          this._config.tasklineDirectory
+        );
+      }
     }
 
-    return Object.assign({}, defaultConfig, config);
+    return Object.assign({}, defaultConfig, this._config);
   }
 
   set(config) {
     const data = JSON.stringify(config, null, 4);
     fs.writeFileSync(this._configFile, data, 'utf8');
+    this._config = null;
   }
 }
 

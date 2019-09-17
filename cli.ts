@@ -1,25 +1,26 @@
 #!/usr/bin/env node
 
 'use strict';
-const program = require('commander');
+import * as program from 'commander';
 // START SNAPCRAFT IGNORE
-const updateNotifier = require('update-notifier');
+import * as updateNotifier from 'update-notifier';
 // END SNAPCRAFT IGNORE
 const pkg = require('./package.json');
-const taskline = new (require('./src/taskline'))();
+import { Taskline } from './src/taskline' 
+const taskline = new Taskline();
 
 program.version(pkg.version);
 program.description(pkg.description);
 
 program.name('tl').usage('[command] [options]');
 
-program
-  .command('archive')
-  .alias('a')
-  .description('Display archived items')
-  .action(() => {
-    taskline.displayArchive().catch(() => {});
-  });
+// program
+//   .command('archive')
+//   .alias('a')
+//   .description('Display archived items')
+//   .action(() => {
+//     taskline.displayArchive().catch(() => {});
+//   });
 
 program
   .command('begin <ids>')
@@ -60,7 +61,7 @@ program
   });
 
 program
-  .command('delete <ids>')
+  .command('delete <ids>')  
   .alias('d')
   .description('Delete item')
   .action(ids => {
@@ -82,31 +83,31 @@ program
     taskline.editDescription(id, description).catch(() => {});
   });
 
-program
-  .command('find <terms>')
-  .alias('f')
-  .description('Search for items')
-  .action(query => {
-    taskline.findItems(query).catch(() => {});
-  });
+// program
+//   .command('find <terms>')
+//   .alias('f')
+//   .description('Search for items')
+//   .action(query => {
+//     taskline.findItems(query).catch(() => {});
+//   });
 
-program
-  .command('list <terms>')
-  .alias('l')
-  .description('List items by attributes')
-  .action(terms => {
-    taskline.listByAttributes(terms).then(grouped => {
-      taskline.displayStats(grouped);
-    });
-  });
+// program
+//   .command('list <terms>')
+//   .alias('l')
+//   .description('List items by attributes')
+//   .action(terms => {
+//     taskline.listByAttributes(terms).then(grouped => {
+//       taskline.displayStats(grouped);
+//     });
+//   });
 
-program
-  .command('move <ids> <boards')
-  .alias('m')
-  .description('Move item between boards')
-  .action((ids, boards) => {
-    taskline.moveBoards(ids, boards).catch(() => {});
-  });
+// program
+//   .command('move <ids> <boards')
+//   .alias('m')
+//   .description('Move item between boards')
+//   .action((ids, boards) => {
+//     taskline.moveBoards(ids, boards).catch(() => {});
+//   });
 
 program
   .command('note <description>')
@@ -125,47 +126,47 @@ program
     taskline.updatePriority(id, priority).catch(() => {});
   });
 
-program
-  .command('restore <ids>')
+// program
+//   .command('restore <ids>')
 
-  .alias('r')
-  .description('Restore items from archive')
-  .action(ids => {
-    taskline.restoreItems(ids).catch(() => {});
-  });
+//   .alias('r')
+//   .description('Restore items from archive')
+//   .action(ids => {
+//     taskline.restoreItems(ids).catch(() => {});
+//   });
 
-program
-  .command('star <ids>')
-  .alias('s')
-  .description('Star/unstar item')
-  .action(ids => {
-    taskline.starItems(ids).catch(() => {});
-  });
+// program
+//   .command('star <ids>')
+//   .alias('s')
+//   .description('Star/unstar item')
+//   .action(ids => {
+//     taskline.starItems(ids).catch(() => {});
+//   });
 
-program
-  .command('task <description>') // Sub-command name
-  .alias('t') // Alternative sub-command is `al`
-  .description('Create task') // Command description
-  .option('-b, --board <board>', 'Board')
-  .option('-p, --priority <priority>', 'Priority')
-  .option('-d, --due <date>', 'Due date')
+// program
+//   .command('task <description>') // Sub-command name
+//   .alias('t') // Alternative sub-command is `al`
+//   .description('Create task') // Command description
+//   .option('-b, --board <board>', 'Board')
+//   .option('-p, --priority <priority>', 'Priority')
+//   .option('-d, --due <date>', 'Due date')
 
-  // Function to execute when command is uses
-  .action((description, opts) => {
-    taskline
-      .createTask(description, opts.board, opts.priority, opts.due)
-      .catch(() => {});
-  });
+//   // Function to execute when command is uses
+//   .action((description, opts) => {
+//     taskline
+//       .createTask(description, opts.board, opts.priority, opts.due)
+//       .catch(() => {});
+//   });
 
-program
-  .command('timeline')
-  .alias('i')
-  .description('Display timeline view')
-  .action(() => {
-    taskline.displayByDate().then(grouped => {
-      taskline.displayStats(grouped);
-    });
-  });
+// program
+//   .command('timeline')
+//   .alias('i')
+//   .description('Display timeline view')
+//   .action(() => {
+//     taskline.displayByDate().then(grouped => {
+//       taskline.displayStats(grouped);
+//     });
+//   });
 
 program.on('--help', function() {
   console.log('');

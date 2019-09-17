@@ -1,18 +1,20 @@
-'use strict';
+import { Signale } from 'signale';
+import { Ora } from 'ora';
+import { addWeeks, isBefore, endOfDay, toDate } from 'date-fns';
+
 const chalk = require('chalk');
-const signale = require('signale');
-const ora = require('ora');
-const addWeeks = require('date-fns/addWeeks');
-const isBefore = require('date-fns/isBefore');
-const endOfDay = require('date-fns/endOfDay');
-const toDate = require('date-fns/toDate');
-const config = require('./config');
 
-signale.config({
-  displayLabel: false
-});
+import { Config } from './config';
+import ora = require('ora');
+import { Item } from './item';
+import { TaskPriority, Task } from './task';
 
-const { await: wait, error, log, note, pending, success, fatal } = signale;
+const signale = new Signale({
+  config: {
+    displayLabel: false
+  }
+})
+
 const { blue, green, grey, magenta, red, underline, yellow } = chalk;
 
 const priorities = {
@@ -20,27 +22,42 @@ const priorities = {
   3: 'red'
 };
 
-class Render {
-  get _configuration() {
-    return config.get();
+export class Renderer {
+  private static _instance: Renderer
+  private spinner: Ora;
+
+  public static get instance() {
+    if (!this._instance) {
+      this._instance = new Renderer();
+    }
+
+    return this._instance;
   }
 
-  _colorBoards(boards) {
+  private constructor() {
+    this.spinner = ora();
+  }
+
+  private get configuration() {
+    return Config.instance.get();
+  }
+
+  private colorBoards(boards) {
     return boards.map(x => grey(x)).join(' ');
   }
 
-  _isBoardComplete(items) {
-    const { tasks, complete, notes } = this._getItemStats(items);
+  private isBoardComplete(items) {
+    const { tasks, complete, notes } = this.getItemStats(items);
     return tasks === complete && notes === 0;
   }
 
-  _getAge(birthday) {
+  private getAge(birthday) {
     const daytime = 24 * 60 * 60 * 1000;
-    const age = Math.round(Math.abs((birthday - Date.now()) / daytime));
+    const age = Math.round(Math.abs(birthday - Date.now()) / daytime);
     return age === 0 ? '' : grey(`${age}d`);
   }
 
-  _getRelativeHumanizedDate(dueDate, now) {
+  private getRelativeHumanizedDate(dueDate: Date, now?: Date) {
     if (!now) now = new Date();
 
     // get date diff
@@ -48,8 +65,6 @@ class Render {
     const diffSeconds = Math.ceil(diffTime / 1000);
     let unit = '';
     let value = 0;
-    // let isSoon = false;
-    // let isUrgent = false;
 
     if (Math.abs(diffSeconds) < 60) {
       value = diffSeconds;
@@ -77,11 +92,11 @@ class Render {
     return humanizedDate;
   }
 
-  _getDueDate(dueTimestamp) {
+  getDueDate(dueTimestamp: number) {
     const now = new Date();
     const dueDate = toDate(dueTimestamp);
 
-    const humanizedDate = this._getRelativeHumanizedDate(dueDate);
+    const humanizedDate = this.getRelativeHumanizedDate(dueDate);
     const text = `(Due ${humanizedDate})`;
 
     const isSoon = isBefore(dueDate, addWeeks(now, 1));
@@ -98,18 +113,18 @@ class Render {
     return grey(text);
   }
 
-  _getCorrelation(items) {
-    const { tasks, complete } = this._getItemStats(items);
+  private getCorrelation(items: Array<Item>) {
+    const { tasks, complete } = this.getItemStats(items);
     return grey(`[${complete}/${tasks}]`);
   }
 
-  _getItemStats(items) {
+  private getItemStats(items: Array<Item>) {
     let [tasks, complete, notes] = [0, 0, 0];
 
     items.forEach(item => {
-      if (item._isTask) {
+      if (item.isTask) {
         tasks++;
-        if (item.isComplete) {
+        if (item instanceof Task && item.isComplete) {
           return complete++;
         }
       }
@@ -124,21 +139,21 @@ class Render {
     };
   }
 
-  _getStar(item) {
+  private getStar(item) {
     return item.isStarred ? yellow('★') : '';
   }
 
-  _buildTitle(key, items) {
+  private buildTitle(key: string, items: Array<Item>) {
     const title =
       key === new Date().toDateString() ? `${underline(key)} ${grey('[Today]')}` : underline(key);
-    const correlation = this._getCorrelation(items);
+    const correlation = this.getCorrelation(items);
     return {
       title,
       correlation
     };
   }
 
-  _buildPrefix(item) {
+  private buildPrefix(item) {
     const prefix = [];
 
     const { _id } = item;
@@ -148,27 +163,31 @@ class Render {
     return prefix.join(' ');
   }
 
-  _buildMessage(item) {
+  private buildMessage(item: Item) {
     const message = [];
 
-    const { isComplete, description } = item;
-    const priority = parseInt(item.priority, 10);
+    if (item instanceof Task) {
+      const priority = parseInt(item.priority.toString(), 10);  
 
-    if (!isComplete && priority > 1) {
-      message.push(underline[priorities[priority]](description));
+      if (!item.isComplete && priority > 1) {
+        message.push(underline[priorities[priority]](item.description));
+      } else {
+        message.push(item.isComplete ? grey(item.description) : item.description);
+      }
+  
+      if (!isComplete && priority > 1) {
+        message.push(priority === 2 ? yellow('(!)') : red('(!!)'));
+      }  
     } else {
-      message.push(isComplete ? grey(description) : description);
+      message.push(item.description);
     }
 
-    if (!isComplete && priority > 1) {
-      message.push(priority === 2 ? yellow('(!)') : red('(!!)'));
-    }
 
     return message.join(' ');
   }
 
-  _displayTitle(board, items) {
-    const { title: message, correlation: suffix } = this._buildTitle(
+  private displayTitle(board: string, items: Array<Item>) {
+    const { title: message, correlation: suffix } = this.buildTitle(
       board,
       items
     );
@@ -178,21 +197,21 @@ class Render {
       suffix
     };
 
-    return log(titleObj);
+    return signale.log(titleObj);
   }
 
-  _displayItemByBoard(item) {
+  private displayItemByBoard(item) {
     const { _isTask, isComplete, inProgress, isCanceled } = item;
-    const age = this._getAge(item._timestamp);
+    const age = this.getAge(item._timestamp);
     let dueDate;
     if (item.dueDate && !item.isComplete) {
-      dueDate = this._getDueDate(item.dueDate);
+      dueDate = this.getDueDate(item.dueDate);
     }
 
-    const star = this._getStar(item);
+    const star = this.getStar(item);
 
-    const prefix = this._buildPrefix(item);
-    const message = this._buildMessage(item);
+    const prefix = this.buildPrefix(item);
+    const message = this.buildMessage(item);
     let suffix;
     if (dueDate) {
       suffix = `${dueDate} ${star}`;
@@ -207,20 +226,19 @@ class Render {
     };
 
     if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : isCanceled ? fatal(msgObj) : pending(msgObj);
+      return isComplete ? signale.success(msgObj) : inProgress ? signale.await(msgObj) : isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
     }
 
-    return note(msgObj);
+    return signale.note(msgObj);
   }
 
-  _displayItemByDate(item) {
-    const { _isTask, isComplete, inProgress, isCanceled } = item;
+  private displayItemByDate(item: Item) {
     const boards = item.boards.filter(x => x !== 'My Board');
-    const star = this._getStar(item);
+    const star = this.getStar(item);
 
-    const prefix = this._buildPrefix(item);
-    const message = this._buildMessage(item);
-    const suffix = `${this._colorBoards(boards)} ${star}`;
+    const prefix = this.buildPrefix(item);
+    const message = this.buildMessage(item);
+    const suffix = `${this.colorBoards(boards)} ${star}`;
 
     const msgObj = {
       prefix,
@@ -228,84 +246,73 @@ class Render {
       suffix
     };
 
-    if (_isTask) {
-      return isComplete ? success(msgObj) : inProgress ? wait(msgObj) : isCanceled ? fatal(msgObj) : pending(msgObj);
+    if (item instanceof Task) {
+      return item.isComplete ? signale.success(msgObj) : item.inProgress ? signale.await(msgObj) : item.isCanceled ? signale.fatal(msgObj) : signale.pending(msgObj);
     }
 
-    return note(msgObj);
+    return signale.note(msgObj);
   }
 
-  startLoading() {
-    if (!this.spinner) {
-      this.spinner = ora();
-    }
-
+  public startLoading() {
     this.spinner.start();
   }
 
-  stopLoading() {
-    if (this.spinner) {
-      this.spinner.stop();
-    }
+  public stopLoading() {
+    this.spinner.stop();
   }
 
-  displayByBoard(data) {
+  public displayByBoard(data: any) {
     this.stopLoading();
     Object.keys(data).forEach(board => {
       if (
-        this._isBoardComplete(data[board]) &&
-        !this._configuration.displayCompleteTasks
+        this.isBoardComplete(data[board]) &&
+        !this.configuration.displayCompleteTasks
       ) {
         return;
       }
 
-      this._displayTitle(board, data[board]);
-      data[board].forEach(item => {
-        if (
-          item._isTask &&
-          item.isComplete &&
-          !this._configuration.displayCompleteTasks
-        ) {
+      this.displayTitle(board, data[board]);
+      data[board].forEach((item: Item) => {
+        if (item instanceof Task && item.isComplete && ! Config.instance.get().displayCompleteTasks) {
           return;
         }
 
-        this._displayItemByBoard(item);
-      });
-    });
+        this.displayItemByBoard(item);
+      })
+    })
   }
 
-  displayByDate(data) {
+  public displayByDate(data: any) {
     this.stopLoading();
     Object.keys(data).forEach(date => {
       if (
-        this._isBoardComplete(data[date]) &&
-        !this._configuration.displayCompleteTasks
+        this.isBoardComplete(data[date]) &&
+        !Config.instance.get().displayCompleteTasks
       ) {
         return;
       }
 
-      this._displayTitle(date, data[date]);
+      this.displayTitle(date, data[date]);
       data[date].forEach(item => {
         if (
           item._isTask &&
           item.isComplete &&
-          !this._configuration.displayCompleteTasks
+          !Config.instance.get().displayCompleteTasks
         ) {
-          return;
+          return; 
         }
 
-        this._displayItemByDate(item);
+        this.displayItemByDate(item);
       });
-    });
+    })
   }
 
-  displayStats({ percent, complete, inProgress, pending, notes }) {
-    if (!this._configuration.displayProgressOverview) {
+  public displayStats({ percent, complete, inProgress, pending, notes }) {
+    if (!Config.instance.get().displayProgressOverview) {
       return;
     }
 
-    percent =
-      percent >= 75 ? green(`${percent}%`) : percent >= 50 ? yellow(`${percent}%`) : `${percent}%`;
+    percent = percent >= 75 ? green(`${percent}%`) : percent >= 50 ? yellow(`${percent}%`) : `${percent}%`;
 
     const status = [
       `${green(complete)} ${grey('done')}`,
@@ -315,7 +322,7 @@ class Render {
     ];
 
     if (complete !== 0 && inProgress === 0 && pending === 0 && notes === 0) {
-      log({
+      signale.log({
         prefix: '\n ',
         message: 'All done!',
         suffix: yellow('★')
@@ -323,90 +330,25 @@ class Render {
     }
 
     if (pending + inProgress + complete + notes === 0) {
-      log({
+      signale.log({
         prefix: '\n ',
         message: 'Type `tl --help` to get started!',
         suffix: yellow('★')
       });
     }
 
-    log({
+    signale.log({
       prefix: '\n ',
       message: grey(`${percent} of all tasks complete.`)
     });
-    log({
+    signale.log({
       prefix: ' ',
       message: status.join(grey(' · ')),
       suffix: '\n'
     });
   }
 
-  invalidCustomAppDir(path) {
-    this.stopLoading();
-    const [prefix, suffix] = ['\n', red(path)];
-    const message = 'Custom app directory was not found on your system:';
-    error({
-      prefix,
-      message,
-      suffix
-    });
-  }
-
-  invalidFirestoreConfig() {
-    this.stopLoading();
-    const [prefix, suffix] = ['\n', ''];
-    const message = 'Firestore config contains error';
-    error({
-      prefix,
-      message,
-      suffix
-    });
-  }
-
-  invalidID(id) {
-    this.stopLoading();
-    const [prefix, suffix] = ['\n', grey(id)];
-    const message = 'Unable to find item with id:';
-    error({
-      prefix,
-      message,
-      suffix
-    });
-  }
-
-  invalidIDRange(range) {
-    this.stopLoading();
-    const [prefix, suffix] = ['\n', grey(range)];
-    const message = 'Unable to resolve ID range:';
-    error({
-      prefix,
-      message,
-      suffix
-    });
-  }
-
-  invalidPriority() {
-    this.stopLoading();
-    const prefix = '\n';
-    const message = 'Priority can only be 1, 2 or 3';
-    error({
-      prefix,
-      message
-    });
-  }
-
-  invalidDateFormat(date) {
-    this.stopLoading();
-    const [prefix, suffix] = ['\n', grey(date)];
-    const message = 'Unable to parse date:';
-    error({
-      prefix,
-      message,
-      suffix
-    });
-  }
-
-  markComplete(ids) {
+  public markComplete(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -414,14 +356,14 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Checked ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
-    });
+    })
   }
 
-  markIncomplete(ids) {
+  public markInComplete(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -429,14 +371,14 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Unchecked ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  markStarted(ids) {
+  public markStarted(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -444,14 +386,14 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Started ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  markPaused(ids) {
+  public markPaused(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -459,14 +401,14 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Paused ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  markCanceled(ids) {
+  public markCanceled(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -474,14 +416,14 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Canceled ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  markRevived(ids) {
+  public markRevived(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -489,14 +431,14 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Revived ${ids.length > 1 ? 'tasks' : 'task'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  markStarred(ids) {
+  public markStarred(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -504,14 +446,14 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Starred ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  markUnstarred(ids) {
+  public markUnstarred(ids: Array<number>) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -519,58 +461,90 @@ class Render {
 
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Unstarred ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  successCreate({ _id, _isTask }) {
+  public invalidID(id) {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', grey(_id)];
-    const message = `Created ${_isTask ? 'task:' : 'note:'}`;
-    success({
+    const [prefix, suffix] = ['\n', grey(id)];
+    const message = 'Unable to find item with id:';
+    signale.error({
       prefix,
       message,
       suffix
     });
   }
 
-  successEdit(id) {
+  public invalidIDRange(range) {
+    this.stopLoading();
+    const [prefix, suffix] = ['\n', grey(range)];
+    const message = 'Unable to resolve ID range:';
+    signale.error({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
+  public invalidPriority() {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = 'Priority can only be 1, 2 or 3';
+    signale.error({
+      prefix,
+      message
+    });
+  }
+
+  public invalidDateFormat(date) {
+    this.stopLoading();
+    const [prefix, suffix] = ['\n', grey(date)];
+    const message = 'Unable to parse date:';
+    signale.error({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
+  public successCreate(item: Item) {
+    this.stopLoading();
+    const [prefix, suffix] = ['\n', grey(item.id)];
+    const message = `Created ${item.isTask ? 'task:' : 'note:'}`;
+    signale.success({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
+  public successEdit(id: number) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(id)];
     const message = 'Updated description of item:';
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  successDelete(ids) {
+  public successDelete(ids: Array<number>) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Deleted ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  successMove(ids, boards) {
-    this.stopLoading();
-    const [prefix, suffix] = ['\n', grey(boards.join(', '))];
-    const message = `Move item: ${grey(ids.join(', '))} to`;
-    success({
-      prefix,
-      message,
-      suffix
-    });
-  }
-
-  successPriority(ids, level) {
+  public successPriority(ids: Array<number>, priority: TaskPriority) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -579,17 +553,17 @@ class Render {
     const prefix = '\n';
     const message = `Updated priority of ${
       ids.length > 1 ? 'tasks' : 'task'
-    }: ${grey(ids.join(', '))} to`;
+      }: ${grey(ids.join(', '))} to`;
     const suffix =
-      level === 3 ? red('high') : level === 2 ? yellow('medium') : green('normal');
-    success({
+      priority === 3 ? red(priority.toString()) : priority === 2 ? yellow(priority.toString()) : green(priority.toString());
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  successDueDate(ids, dueDate) {
+  public successDueDate(ids: Array<number>, dueDate: Date) {
     this.stopLoading();
     if (ids.length === 0) {
       return;
@@ -598,38 +572,36 @@ class Render {
     const prefix = '\n';
     const message = `Updated duedate of ${
       ids.length > 1 ? 'tasks' : 'task'
-    }: ${grey(ids.join(', '))} to`;
+      }: ${grey(ids.join(', '))} to`;
     const suffix = dueDate;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  successRestore(ids) {
+  public successRestore(ids: Array<number>) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Restored ${ids.length > 1 ? 'items' : 'item'}:`;
-    success({
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 
-  successCopyToClipboard(ids) {
+  public successCopyToClipboard(ids: Array<number>) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Copied the ${
       ids.length > 1 ? 'descriptions of items' : 'description of item'
-    }:`;
-    success({
+      }:`;
+    signale.success({
       prefix,
       message,
       suffix
     });
   }
 }
-
-module.exports = new Render();

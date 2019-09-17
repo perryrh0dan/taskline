@@ -74,6 +74,18 @@ class Taskline {
     return inputIDs;
   }
 
+  _validatePriority(priority) {
+    let level = ['1', '2', '3'].indexOf(priority) > -1 ? priority : null;
+    level = Number(level);
+
+    if (!level) {
+      render.invalidPriority();
+      throw new Error('Invalid Priority');
+    }
+
+    return level;
+  }
+
   async _getBoards() {
     const data = await this._getData();
     const boards = ['My Board'];
@@ -110,16 +122,38 @@ class Taskline {
   }
 
   _parseDate(input, format) {
-    format = format || 'yyyy-mm-dd'; // Default format
+    format = format || 'yyyy-mm-dd HH:MM'; // Default format
     const parts = input.match(/(\d+)/g);
-    let i = 0;
     const fmt = {};
+    let i = 0;
+    let date;
+
     // Extract date-part indexes from the format
-    format.replace(/(yyyy|dd|mm)/g, part => {
+    format.replace(/(yyyy|dd|mm|HH|MM|SS)/g, part => {
       fmt[part] = i++;
     });
 
-    return new Date(parts[fmt.yyyy], parts[fmt.mm] - 1, parts[fmt.dd]);
+    // Some simple date checks
+    if (parts[fmt.yyyy] < 0 || parts[fmt.mm] > 11 || parts[fmt.dd] > 31) throw new Error('Cant parse to date');
+
+    try {
+      date = new Date(parts[fmt.yyyy], parts[fmt.mm] - 1, parts[fmt.dd]);
+    } catch (error) {
+      render.invalidDateFormat(input);
+      throw new Error('Cant parse to date');
+    }
+
+    if (parts[fmt.HH]) {
+      date.setHours(parts[fmt.HH]);
+      if (parts[fmt.MM]) {
+        date.setMinutes(parts[fmt.MM]);
+        if (parts[fmt.SS]) {
+          date.setSeconds(parts[fmt.SS]);
+        }
+      }
+    }
+
+    return date;
   }
 
   _getStats(grouped) {
@@ -210,7 +244,7 @@ class Taskline {
   }
 
   _filterPriority(data, priority) {
-    const prio = priority === 'default' ? 1 : (priority === 'medium' ? 2 : 3);
+    const prio = priority === 'default' ? 1 : priority === 'medium' ? 2 : 3;
     Object.keys(data).forEach(id => {
       if (data[id].priority !== prio) {
         delete data[id];
@@ -362,13 +396,41 @@ class Taskline {
     await this._save(data);
   }
 
-  _splitOption(option) {
-    if (!Array.isArray(option)) {
-      const options = option.split(',');
-      return options;
+  _parseOptions(options) {
+    if (!Array.isArray(options)) {
+      options = options.split(',');
     }
 
-    return option;
+    return options;
+  }
+
+  _parseIDs(IDs) {
+    if (Array.isArray(IDs)) return IDs;
+
+    const temp = IDs.split(',');
+    let ids = [];
+
+    temp.forEach(element => {
+      if (element.includes('-')) {
+        const range = element.split('-');
+        const from = parseInt(range[0]);
+        const to = parseInt(range[1]);
+        if (!isNaN(from) && !isNaN(to)) {
+          const rangeList = Array.from(
+            new Array(to - (from - 1)),
+            (x, i) => i + from
+          );
+          ids = ids.concat(rangeList);
+        } else {
+          render.invalidIDRange(element);
+          throw new Error('Wrong parameters in ID Range');
+        }
+      } else {
+        ids.push(element);
+      }
+    });
+
+    return ids;
   }
 
   async createNote(description, boards = 'My Board') {
@@ -376,7 +438,7 @@ class Taskline {
     const id = await this._generateID();
     const data = await this._getData();
 
-    boards = this._splitOption(boards);
+    boards = this._parseOptions(boards);
 
     const note = new Note({
       id,
@@ -390,7 +452,12 @@ class Taskline {
 
   async copyToClipboard(ids) {
     render.startLoading();
-    ids = this._splitOption(ids);
+
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
 
     const data = await this._getData();
 
@@ -408,9 +475,15 @@ class Taskline {
 
   async checkTasks(ids) {
     render.startLoading();
+
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     const data = await this._getData();
 
-    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -432,9 +505,15 @@ class Taskline {
 
   async beginTasks(ids) {
     render.startLoading();
+
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     const data = await this._getData();
 
-    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -454,10 +533,41 @@ class Taskline {
     render.markPaused(paused);
   }
 
+  async cancelTasks(ids) {
+    render.startLoading();
+
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    const data = await this._getData();
+
+    ids = await this._validateIDs(ids).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const [canceled, revived] = [[], []];
+
+    ids.forEach(id => {
+      if (data[id]._isTask) {
+        data[id].isComplete = false;
+        data[id].inProgress = false;
+        data[id].isCanceled = !data[id].isCanceled;
+        return data[id].isCanceled ? canceled.push(id) : revived.push(id);
+      }
+    });
+
+    await this._save(data);
+    render.markCanceled(canceled);
+    render.markRevived(revived);
+  }
+
   async createTask(
     description,
     boards = 'My Board',
-    priority = 1,
+    priority = '1',
     dueDate = null
   ) {
     render.startLoading();
@@ -465,14 +575,22 @@ class Taskline {
     const data = await this._getData();
     const { dateformat } = config.get();
 
-    priority = Number(priority);
-    boards = this._splitOption(boards);
+    try {
+      priority = this._validatePriority(priority);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Priority'));
+    }
+
+    boards = this._parseOptions(boards);
 
     let dueTime;
     if (dueDate) {
-      dueDate = this._parseDate(dueDate, dateformat);
-      dueDate.setHours(23, 59, 59);
-      dueTime = dueDate.getTime();
+      try {
+        dueDate = this._parseDate(dueDate, dateformat);
+        dueTime = dueDate.getTime();
+      } catch (error) {
+        return Promise.reject(new Error('Invalid Date Format'));
+      }
     }
 
     const task = new Task({
@@ -489,9 +607,15 @@ class Taskline {
 
   async deleteItems(ids) {
     render.startLoading();
+
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     const data = await this._getData();
 
-    ids = this._splitOption(ids);
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -551,7 +675,7 @@ class Taskline {
 
   async findItems(terms) {
     render.startLoading();
-    terms = this._splitOption(terms);
+    terms = this._parseOptions(terms);
     const data = await this._getData();
     const result = {};
 
@@ -570,7 +694,7 @@ class Taskline {
 
   async listByAttributes(terms) {
     render.startLoading();
-    terms = this._splitOption(terms);
+    terms = this._parseOptions(terms);
     let [boards, attributes] = [[], []];
     const storedBoards = await this._getBoards();
 
@@ -594,9 +718,14 @@ class Taskline {
 
   async moveBoards(ids, boards) {
     render.startLoading();
-    boards = this._splitOption(boards);
+    boards = this._parseOptions(boards);
 
-    ids = this._splitOption(ids);
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -617,7 +746,12 @@ class Taskline {
     const archive = await this._getArchive();
     const existingIDs = await this._getIDs(archive);
 
-    ids = this._splitOption(ids);
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     ids = await this._validateIDs(ids, existingIDs).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -635,7 +769,12 @@ class Taskline {
   async starItems(ids) {
     render.startLoading();
 
-    ids = this._splitOption(ids);
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -656,15 +795,20 @@ class Taskline {
 
   async updatePriority(ids, priority) {
     render.startLoading();
-    let level = ['1', '2', '3'].indexOf(priority) > -1 ? priority : null;
-    level = Number(level);
+    let level;
 
-    if (!level) {
-      render.invalidPriority();
+    try {
+      level = this._validatePriority(priority);
+    } catch (error) {
       return Promise.reject(new Error('Invalid Priority'));
     }
 
-    ids = this._splitOption(ids);
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -687,7 +831,12 @@ class Taskline {
     render.startLoading();
     const { dateformat } = config.get();
 
-    ids = this._splitOption(ids);
+    try {
+      ids = this._parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
     ids = await this._validateIDs(ids).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
@@ -697,10 +846,8 @@ class Taskline {
 
     try {
       dueDate = this._parseDate(dueDate, dateformat);
-      dueDate.setHours(23, 59, 59);
       dueTime = dueDate.getTime();
     } catch (error) {
-      render.invalidDateFormat();
       return Promise.reject(new Error('Invalid Date Format'));
     }
 
@@ -724,7 +871,7 @@ class Taskline {
     const ids = [];
 
     Object.keys(data).forEach(id => {
-      if (data[id].isComplete) {
+      if (data[id].isComplete || data[id].isCanceled) {
         ids.push(id);
       }
     });

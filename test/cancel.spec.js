@@ -61,50 +61,57 @@ describe('Test check functionality', () => {
         dueDate: null,
         isComplete: false,
         inProgress: false,
+        isCanceled: false,
         priority: 1
       }
     });
     done();
   });
 
-  it('should check one task', () => {
-    return taskline.checkTasks('2').then(() => {
+  it('should cancel one task', () => {
+    return taskline.cancelTasks('2').then(() => {
       return storage.get().then(data => {
-        expect(data[2].isComplete).toBe(true);
-      });
-    });
-  });
-
-  it('should check multiple tasks', () => {
-    return taskline.checkTasks('3,4').then(() => {
-      return storage.get().then(data => {
-        expect(data[3].isComplete).toBe(true);
-        expect(data[4].isComplete).toBe(true);
-      });
-    });
-  });
-
-  it('should check multiple tasks by id range', () => {
-    return taskline.checkTasks('2-4').then(() => {
-      return storage.get().then(data => {
+        expect(data[2].inProgress).toBe(false);
+        expect(data[2].isCanceled).toBe(true);
         expect(data[2].isComplete).toBe(false);
+      });
+    });
+  });
+
+  it('should cancel multiple tasks', () => {
+    return taskline.cancelTasks('3,4').then(() => {
+      return storage.get().then(data => {
+        expect(data[3].inProgress).toBe(false);
+        expect(data[3].isCanceled).toBe(true);
         expect(data[3].isComplete).toBe(false);
+        expect(data[4].inProgress).toBe(false);
+        expect(data[4].isCanceled).toBe(true);
         expect(data[4].isComplete).toBe(false);
       });
     });
   });
 
-  it('should check multiple tasks by id range and list', () => {
-    return taskline.checkTasks('2,3-4').then(() => {
+  it('should cancel multiple tasks by id range', () => {
+    return taskline.cancelTasks('2-4').then(() => {
       return storage.get().then(data => {
-        expect(data[2].isComplete).toBe(true);
-        expect(data[3].isComplete).toBe(true);
-        expect(data[4].isComplete).toBe(true);
+        expect(data[2].isCanceled).toBe(false);
+        expect(data[3].isCanceled).toBe(false);
+        expect(data[4].isCanceled).toBe(false);
       });
     });
   });
 
-  it('should delete all checked tasks', () => {
+  it('should cancel multiple tasks by id range and list', () => {
+    return taskline.cancelTasks('2,3-4').then(() => {
+      return storage.get().then(data => {
+        expect(data[2].isCanceled).toBe(true);
+        expect(data[3].isCanceled).toBe(true);
+        expect(data[4].isCanceled).toBe(true);
+      });
+    });
+  });
+
+  it('should delete all canceled tasks', () => {
     return storage.get().then(data => {
       const oldData = JSON.parse(JSON.stringify(data));
 
@@ -126,22 +133,22 @@ describe('Test check functionality', () => {
     });
   });
 
-  it('should try to check a note', () => {
-    return taskline.checkTasks('1').then(() => {
+  it('should try to cancel a note', () => {
+    return taskline.cancelTasks('1').then(() => {
       return storage.get().then(data => {
-        expect(data[1].isComplete).toBe(undefined);
+        expect(data[1].isCanceled).toBe(undefined);
       });
     });
   });
 
-  it('should try to check a nonexisting item', () => {
-    expect(taskline.checkTasks('5')).rejects.toMatchObject({
+  it('should try to cancel a nonexisting item', () => {
+    expect(taskline.cancelTasks('5')).rejects.toMatchObject({
       message: 'Invalid InputIDs'
     });
   });
 
-  it('should try to check with invalid id range', () => {
-    expect(taskline.checkTasks('1-b')).rejects.toMatchObject({
+  it('should try to cancel with invalid id range', () => {
+    expect(taskline.cancelTasks('1-b')).rejects.toMatchObject({
       message: 'Invalid Input ID Range'
     });
   });

@@ -1,7 +1,7 @@
 {
   "name": "@perryrh0dan/taskline",
   "productName": "Taskline",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "tl": "cli.js"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "files": [
     "src",
@@ -53,18 +53,23 @@
         "client_x509_cert_url": "",
         "databaseURL": ""
       },
-      "dateformat": "dd.mm.yyyy"
+      "dateformat": "dd.mm.yyyy HH:MM"
     }
   },
   "scripts": {
+    "test": "npm run lint && npm run jshint && npm run unit",
     "lint": "eslint ./",
     "jshint": "jshint src/",
-    "unit": "jest --runInBand"
+    "unit": "jest --runInBand --testPathIgnorePatterns=parts",
+    "tsc": "tsc",
+    "start": "node dist/cli.js"
   },
   "dependencies": {
+    "@types/signale": "^1.2.1",
     "chalk": "^2.4.1",
     "clipboardy": "^2.1.0",
     "commander": "^3.0.0",
+    "date-fns": "^2.2.1",
     "firebase-admin": "^8.4.0",
     "ora": "^3.4.0",
     "signale": "1.4.0",

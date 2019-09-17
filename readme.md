@@ -18,7 +18,7 @@
     <img alt="Build Status" src="https://badges.gitter.im/taskline/community.svg" />
   </a>
   <a href="https://www.npmjs.com/package/@perryrh0dan/taskline">
-    <img alt="Weekly NPM Downloads" src="https://img.shields.io/npm/dm/@perryrh0dan/taskline" />
+    <img alt="NPM Downloads" src="https://img.shields.io/npm/dt/@perryrh0dan/taskline" />
   </a>
   <a href="https://snapcraft.io/taskline">
     <img alt="taskline" src="https://snapcraft.io/taskline/badge.svg" />
@@ -37,58 +37,66 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 
 ### Original
 
-* Organize tasks & notes to boards
-* Board & timeline views
-* Priority & favorite mechanisms
-* Search & filter items
-* Archive & restore deleted items
-* Lightweight & fast
-* Data written atomically to storage
-* Custom storage location
-* Progress overview
-* Simple & minimal usage syntax
-* Update notifications
-* Configurable through `~/.taskline.json` 
-* Data stored in JSON file at `~/.taskline/storage` 
+- Organize tasks & notes to boards
+- Board & timeline views
+- Priority & favorite mechanisms
+- Search & filter items
+- Archive & restore deleted items
+- Lightweight & fast
+- Data written atomically to storage
+- Custom storage location
+- Progress overview
+- Simple & minimal usage syntax
+- Update notifications
+- Configurable through `~/.taskline.json`
+- Data stored in JSON file at `~/.taskline/storage`
 
 ### New
 
-* Modular data storage.
-* Firestore module to save data in google firestore.
-* Sync tasks across all your devices with firestore.
-* Replaced Meow with commander.js
-* Duedate mechanism
-* Display loadingspinner while fetching network requests
-* New list filter attributes 
+- Modular data storage.
+- Firestore module to save data in google firestore.
+- Sync tasks across all your devices with firestore.
+- Replaced Meow with commander.js
+- Advanced duedate functionality
+- Display loadingspinner while fetching network requests
+- New list filter attributes
+- Possibility to use id ranges
+- Possibility to cancel tasks
+
+### Coming
+
+- Subtask functionality
+- Functionality to download and upload local storage to firestore
+- More unit tests
 
 View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
 ## Contents
 
-* [Description](#description)
-* [Highlights](#highlights)
-* [Install](#install)
-* [Usage](#usage)
-* [Views](#views)
-* [Configuration](#configuration)
-* [Before Flight](#before-flight)
-* [Flight Manual](#flight-manual)
-* [Development](#development)
-* [Related](#related)
-* [Team](#team)
-* [License](#license)
+- [Description](#description)
+- [Highlights](#highlights)
+- [Install](#install)
+- [Usage](#usage)
+- [Views](#views)
+- [Configuration](#configuration)
+- [Before Flight](#before-flight)
+- [Flight Manual](#flight-manual)
+- [Development](#development)
+- [Related](#related)
+- [Team](#team)
+- [License](#license)
 
 ## Install
 
 ### Yarn
 
-``` bash
+```bash
 yarn global add @perryrh0dan/taskline
 ```
 
 ### NPM
 
-``` bash
+```bash
 npm install --global @perryrh0dan/taskline
 ```
 
@@ -103,8 +111,8 @@ snap alias taskline tl # set alias
 
 ## Usage
 
-``` 
-$ tl --help
+```
+> tl --help
 Usage: tl [options] [command]
 
 Tasks, boards & notes for the command-line habitat
@@ -116,6 +124,7 @@ Options:
 Commands:
   archive|a                       Display archived items
   begin|b <ids>                   Start/pause task
+  cancel <ids>                    Cancel/revive task
   check|c <ids>                   Check/uncheck task
   clear                           Delete all checked items
   copy|y <ids>                    Copy description to clipboard
@@ -157,72 +166,72 @@ To configure taskline navigate to the `~/.taskline.json` file and modify any of 
 
 The following illustrates all the available options with their respective default values.
 
-``` json
+```json
 {
   "tasklineDirectory": "~",
   "displayCompleteTasks": true,
   "displayProgressOverview": true,
   "storageModule": "local",
   "firestoreConfig": {
-        "type": "",
-        "project_id": "",
-        "private_key_id": "",
-        "private_key": "",
-        "client_email": "",
-        "client_id": "",
-        "auth_uri": "",
-        "token_uri": "",
-        "auth_provider_x509_cert_url": "",
-        "client_x509_cert_url": "",
-      },
+    "type": "",
+    "project_id": "",
+    "private_key_id": "",
+    "private_key": "",
+    "client_email": "",
+    "client_id": "",
+    "auth_uri": "",
+    "token_uri": "",
+    "auth_provider_x509_cert_url": "",
+    "client_x509_cert_url": ""
+  },
   "dateformat": "dd.mm.yyyy"
 }
 ```
 
 ### In Detail
 
-##### `tasklineDirectory` 
+##### `tasklineDirectory`
 
-* Type: `String` 
-* Default: `~` 
+- Type: `String`
+- Default: `~`
 
-Filesystem path where the storage will be initialized, i.e: `/home/username/the-cloud` or `~/the-cloud` 
+Filesystem path where the storage will be initialized, i.e: `/home/username/the-cloud` or `~/the-cloud`
 
 If left undefined the home directory `~` will be used and taskline will be set-up under `~/.taskline/` .
 
-##### `displayCompleteTasks` 
+##### `displayCompleteTasks`
 
-* Type: `Boolean` 
-* Default: `true` 
+- Type: `Boolean`
+- Default: `true`
 
 Display tasks that are marked as complete.
 
-##### `displayProgressOverview` 
+##### `displayProgressOverview`
 
-* Type: `Boolean` 
-* Default: `true` 
+- Type: `Boolean`
+- Default: `true`
 
 Display progress overview below the timeline and board views.
 
-##### `storageModule` 
+##### `storageModule`
 
-* Type: `Enum` 
-* Default: `local` 
-* Values: `local` , `firestore` 
+- Type: `Enum`
+- Default: `local`
+- Values: `local` , `firestore`
 
 Choose of storage module. Currently there are two modules `local` and `firestore` . For the firestore module the firestoreConfig is needed.
 
-##### `firestoreConfig` 
+##### `firestoreConfig`
 
-* Type: `Google Dienstkontoschlüssel` 
-* Default: `Empty` 
+- Type: `Google Dienstkontoschlüssel`
+- Default: `Empty`
 
 Configuration of the firestore module.
 
-##### `dateformat` 
+##### `dateformat`
 
-* Type: `String` 
-* Default: `dd.mm.yyyy` 
+- Type: `String`
+- Default: `dd.mm.yyyy HH:MM`
 
 Dateformat used for duedate.
 
@@ -237,6 +246,7 @@ When you want to use the local storage module there is no further configuration 
 3. Download the authorization.json file and insert all the lines to the corresponding lines in the taskline configuration.
 
 or follow this [instruction page](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
+
 ## Flight Manual
 
 The following is a minor walkthrough containing a set of examples on how to use taskline.
@@ -246,193 +256,204 @@ In case you spotted an error or think that an example is not to clear enough and
 
 To create a new task use the `task` / `t` command with your task's description following right after.
 
-``` 
-$ tl t "Improve documentation"
+```
+> tl t "Improve documentation"
 ```
 
 ### Create Note
 
 To create a new note use the `note` / `n` command with your note's body following right after.
 
-``` 
-$ tl n "Mergesort worse-case O(nlogn)"
+```
+> tl n "Mergesort worse-case O(nlogn)"
 ```
 
 ### Create Board
 
-Boards are automatically initialized when creating a new task or note. To create one or more boards, use the `--board` / `-b` option, followed by a list of boardnames, after the description of the about-to-be created item. As a result the newly created item will belong to all of the given boards. By default, items that do not contain any board option are automatically added to the general purpose; `My Board` .
+Boards are automatically initialized when creating a new task or note. To create one or more boards, use the `--board` / `-b` option, followed by a list of boardnames, after the description of the about-to-be created item. As a result the newly created item will belong to all of the given boards. By default, items that do not contain any board option are automatically added to the general purpose: `My Board`.
 
-``` 
-$ tl t "Update contributing guidelines" -b coding,docs
+```
+> tl t "Update contributing guidelines" -b coding,docs
 ```
 
 ### Check Task
 
-To mark a task as complete/incomplete, use the `check` / `c` command followed by the ids of the target tasks. Note that the option will update to its opposite the `complete` status of the given tasks, thus checking a complete task will render it as pending and a pending task as complete. Duplicate ids are automatically filtered out.
+To mark a task as complete/incomplete, use the `check` / `c` command followed by the ids of the target tasks. Note that the command will update to its opposite the `complete` status of the given tasks, thus checking a complete task will render it as pending and a pending task as complete. Duplicate ids are automatically filtered out. Instead of listing all ids its also possible to specify id ranges.
 
-``` 
-$ tl c 1,3
+```
+> tl c (1,2,3 || 1-3)
+```
+
+### Cancel Task
+
+To mark a task as canceled/revived, use the `cancel` command followed by the ids of the target tasks. The functionality of this command is the same as the one of the above described `check` command.
+
+```
+> tl cancel 1-3,5,6
 ```
 
 ### Begin Task
 
-To mark a task as started/paused, use the `begin` / `b` command followed by the ids of the target tasks. The functionality of this option is the same as the one of the above described `check` command.
+To mark a task as started/paused, use the `begin` / `b` command followed by the ids of the target tasks. The functionality of this command is the same as the one of the above described `check` command.
 
-``` 
-$ tl b 2,3
+```
+> tl b 2,3
 ```
 
 ### Star Item
 
-To mark one or more items as favorite, use the `star` / `s` command followed by the ids of the target items. The functionality of this option is the same as the one of the above described `check` command.
+To mark one or more items as favorite, use the `star` / `s` command followed by the ids of the target items. The functionality of this command is the same as the one of the above described `check` command.
 
-``` 
-$ tl s 1,2,3
+```
+> tl s 1,3
 ```
 
 ### Copy Item Description
 
-To copy to your system's clipboard the description of one or more items, use the `copy` / `y` option followed by the ids of the target items. Note that the option will also include the newline character as a separator to each pair of adjacent copied descriptions, thus resulting in a clear and readable stack of sentences on paste.
+To copy to your system's clipboard the description of one or more items, use the `copy` / `y` command followed by the ids of the target items. Note that the command will also include the newline character as a separator to each pair of adjacent copied descriptions, thus resulting in a clear and readable stack of sentences on paste.
 
-``` 
-$ tl y 1,2,3
+```
+> tl y (1,2,3 || 1-3)
 ```
 
 ### Display Boards
 
 Invoking taskline without any commands and options will display all of saved items grouped into their respective boards.
 
-``` 
-$ tl
+```
+> tl
 ```
 
 ### Display Timeline
 
 In order to display all items in a timeline view, based on their creation date, the `timeline` / `i` command can be used.
 
-``` 
-$ tl i
+```
+> tl i
 ```
 
 ### Set Priority
 
-To set a priority level for a task while initializing it, use the `-p` option followed by the priority. Priority can be an integer of value `1` , `2` or `3` . Note that all tasks by default are created with a normal priority - `1` .
+To set a priority level for a task while initializing it, use the `--priority` / `-p` option followed by the priority. Priority can be an integer of value `1` , `2` or `3` . Note that all tasks by default are created with a normal priority: `1`.
 
-* `1` - Normal priority
-* `2` - Medium priority
-* `3` - High priority
+- `1` - Normal priority
+- `2` - Medium priority
+- `3` - High priority
 
-``` 
-$ tl t "Fix issue `#42` " -b coding -p 3
+```
+> tl t "Fix issue `#42` " -b coding -p 3
 ```
 
-To update the priority level of a specific task after its creation, use the `priority` / `p` command along with the id of the target tasks and an integer of value `1` , `2` or `3` .
+To update the priority level of a specific task after its creation, use the `priority` / `p` command along with the id of the target tasks and an integer of value `1` , `2` or `3`.
 
-``` 
-$ tl p 1,2,23 2
+```
+> tl p (1,2,3,23 2 || 1-3,23)
 ```
 
 ### Set Duedate
 
-To set a duedate for a task while initializing it, use the `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy` . Note that all tasks by default have no duedate.
+To set a duedate for a task while initializing it, use the `--due` / `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy HH:MM`. Note that all tasks by default have no duedate.
 
-``` 
-$ tl t "Solve puzzle" -b coding -d 23.08.2019
+```
+> tl t "Solve puzzle" -b coding -d 23.08.2019
 ```
 
 To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date. The `due` command has no available shorter alias.
 
-``` 
-$ tl due 1,2,23 15.09.2019
+```
+> tl due 1,2,23 15.09.2019 13:15
 ```
 
-The number of duedays (days left before duedate) of a task is displayed instead of the age of an task right next to the description.
+The time left before the duedate is displayed humanized instead of the age of an task right next to the description.
 
 ### Move Item
 
 To move items to one or more boards, use the `move` / `m` command, followed by the target items ids and the name of the destination boards. The default `My board` can be accessed through the `myboard` keyword.
 
-``` 
-$ tl m 1,2 myboard,reviews
+```
+> tl m 1,2 myboard,reviews
 ```
 
 ### Delete Item
 
 To delete one or more items, use the `delete` / `d` command followed by the ids of the target items. Note that deleted items are automatically archived, and can be inspected or restored at any moment. Duplicate ids are automatically filtered out.
 
-``` 
-$ tl d 1,2
+```
+> tl d 1,2
 ```
 
 ### Delete Checked Tasks
 
 To delete/clear all complete tasks at once across all boards, use the `clear` command. Note that all deleted tasks are automatically archived, and can be inspected or restored at any moment. In order to discourage any possible accidental usage, the `clear` command has no available shorter alias.
 
-``` 
-$ tl clear
+```
+> tl clear
 ```
 
 ### Display Archive
 
 To display all archived items, use the `archive` / `a` command. Note that all archived items are displayed in timeline view, based on their creation date.
 
-``` 
-$ tl a
+```
+> tl a
 ```
 
 ### Restore Items
 
-To restore one or more items, use the `restore` / `r` command followed by the id of the target items. Note that the ids of all archived items can be seen when invoking the `archive` / `a` option. Duplicate ids are automatically filtered out.
+To restore one or more items, use the `restore` / `r` command followed by the id of the target items. Note that the ids of all archived items can be seen when invoking the `archive` / `a` command. Duplicate ids are automatically filtered out.
 
-``` 
-$ tl r 1,2
+```
+> tl r 1,2
 ```
 
 ### List Items
 
-To list a group of items where each item complies with a specific set of attributes, use the `list` / `l` command followed by the desired attributes. Board names along with item traits can be considered valid listing attributes. For example to list all items that belong to the default `myboard` and are pending tasks, the following could be used; 
+To list a group of items where each item complies with a specific set of attributes, use the `list` / `l` command followed by the desired attributes. Board names along with item traits can be considered valid listing attributes. For example to list all items that belong to the default `myboard` and are pending tasks, the following could be used;
 
-``` 
-$ tl l myboard,pending
+```
+> tl l myboard,pending
 ```
 
-The by default supported listing attributes, together with their respective aliases, are the following; 
+The by default supported listing attributes, together with their respective aliases, are the following;
 
-* `myboard` - Items that belong to `My board` 
-* `task` , `tasks` , `todo` - Items that are tasks.
-* `note` , `notes` - Items that are notes.
-* `pending` , `unchecked` , `incomplete` - Items that are pending tasks.
-* `progress` , `started` , `begun` - Items that are in-progress tasks.
-* `done` , `checked` , `complete` - Items that complete tasks.
-* `star` , `starred` - Items that are starred.
-* `default` , `medium` , `high` - Task that have the given priority.
+- `myboard` - Items that belong to `My board`
+- `task` , `tasks` , `todo` - Items that are tasks.
+- `note` , `notes` - Items that are notes.
+- `pending` , `unchecked` , `incomplete` - Items that are pending tasks.
+- `progress` , `started` , `begun` - Items that are in-progress tasks.
+- `done` , `checked` , `complete` - Items that complete tasks.
+- `star` , `starred` - Items that are starred.
+- `default` , `medium` , `high` - Task that have the given priority.
 
 ### Search Items
 
 To search for one of more items, use the `find` / `f` command, followed by your search terms.
 
-``` 
-$ tl f documentation
+```
+> tl f documentation
 ```
 
 ## Development
 
 For more info on how to contribute to the project, please read the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md).
 
-* Fork the repository and clone it to your machine
-* Navigate to your local fork: `cd taskline` 
-* Install the project dependencies: `npm install` or `yarn install` 
-* Lint the code for errors: `npm test` or `yarn test` 
+- Fork the repository and clone it to your machine
+- Navigate to your local fork: `cd taskline`
+- Install the project dependencies: `npm install` or `yarn install`
+
+### Test
+
+
+Currently there are three automated test. ESLint, JSHint and unit tests written with jest. To Run all tests at the same time use `npm test`. To run unit tests for other storage modules than the local storage module you have to edit the `test/config.json` file and insert your db credentials.
 
 ## Related
 
-* [signale](https://github.com/klaussinani/signale) - Highly configurable logging utility
+- [signale](https://github.com/klaussinani/signale) - Highly configurable logging utility
 
 ## Team
 
-* Thomas Pöhlmann [(@perryrh0dan)](https://github.com/perryrh0dan)
+- Thomas Pöhlmann [(@perryrh0dan)](https://github.com/perryrh0dan)
 
 ## License
 
 [MIT](https://github.com/perryrh0dan/taskline/blob/master/license.md)
-
