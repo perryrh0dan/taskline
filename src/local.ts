@@ -130,7 +130,7 @@ export class LocalStorage extends Storage {
     return items;
   }
 
-  private filterData(data: Array<Item>, ids?: Array<number>): Array<Item> {
+  private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
     if (ids) {
       return data.filter(item => { return ids.indexOf(item.id) != -1 })
     }
@@ -146,9 +146,11 @@ export class LocalStorage extends Storage {
       data = this.parseJson(jsonData);
     }
 
-    const filteredData = this.filterData(data, ids)
+    if (ids) {
+      return this.filterByID(data, ids);
+    }
 
-    return filteredData;
+    return data;
   }
 
   public async getArchive(ids?: Array<number>): Promise<Array<Item>> {
@@ -160,9 +162,11 @@ export class LocalStorage extends Storage {
       archive = this.parseJson(jsonArchive);
     }
 
-    const filteredArchive = this.filterData(archive, ids)
+    if (ids) {
+      return this.filterByID(archive, ids);
+    }
 
-    return filteredArchive;
+    return archive;
   }
 
   public async set(data: Array<Item>) {

@@ -43,12 +43,12 @@ export class Helper {
     Config.instance.set(this.originalConfig);
   }
 
-  getData() {
-    return this.storage.get();
+  getData(ids?: Array<number>) {
+    return this.storage.get(ids);
   }
 
-  getArchive() {
-    return this.storage.getArchive();
+  getArchive(ids?: Array<number>) {
+    return this.storage.getArchive(ids);
   }
 
   setData(data: Array<Item>) {

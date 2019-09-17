@@ -168,7 +168,7 @@ export class Renderer {
 
     if (item instanceof Task) {
       if (!item.isComplete && item.priority > 1) {
-          message.push(underline[priorities[item.priority]](item.description));
+        message.push(underline[priorities[item.priority]](item.description));
       } else {
         message.push(item.isComplete ? grey(item.description) : item.description);
       }
@@ -465,6 +465,28 @@ export class Renderer {
     });
   }
 
+  invalidCustomAppDir(path: string) {
+    this.stopLoading();
+    const [prefix, suffix] = ['\n', red(path)];
+    const message = 'Custom app directory was not found on your system:';
+    signale.error({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
+  invalidFirestoreConfig() {
+    this.stopLoading();
+    const [prefix, suffix] = ['\n', ''];
+    const message = 'Firestore config contains error';
+    signale.error({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
   public invalidID(id: number) {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(id)];
@@ -534,6 +556,17 @@ export class Renderer {
     this.stopLoading();
     const [prefix, suffix] = ['\n', grey(ids.join(', '))];
     const message = `Deleted ${ids.length > 1 ? 'items' : 'item'}:`;
+    signale.success({
+      prefix,
+      message,
+      suffix
+    });
+  }
+
+  public successMove(ids: Array<number>, boards: Array<string>) {
+    this.startLoading();
+    const [prefix, suffix] = ['\n', grey(boards.join(', '))];
+    const message = `Move item: ${grey(ids.join(', '))} to`;
     signale.success({
       prefix,
       message,

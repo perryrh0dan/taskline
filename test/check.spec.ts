@@ -17,13 +17,14 @@ describe('Test check functionality', () => {
   beforeAll(async done => {
     await helper.clearStorage();
     const data: Array<Item> = new Array<Item>();
+
     data.push(new Note({
       id: 1,
       date: 'Mon Sep 02 2019',
       timestamp: 1567434272855,
       description: 'Test Note',
       isStarred: false,
-      boards: ['My Board']
+      boards: ['My Board'],
     }));
 
     data.push(new Task({
@@ -62,7 +63,6 @@ describe('Test check functionality', () => {
       dueDate: 0,
       isComplete: false,
       inProgress: false,
-      isCanceled: false,
       priority: 1
     }));
 
@@ -70,53 +70,47 @@ describe('Test check functionality', () => {
     done();
   });
 
-  it('should cancel one task', () => {
-    return taskline.cancelTasks('2').then(() => {
+  it('should check one task', () => {
+    return taskline.checkTasks('2').then(() => {
       return helper.getData([2]).then(data => {
-        expect((data[0] as Task).inProgress).toBe(false);
-        expect((data[0] as Task).isCanceled).toBe(true);
-        expect((data[0] as Task).isComplete).toBe(false);
+        expect((data[0] as Task).isComplete).toBe(true);
       });
     });
   });
 
-  it('should cancel multiple tasks', () => {
-    return taskline.cancelTasks('3,4').then(() => {
+  it('should check multiple tasks', () => {
+    return taskline.checkTasks('3,4').then(() => {
       return helper.getData([3,4]).then(data => {
-        expect((data[0] as Task).inProgress).toBe(false);
-        expect((data[0] as Task).isCanceled).toBe(true);
+        expect((data[0] as Task).isComplete).toBe(true);
+        expect((data[1] as Task).isComplete).toBe(true);
+      });
+    });
+  });
+
+  it('should check multiple tasks by id range', () => {
+    return taskline.checkTasks('2-4').then(() => {
+      return helper.getData([2,3,4]).then(data => {
         expect((data[0] as Task).isComplete).toBe(false);
-        expect((data[1] as Task).inProgress).toBe(false);
-        expect((data[1] as Task).isCanceled).toBe(true);
         expect((data[1] as Task).isComplete).toBe(false);
+        expect((data[2] as Task).isComplete).toBe(false);
       });
     });
   });
 
-  it('should cancel multiple tasks by id range', () => {
-    return taskline.cancelTasks('2-4').then(() => {
+  it('should check multiple tasks by id range and list', () => {
+    return taskline.checkTasks('2,3-4').then(() => {
       return helper.getData([2,3,4]).then(data => {
-        expect((data[0] as Task).isCanceled).toBe(false);
-        expect((data[1] as Task).isCanceled).toBe(false);
-        expect((data[2] as Task).isCanceled).toBe(false);
+        expect((data[0] as Task).isComplete).toBe(true);
+        expect((data[1] as Task).isComplete).toBe(true);
+        expect((data[2] as Task).isComplete).toBe(true);
       });
     });
   });
 
-  it('should cancel multiple tasks by id range and list', () => {
-    return taskline.cancelTasks('2,3-4').then(() => {
-      return helper.getData([2,3,4]).then(data => {
-        expect((data[0] as Task).isCanceled).toBe(true);
-        expect((data[1] as Task).isCanceled).toBe(true);
-        expect((data[2] as Task).isCanceled).toBe(true);
-      });
-    });
-  });
-
-  it('should delete all canceled tasks', () => {
+  it('should delete all checked tasks', () => {
     return helper.getData([2,3,4]).then(data => {
       const oldData = JSON.parse(JSON.stringify(data));
-      
+
       return taskline.clear().then(() => {
         return helper.getData().then(data => {
           return helper.getArchive().then(archive => {
@@ -133,14 +127,14 @@ describe('Test check functionality', () => {
     });
   });
 
-  it('should try to cancel a nonexisting item', () => {
-    expect(taskline.cancelTasks('5')).rejects.toMatchObject({
+  it('should try to check a nonexisting item', () => {
+    expect(taskline.checkTasks('5')).rejects.toMatchObject({
       message: 'Invalid InputIDs'
     });
   });
 
-  it('should try to cancel with invalid id range', () => {
-    expect(taskline.cancelTasks('1-b')).rejects.toMatchObject({
+  it('should try to check with invalid id range', () => {
+    expect(taskline.checkTasks('1-b')).rejects.toMatchObject({
       message: 'Invalid Input ID Range'
     });
   });

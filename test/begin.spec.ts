@@ -56,52 +56,37 @@ describe('Test begin functionality', () => {
 
   it('should begin one task', () => {
     return taskline.beginTasks('2').then(() => {
-      return helper.getData().then((data: Array<Item>) => {
-        const item_2: Task = data.find((x: Item) => { return x.id === 2 }) as Task;
-        expect(item_2.inProgress).toBe(true);
-        expect(item_2.isCanceled).toBe(false);
-        expect(item_2.isComplete).toBe(false);
+      return helper.getData([2]).then((data: Array<Item>) => {
+        expect((data[0] as Task).inProgress).toBe(true);
+        expect((data[0] as Task).isCanceled).toBe(false);
+        expect((data[0] as Task).isComplete).toBe(false);
       });
     });
   });
 
   it('should begin multiple tasks', () => {
     return taskline.beginTasks('2,3').then(() => {
-      return helper.getData().then((data: any) => {
-        const item_2: Task = data.find((x: Item) => { return x.id === 2 }) as Task;
-        const item_3: Task = data.find((x: Item) => { return x.id === 3 }) as Task;
-        expect(item_2.inProgress).toBe(false);
-        expect(item_2.isCanceled).toBe(false);
-        expect(item_2.isComplete).toBe(false);
-        expect(item_3.inProgress).toBe(true);
-        expect(item_3.isCanceled).toBe(false);
-        expect(item_3.isComplete).toBe(false);
+      return helper.getData([2,3]).then((data: any) => {
+        expect((data[0] as Task).inProgress).toBe(false);
+        expect((data[0] as Task).isCanceled).toBe(false);
+        expect((data[0] as Task).isComplete).toBe(false);
+        expect((data[1] as Task).inProgress).toBe(true);
+        expect((data[1] as Task).isCanceled).toBe(false);
+        expect((data[1] as Task).isComplete).toBe(false);
       });
     });
   });
 
   it('should begin multiple tasks by id range', () => {
     return taskline.beginTasks('2-3').then(() => {
-      return helper.getData().then((data: any) => {
-        const item_2: Task = data.find((x: Item) => { return x.id === 2 }) as Task;
-        const item_3: Task = data.find((x: Item) => { return x.id === 3 }) as Task;
-        expect(item_2.inProgress).toBe(true);
-        expect(item_2.isComplete).toBe(false);
-        expect(item_3.inProgress).toBe(false);
-        expect(item_3.isComplete).toBe(false);
+      return helper.getData([2,3]).then((data: any) => {
+        expect((data[0] as Task).inProgress).toBe(true);
+        expect((data[0] as Task).isComplete).toBe(false);
+        expect((data[1] as Task).inProgress).toBe(false);
+        expect((data[1] as Task).isComplete).toBe(false);
       });
     });
   });
-
-  // it('should try to begin a note', () => {
-  //   return taskline.beginTasks('1').then(() => {
-  //     return helper.getData().then((data: any) => {
-  //       const item_1: Note = data.find(x => { return x.id === 1 }) as Task;        
-  //       expect(data[1].inProgress).toBe(undefined);
-  //       expect(data[1].isComplete).toBe(undefined);
-  //     });
-  //   });
-  // });
 
   it('should try to begin nonexisting item', () => {
     expect(taskline.beginTasks('4')).rejects.toMatchObject({

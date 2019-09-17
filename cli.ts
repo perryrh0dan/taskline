@@ -143,20 +143,20 @@ program
 //     taskline.starItems(ids).catch(() => {});
 //   });
 
-// program
-//   .command('task <description>') // Sub-command name
-//   .alias('t') // Alternative sub-command is `al`
-//   .description('Create task') // Command description
-//   .option('-b, --board <board>', 'Board')
-//   .option('-p, --priority <priority>', 'Priority')
-//   .option('-d, --due <date>', 'Due date')
+program
+  .command('task <description>') // Sub-command name
+  .alias('t') // Alternative sub-command is `al`
+  .description('Create task') // Command description
+  .option('-b, --board <board>', 'Board')
+  .option('-p, --priority <priority>', 'Priority')
+  .option('-d, --due <date>', 'Due date')
 
-//   // Function to execute when command is uses
-//   .action((description, opts) => {
-//     taskline
-//       .createTask(description, opts.board, opts.priority, opts.due)
-//       .catch(() => {});
-//   });
+  // Function to execute when command is uses
+  .action((description, opts) => {
+    taskline
+      .createTask(description, opts.board, opts.priority, opts.due)
+      .catch(() => {});
+  });
 
 // program
 //   .command('timeline')

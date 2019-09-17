@@ -1,12 +1,13 @@
-import { Taskline } from '../dist/src/taskline';
-const helper = require('./helper');
+import { Taskline } from '../src/taskline';
+import { Task } from '../src/task';
+import { Helper } from './helper';
+import { Note } from '../src/note';
 
+const helper = new Helper();
 helper.setConfig();
 const taskline = new Taskline();
 
 describe('Test create functionality', () => {
-  const storage = helper.getStorage();
-
   //  Disable output
   process.stdout.write = jest.fn();
   //  Disable output ora problem also jest has no output than
@@ -18,58 +19,58 @@ describe('Test create functionality', () => {
   });
 
   it('should create note', () => {
-    return taskline.createNote('Test Note').then(() => {
-      return storage.get().then(data => {
-        expect(data[1]._isTask).toBe(false);
+    return taskline.createNote('Test Note', undefined).then(() => {
+      return helper.getData().then(data => {
+        expect(data[1] instanceof Note).toBe(true);
+        expect(data[1].isTask).toBe(false);
         expect(data[1].description).toBe('Test Note');
         expect(data[1].boards.toString()).toBe('My Board');
-        expect(data[1].isComplete).toBe(undefined);
-        expect(data[1].priority).toBe(undefined);
       });
     });
   });
 
   it('should create simple task', () => {
-    return taskline.createTask('Test Task').then(() => {
-      return storage.get().then(data => {
-        expect(data[2]._isTask).toBe(true);
+    return taskline.createTask('Test Task', undefined, undefined, undefined).then(() => {
+      return helper.getData().then(data => {
+        expect(data[2] instanceof Task).toBe(true);
+        expect(data[2].isTask).toBe(true);
         expect(data[2].description).toBe('Test Task');
         expect(data[2].boards).toMatchObject(['My Board']);
-        expect(data[2].dueDate).toBe(null);
-        expect(data[2].isComplete).toBe(false);
-        expect(data[2].inProgress).toBe(false);
+        expect((data[2] as Task).dueDate).toBe(null);
+        expect((data[2] as Task).isComplete).toBe(false);
+        expect((data[2] as Task).inProgress).toBe(false);
         expect(data[2].isStarred).toBe(false);
-        expect(data[2].priority).toBe(1);
+        expect((data[2] as Task).priority).toBe(1);
       });
     });
   });
 
   it('should create a task with boards', () => {
-    return taskline.createTask('Second Test Task', 'test2,test3').then(() => {
-      return storage.get().then(data => {
-        expect(data[3]._isTask).toBe(true);
+    return taskline.createTask('Second Test Task', 'test2,test3', undefined, undefined).then(() => {
+      return helper.getData().then(data => {
+        expect(data[3].isTask).toBe(true);
         expect(data[3].description).toBe('Second Test Task');
         expect(data[3].boards).toMatchObject(['test2', 'test3']);
-        expect(data[3].dueDate).toBe(null);
-        expect(data[3].isComplete).toBe(false);
-        expect(data[3].inProgress).toBe(false);
+        expect((data[3] as Task).dueDate).toBe(null);
+        expect((data[3] as Task).isComplete).toBe(false);
+        expect((data[3] as Task).inProgress).toBe(false);
         expect(data[3].isStarred).toBe(false);
-        expect(data[3].priority).toBe(1);
+        expect((data[3] as Task).priority).toBe(1);
       });
     });
   });
 
   it('should create a task with priority', () => {
-    return taskline.createTask('Third Test Task', undefined, '3').then(() => {
-      return storage.get().then(data => {
-        expect(data[4]._isTask).toBe(true);
+    return taskline.createTask('Third Test Task', undefined, '3', undefined).then(() => {
+      return helper.getData().then(data => {
+        expect(data[4].isTask).toBe(true);
         expect(data[4].description).toBe('Third Test Task');
         expect(data[4].boards).toMatchObject(['My Board']);
-        expect(data[4].dueDate).toBe(null);
-        expect(data[4].isComplete).toBe(false);
-        expect(data[4].inProgress).toBe(false);
+        expect((data[4] as Task).dueDate).toBe(null);
+        expect((data[4] as Task).isComplete).toBe(false);
+        expect((data[4] as Task).inProgress).toBe(false);
         expect(data[4].isStarred).toBe(false);
-        expect(data[4].priority).toBe(3);
+        expect((data[4] as Task).priority).toBe(3);
       });
     });
   });
@@ -78,15 +79,15 @@ describe('Test create functionality', () => {
     return taskline
       .createTask('Fourth Test Task', undefined, undefined, '02.09.2019')
       .then(() => {
-        return storage.get().then(data => {
-          expect(data[5]._isTask).toBe(true);
+        return helper.getData().then(data => {
+          expect(data[5].isTask).toBe(true);
           expect(data[5].description).toBe('Fourth Test Task');
           expect(data[5].boards).toMatchObject(['My Board']);
-          expect(data[5].dueDate).toBe(new Date('2019-09-02').setHours(0));
-          expect(data[5].isComplete).toBe(false);
-          expect(data[5].inProgress).toBe(false);
+          expect((data[5] as Task).dueDate).toBe(new Date('2019-09-02').setHours(0));
+          expect((data[5] as Task).isComplete).toBe(false);
+          expect((data[5] as Task).inProgress).toBe(false);
           expect(data[5].isStarred).toBe(false);
-          expect(data[5].priority).toBe(1);
+          expect((data[5] as Task).priority).toBe(1);
         });
       });
   });
@@ -96,17 +97,17 @@ describe('Test create functionality', () => {
     return taskline
       .createTask('Fifth Test Task', undefined, undefined, '02.09.2019 7:13:45')
       .then(() => {
-        return storage.get().then(data => {
-          expect(data[6]._isTask).toBe(true);
+        return helper.getData().then(data => {
+          expect(data[6].isTask).toBe(true);
           expect(data[6].description).toBe('Fifth Test Task');
           expect(data[6].boards).toMatchObject(['My Board']);
-          expect(data[6].dueDate).toBe(
+          expect((data[6] as Task).dueDate).toBe(
             new Date('2019-09-02').setHours(7, 13, 45)
           );
-          expect(data[6].isComplete).toBe(false);
-          expect(data[6].inProgress).toBe(false);
+          expect((data[6] as Task).isComplete).toBe(false);
+          expect((data[6] as Task).inProgress).toBe(false);
           expect(data[6].isStarred).toBe(false);
-          expect(data[6].priority).toBe(1);
+          expect((data[6] as Task).priority).toBe(1);
         });
       });
   });
@@ -115,15 +116,15 @@ describe('Test create functionality', () => {
     return taskline
       .createTask('Sixth Test Task', 'test2,test3', '2', '03.09.2019')
       .then(() => {
-        return storage.get().then(data => {
-          expect(data[7]._isTask).toBe(true);
+        return helper.getData().then(data => {
+          expect(data[7].isTask).toBe(true);
           expect(data[7].description).toBe('Sixth Test Task');
           expect(data[7].boards).toMatchObject(['test2', 'test3']);
-          expect(data[7].dueDate).toBe(new Date('2019-09-03').setHours(0));
-          expect(data[7].isComplete).toBe(false);
-          expect(data[7].inProgress).toBe(false);
+          expect((data[7] as Task).dueDate).toBe(new Date('2019-09-03').setHours(0));
+          expect((data[7] as Task).isComplete).toBe(false);
+          expect((data[7] as Task).inProgress).toBe(false);
           expect(data[7].isStarred).toBe(false);
-          expect(data[7].priority).toBe(2);
+          expect((data[7] as Task).priority).toBe(2);
         });
       });
   });

@@ -212,7 +212,7 @@ export class Taskline {
           );
           ids = ids.concat(rangeList);
         } else {
-          // render.invalidIDRange(element);
+          Renderer.instance.invalidIDRange(element);
           throw new Error('Wrong parameters in ID Range');
         }
       } else {
@@ -261,7 +261,7 @@ export class Taskline {
       data = await this.getData();
     }
 
-    const max = Math.max.apply(Math, data.map(function (item) { return item.id; }))
+    const max = data.length ? Math.max(...data.map(function (item) { return item.id; })) : 0;
     return max + 1;
   }
 
@@ -296,14 +296,14 @@ export class Taskline {
     return level;
   }
 
-  public async createTask(description: string, boards: string, priority: string, dueDate: string): Promise<void> {
+  public async createTask(description: string, boards?: string, priority?: string, dueDate?: string): Promise<void> {
     Renderer.instance.startLoading();
 
     const id = await this.generateID();
     const data = await this.getData();
     const { dateformat } = Config.instance.get();
 
-    let validatedPriority;
+    let validatedPriority: number;
     if (priority) {
       try {
         validatedPriority = this.validatePriority(priority);
@@ -312,9 +312,12 @@ export class Taskline {
       }
     }
 
-    const parsedBoards = this.parseOptions(boards);
+    let parsedBoards: Array<string>
+    if (boards) {
+      parsedBoards = this.parseOptions(boards);
+    }
 
-    let dueTime;
+    let dueTime: number;
     if (dueDate) {
       try {
         dueTime = this.parseDate(dueDate, dateformat).getTime()
@@ -336,7 +339,7 @@ export class Taskline {
     Renderer.instance.successCreate(task);
   }
 
-  public async createNote(description: string, boards: string) {
+  public async createNote(description: string, boards: string = '') {
     Renderer.instance.startLoading();
     const id = await this.generateID();
     const data = await this.getData();
@@ -402,6 +405,7 @@ export class Taskline {
     items.forEach((item: Item): void => {
       if (validatedIDs.indexOf(item.id) === -1) return;
       if (item instanceof Task) {
+        item.check();
         item.isComplete ? checked.push(item.id) : unchecked.push(item.id);
       };
     });
@@ -492,9 +496,9 @@ export class Taskline {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
 
-    this.saveItemsToArchive(validatedIDs);
+    await this.saveItemsToArchive(validatedIDs);
 
-    data = data.filter(item => { return validatedIDs.indexOf(item.id) !== -1 });
+    data = data.filter(item => { return validatedIDs.indexOf(item.id) === -1 });
 
     await this.save(data);
     Renderer.instance.successDelete(validatedIDs);
