@@ -1,17 +1,14 @@
-import { Item } from './item';
+import { Item, ItemProperties } from './item';
 
-type NoteOptions = {
-  id?: number;
-  date?: string;
-  timestamp?: number;
-  description?: string;
-  isStarred?: Boolean;
-  boards?: Array<string>;
+export interface NoteProperties extends ItemProperties {
+
 }
 
 export class Note extends Item {
-  constructor(options: NoteOptions) {
-    super(options);
-    this.isTask = false;
+  protected _isTask: Boolean;
+
+  constructor(kwArgs: NoteProperties) {
+    super(kwArgs);
+    this._isTask = false;
   }
 }

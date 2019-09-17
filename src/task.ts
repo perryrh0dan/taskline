@@ -1,4 +1,4 @@
-import { Item } from './item';
+import { Item, ItemProperties } from './item';
 
 export enum TaskPriority {
   Normal = 1,
@@ -6,13 +6,7 @@ export enum TaskPriority {
   High = 3
 }
 
-export type TaskOptions = {
-  id?: number;
-  date?: string;
-  timestamp?: number;
-  description?: string;
-  isStarred?: Boolean;
-  boards?: Array<string>;
+export interface TaskProperties extends ItemProperties {
   priority?: TaskPriority;
   inProgress?: Boolean;
   isCanceled?: Boolean;
@@ -21,20 +15,21 @@ export type TaskOptions = {
 }
 
 export class Task extends Item {
+  protected _isTask: Boolean;
   private _priority: number;
   private _inProgress: Boolean;
   private _isCanceled: Boolean;
   private _isComplete: Boolean;
   private _dueDate: number;
 
-  constructor(options: TaskOptions) {
-    super(options);
+  constructor(kwArgs: TaskProperties) {
+    super(kwArgs);
     this._isTask = true;
-    this._priority = options.priority || TaskPriority.Normal;
-    this._inProgress = options.inProgress || false;
-    this._isCanceled = options.isCanceled || false;
-    this._isComplete = options.isComplete || false;
-    this._dueDate = options.dueDate || 0;
+    this._priority = kwArgs.priority || TaskPriority.Normal;
+    this._inProgress = kwArgs.inProgress || false;
+    this._isCanceled = kwArgs.isCanceled || false;
+    this._isComplete = kwArgs.isComplete || false;
+    this._dueDate = kwArgs.dueDate || 0;
   }
 
   public get priority() {

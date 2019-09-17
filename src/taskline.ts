@@ -174,12 +174,15 @@ export class Taskline {
     });
 
     // Some simple date checks
-    if (parts[fmt.yyyy] < 0 || parts[fmt.mm] > 11 || parts[fmt.dd] > 31) throw new Error('Cant parse to date');
+    if (parts[fmt.yyyy] < 0 || parts[fmt.mm] > 11 || parts[fmt.dd] > 31) {
+      Renderer.instance.invalidDateFormat(input);
+      throw new Error('Cant parse to date');
+    }
 
     try {
       date = new Date(parts[fmt.yyyy], parts[fmt.mm] - 1, parts[fmt.dd]);
     } catch (error) {
-      Renderer.instance.invalidDateFormat(input)
+      Renderer.instance.invalidDateFormat(input);
       throw new Error('Cant parse to date');
     }
 
@@ -288,7 +291,7 @@ export class Taskline {
 
   private validatePriority(priority: string): TaskPriority {
     const level = Number(priority)
-    if (Object.values(TaskPriority).includes(level)) {
+    if (!Object.values(TaskPriority).includes(level)) {
       Renderer.instance.invalidPriority();
       throw new Error('Invalid  Priority');
     }
@@ -303,7 +306,7 @@ export class Taskline {
     const data = await this.getData();
     const { dateformat } = Config.instance.get();
 
-    let validatedPriority: number;
+    let validatedPriority: number | undefined;
     if (priority) {
       try {
         validatedPriority = this.validatePriority(priority);
@@ -312,12 +315,12 @@ export class Taskline {
       }
     }
 
-    let parsedBoards: Array<string>
+    let parsedBoards: Array<string> | undefined
     if (boards) {
       parsedBoards = this.parseOptions(boards);
     }
 
-    let dueTime: number;
+    let dueTime: number | undefined;
     if (dueDate) {
       try {
         dueTime = this.parseDate(dueDate, dateformat).getTime()
@@ -332,24 +335,27 @@ export class Taskline {
       boards: parsedBoards,
       priority: validatedPriority,
       dueDate: dueTime,
-    })
+    });
 
     data.push(task);
     await this.save(data);
     Renderer.instance.successCreate(task);
   }
 
-  public async createNote(description: string, boards: string = '') {
+  public async createNote(description: string, boards?: string) {
     Renderer.instance.startLoading();
     const id = await this.generateID();
     const data = await this.getData();
 
-    const parsedBoards = this.parseOptions(boards);
-
+    let parsedBoards: Array<string> | undefined;
+    if (boards) {
+      parsedBoards = this.parseOptions(boards);
+    }
     const note = new Note({
       id: id,
       description: description,
       boards: parsedBoards
+
     });
 
     data.push(note);

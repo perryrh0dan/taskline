@@ -9,22 +9,31 @@ export type ItemOptions = {
   boards?: Array<string>;
 }
 
+export interface ItemProperties {
+  id: number;
+  date?: string;
+  timestamp?: number;
+  description?: string;
+  isStarred?: Boolean;
+  boards?: Array<string>;
+}
+
 export abstract class Item {
   protected _id: number;
   protected _date: string;
   protected _timestamp: number;
-  protected _isTask: Boolean = false;
+  protected abstract _isTask: Boolean;
   protected _description: string;
   protected _isStarred: Boolean;
   protected _boards: Array<string>;
 
-  constructor(options: ItemOptions) {
-    this._id = options.id || 0;
-    this._date = options.date || now.toDateString();
-    this._timestamp = options.timestamp || now.getTime();
-    this._description = options.description || '';
-    this._isStarred = options.isStarred || false;
-    this._boards = options.boards || ['My Board'];
+  constructor(kwArgs: ItemProperties) {
+    this._id = kwArgs.id;
+    this._date = kwArgs.date || now.toDateString();
+    this._timestamp = kwArgs.timestamp || now.getTime();
+    this._description = kwArgs.description || '';
+    this._isStarred = kwArgs.isStarred || false;
+    this._boards = kwArgs.boards || ['My Board'];
   }
 
   get id(): number {
