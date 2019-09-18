@@ -11,17 +11,34 @@ echo 'Copying all necessery files to temp directory'
 cp ../package.json ./
 cp ../snapcraft.yaml ./
 cp -r ../src ./src
-cp ../cli.js ./
+cp ../cli.ts ./
 cp ../license.md ./
+cp ../tsconfig.json ./
 
 # Comment out update notifier for snap
 echo 'Comment out update notifier'
-sed -i "/START SNAPCRAFT IGNORE/,/END SNAPCRAFT IGNORE/"' s/^/\/\/ /' cli.js
+sed -i "/START SNAPCRAFT IGNORE/,/END SNAPCRAFT IGNORE/"' s/^/\/\/ /' cli.ts
 # sed -i '2,4 s/^/#/' cli.js
 
 # Install npm packages
 echo 'Run npm install'
-npm install --production
+npm install
+
+# Compile Typescript
+echo 'Compile typescript'
+npm run build:prod
+
+# Delete source files and copy compiled code to snap main
+echo 'Delete source files and copy compiled code to snap main'
+rm -r ./src
+rm tsconfig.json
+cp -r dist/. .
+rm -r dist
+rm cli.ts
+
+# Delete dev dependencies
+echo 'Removing dev dependencies'
+npm prune --production
 
 # Build Snap
 echo 'Build snap'

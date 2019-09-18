@@ -32,7 +32,7 @@ description: |
   * Update notifications
   * Configurable through `~/.taskline.json`
 
-More informations under https://github.com/perryrh0dan/taskline.
+  More informations under https://github.com/perryrh0dan/taskline.
 
 grade: stable
 confinement: strict

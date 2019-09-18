@@ -7,7 +7,7 @@ import { Renderer } from './renderer';
 import * as firebase from 'firebase-admin';
 
 export class FirestoreStorage extends Storage {
-  private static _instance: FirestoreStorage
+  private static _instance: FirestoreStorage;
   private _db: FirebaseFirestore.Firestore;
   private _storageName: string = '';
   private _archiveName: string = '';
@@ -49,9 +49,7 @@ export class FirestoreStorage extends Storage {
       return new Promise((resolve, reject) => {
         data.forEach((item: Item) => {
           // Create a ref
-          const elementRef = self._db
-            .collection(path)
-            .doc(item.id.toString());
+          const elementRef = self._db.collection(path).doc(item.id.toString());
           batch.set(elementRef, item);
         });
 
@@ -79,11 +77,41 @@ export class FirestoreStorage extends Storage {
           const items: Array<Item> = [];
           data.forEach(item => {
             if (item.isTask) {
-              items.push(new Task(item as any))
-            } else {
-              items.push(new Note(item as any))
+              items.push(new Task(item as any));
+            } else if (item.isTask === false) {
+              items.push(new Note(item as any));
             }
-          })
+
+            // to support old storage format
+            if (item._isTask) {
+              items.push(
+                new Task({
+                  id: item._id,
+                  date: item._date,
+                  timestamp: item._timestamp,
+                  description: item.description,
+                  isStarred: item.isStarred,
+                  boards: item.boards,
+                  priority: item.priority,
+                  inProgress: item.inProgress,
+                  isCanceled: item.isCanceled,
+                  isComplete: item.isComplete,
+                  dueDate: item.dueDate
+                })
+              );
+            } else if (item._isTask === false) {
+              items.push(
+                new Note({
+                  id: item._id,
+                  date: item._date,
+                  timestamp: item._timestamp,
+                  description: item.description,
+                  isStarred: item.isStarred,
+                  boards: item.boards
+                })
+              );
+            }
+          });
           resolve(items);
         })
         .catch(error => {
@@ -145,11 +173,11 @@ export class FirestoreStorage extends Storage {
   async get() {
     if (!this._data) {
       try {
-        this._data = await this.getCollection(this._storageName)
+        this._data = await this.getCollection(this._storageName);
       } catch (error) {
         Renderer.instance.invalidFirestoreConfig();
         process.exit(1);
-      };
+      }
     }
 
     return this._data;
@@ -158,7 +186,7 @@ export class FirestoreStorage extends Storage {
   async getArchive() {
     if (!this._archive) {
       try {
-        this._archive = await this.getCollection(this._archiveName)
+        this._archive = await this.getCollection(this._archiveName);
       } catch (error) {
         Renderer.instance.invalidFirestoreConfig();
         process.exit(1);

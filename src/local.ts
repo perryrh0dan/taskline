@@ -122,8 +122,34 @@ export class LocalStorage extends Storage {
     Object.keys(data).forEach((id: string) => {
       if (data[id].isTask) {
         items.push(new Task(data[id]));
-      } else {
+      } else if (data[id].isTask === false){
         items.push(new Note(data[id]));
+      }
+
+      // to support old storage format
+      if (data[id]._isTask) {
+        items.push(new Task({
+          id: data[id]._id,
+          date: data[id]._date,
+          timestamp: data[id]._timestamp,
+          description: data[id].description,
+          isStarred: data[id].isStarred,
+          boards: data[id].boards,
+          priority: data[id].priority,
+          inProgress: data[id].inProgress,
+          isCanceled: data[id].isCanceled,
+          isComplete: data[id].isComplete,
+          dueDate: data[id].dueDate
+        }))
+      } else if (data[id]._isTask === false) {
+        items.push(new Note({
+          id: data[id]._id,
+          date: data[id]._date,
+          timestamp: data[id]._timestamp,
+          description: data[id].description,
+          isStarred: data[id].isStarred,
+          boards: data[id].boards
+        }))
       }
     });
 

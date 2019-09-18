@@ -1,98 +1,99 @@
 {
-  "name": "@perryrh0dan/taskline",
-  "productName": "Taskline",
-  "version": "0.7.0",
-  "description": "Tasks, boards & notes for the command-line habitat",
-  "repository": "https://github.com/perryrh0dan/taskline",
-  "license": "MIT",
-  "author": {
-    "name": "Thomas Pöhlmann",
-    "email": "thomaspoehlmann96@googlemail.com",
-    "url": "https://github.com/perryrh0dan"
-  },
-  "bin": {
-    "tl": "cli.js"
-  },
-  "engines": {
-    "node": ">=8"
-  },
-  "files": [
-    "src",
-    "cli.js"
-  ],
-  "keywords": [
-    "task",
-    "board",
-    "note",
-    "todo",
-    "notebook",
-    "command",
-    "line",
-    "console",
-    "cli",
-    "app"
-  ],
-  "configuration": {
-    "default": {
-      "tasklineDirectory": "~",
-      "displayCompleteTasks": true,
-      "displayProgressOverview": true,
-      "storageModule": "local",
-      "firestoreConfig": {
-        "storageName": "storage",
-        "archiveName": "archive",
-        "type": "",
-        "project_id": "",
-        "private_key_id": "",
-        "private_key": "",
-        "client_email": "",
-        "client_id": "",
-        "auth_uri": "",
-        "token_uri": "",
-        "auth_provider_x509_cert_url": "",
-        "client_x509_cert_url": "",
-        "databaseURL": ""
-      },
-      "dateformat": "dd.mm.yyyy HH:MM"
+    "name": "@perryrh0dan/taskline",
+    "productName": "Taskline",
+    "version": "0.7.0",
+    "description": "Tasks, boards & notes for the command-line habitat",
+    "repository": "https://github.com/perryrh0dan/taskline",
+    "license": "MIT",
+    "author": {
+        "name": "Thomas Pöhlmann",
+        "email": "thomaspoehlmann96@googlemail.com",
+        "url": "https://github.com/perryrh0dan"
+    },
+    "bin": {
+        "tl": "cli.js"
+    },
+    "engines": {
+        "node": ">=8"
+    },
+    "files": [
+        "src",
+        "cli.js"
+    ],
+    "keywords": [
+        "task",
+        "board",
+        "note",
+        "todo",
+        "notebook",
+        "command",
+        "line",
+        "console",
+        "cli",
+        "app"
+    ],
+    "configuration": {
+        "default": {
+            "tasklineDirectory": "~",
+            "displayCompleteTasks": true,
+            "displayProgressOverview": true,
+            "storageModule": "local",
+            "firestoreConfig": {
+                "storageName": "storage",
+                "archiveName": "archive",
+                "type": "",
+                "project_id": "",
+                "private_key_id": "",
+                "private_key": "",
+                "client_email": "",
+                "client_id": "",
+                "auth_uri": "",
+                "token_uri": "",
+                "auth_provider_x509_cert_url": "",
+                "client_x509_cert_url": "",
+                "databaseURL": ""
+            },
+            "dateformat": "dd.mm.yyyy HH:MM"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "build:prod": "tsc --sourcemap false",
+        "start": "node dist/cli.js",
+        "test": "npm run lint && npm run jshint && npm run unit",
+        "lint": "eslint ./",
+        "jshint": "jshint src/",
+        "unit": "jest --runInBand --testPathIgnorePatterns=parts"
+    },
+    "dependencies": {
+        "chalk": "^2.4.1",
+        "clipboardy": "^2.1.0",
+        "commander": "^3.0.0",
+        "date-fns": "^2.2.1",
+        "firebase-admin": "^8.4.0",
+        "ora": "^3.4.0",
+        "signale": "1.4.0",
+        "update-notifier": "^2.5.0"
+    },
+    "devDependencies": {
+        "@babel/preset-env": "^7.6.0",
+        "@types/jest": "^24.0.18",
+        "@types/signale": "^1.2.1",
+        "@types/update-notifier": "^2.5.0",
+        "@typescript-eslint/eslint-plugin": "^2.3.0",
+        "@typescript-eslint/parser": "^2.3.0",
+        "eslint": "^6.3.0",
+        "eslint-config-standard": "^14.1.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-node": "^9.2.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^4.0.1",
+        "jest": "^24.9.0",
+        "jshint": "^2.10.2",
+        "ts-jest": "^24.1.0",
+        "typescript": "^3.6.3"
+    },
+    "jest": {
+        "verbose": true
     }
-  },
-  "scripts": {
-    "test": "npm run lint && npm run jshint && npm run unit",
-    "lint": "eslint ./",
-    "jshint": "jshint src/",
-    "unit": "jest --runInBand --testPathIgnorePatterns=parts",
-    "tsc": "tsc",
-    "start": "node dist/cli.js"
-  },
-  "dependencies": {
-    "@types/signale": "^1.2.1",
-    "@types/update-notifier": "^2.5.0",
-    "chalk": "^2.4.1",
-    "clipboardy": "^2.1.0",
-    "commander": "^3.0.0",
-    "date-fns": "^2.2.1",
-    "firebase-admin": "^8.4.0",
-    "ora": "^3.4.0",
-    "signale": "1.4.0",
-    "update-notifier": "^2.5.0"
-  },
-  "devDependencies": {
-    "@babel/preset-env": "^7.6.0",
-    "@types/jest": "^24.0.18",
-    "@typescript-eslint/eslint-plugin": "^2.3.0",
-    "@typescript-eslint/parser": "^2.3.0",
-    "eslint": "^6.3.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^9.2.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "jest": "^24.9.0",
-    "jshint": "^2.10.2",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
-  },
-  "jest": {
-    "verbose": true
-  }
 }
