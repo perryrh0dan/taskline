@@ -1,12 +1,14 @@
-import { Taskline } from '../dist/src/taskline';
-const helper = require('./helper');
+import { Taskline } from '../src/taskline';
+import { Task } from '../src/task';
+import { Helper } from './helper';
+import { Note } from '../src/note';
+import { Item } from '../src/item';
 
+const helper = new Helper();
 helper.setConfig();
 const taskline = new Taskline();
 
 describe('Test move functionality', () => {
-  const storage = helper.getStorage();
-
   //  Disable output
   process.stdout.write = jest.fn();
   //  Disable output ora problem also jest has no output than
@@ -14,36 +16,37 @@ describe('Test move functionality', () => {
 
   beforeAll(async done => {
     await helper.clearStorage();
-    await storage.set({
-      1: {
-        _id: 1,
-        _date: 'Mon Sep 02 2019',
-        _timestamp: 1567434272855,
-        description: 'Test Note',
-        isStarred: false,
-        boards: ['My Board'],
-        _isTask: false
-      },
-      2: {
-        _id: 2,
-        _date: 'Mon Sep 02 2019',
-        _timestamp: 1567434272855,
-        description: 'Test Task',
-        isStarred: false,
-        boards: ['My Board'],
-        _isTask: true,
-        dueDate: null,
-        isComplete: false,
-        inProgress: false,
-        priority: 1
-      }
-    });
+    const data: Array<Item> = new Array<Item>();
+
+    data.push(new Note({
+      id: 1,
+      date: 'Mon Sep 02 2019',
+      timestamp: 1567434272855,
+      description: 'Test Note',
+      isStarred: false,
+      boards: ['My Board']
+    }));
+
+    data.push(new Task({
+      id: 2,
+      date: 'Mon Sep 02 2019',
+      timestamp: 1567434272855,
+      description: 'Test Task',
+      isStarred: false,
+      boards: ['My Board'],
+      dueDate: null,
+      isComplete: false,
+      inProgress: false,
+      priority: 1
+    }))
+
+    await helper.setData(data);
     done();
   });
 
   it('should move an item to one board', () => {
     return taskline.moveBoards('1', 'test').then(() => {
-      return storage.get().then(data => {
+      return helper.getData([1]).then(data => {
         expect(data[1].boards.toString()).toBe('test');
       });
     });
@@ -51,7 +54,7 @@ describe('Test move functionality', () => {
 
   it('should move an item to multiple boards', () => {
     return taskline.moveBoards('1', 'test,test2').then(() => {
-      return storage.get().then(data => {
+      return helper.getData([1]).then(data => {
         expect(data[1].boards.toString()).toBe('test,test2');
       });
     });

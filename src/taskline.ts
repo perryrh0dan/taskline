@@ -35,7 +35,7 @@ export class Taskline {
     return Array.isArray(x) ? x : [x];
   }
 
-  private removeDuplicates(x: any) {
+  private removeDuplicates(x: Array<any>) {
     return [...new Set(this.arrayify(x))];
   }
 
@@ -264,6 +264,28 @@ export class Taskline {
       pending,
       notes
     };
+  }
+
+  private hasTerms(string: string, terms: Array<string>) {
+    for (const term of terms) {
+      if (string.toLocaleLowerCase().indexOf(term.toLocaleLowerCase()) > -1) {
+        return string;
+      }
+    }
+  }
+
+  private filterTask(data: Array<Item>): Array<Item> {
+    data.forEach((item: Item, index: number) => {
+      if (item instanceof Note) {
+        delete data[index];
+      }
+    });
+
+    return data;
+  }
+
+  private filterStarred(data) {
+    
   }
 
   private async generateID(data?: Array<Item>) {
@@ -574,7 +596,61 @@ export class Taskline {
     Renderer.instance.successDueDate(updated, parsedDueDate);
   }
 
-  async restoreItems(ids: string): Promise<void> {
+  public async listByAttributes(terms: string) {
+    Renderer.instance.startLoading();
+
+    const parsedTerms = this.parseOptions(terms);
+    let [boards, attributes] = [ new Array<string>(), new Array<string>()];
+
+    const storedBoards = await this.getBoards();
+
+    parsedTerms.forEach((term: string) => {
+      if (storedBoards.indexOf(term) === -1) {
+        return term === 'myboards' ? boards.push('My Boards'): attributes.push(term);
+      }
+
+      return boards.push(term);
+    });
+
+    [boards, attributes] = [boards, attributes].map((x: Array<string>) => {
+      return this.removeDuplicates(x);
+    });
+
+    const data = await this.filterByAttributes(attributes);
+    const grouped = await this.groupByBoard(data, boards);
+    Renderer.instance.displayByBoard(grouped);
+    return grouped;
+  }
+
+  public async moveBoards(ids: string, boards: string): Promise<void> {
+    Renderer.instance.startLoading();
+
+    let parsedIDs: Array<number> = new Array<number>();
+    try {
+      parsedIDs = this.parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    })
+
+    let parsedBoards = this.parseOptions(boards);
+    parsedBoards = this.removeDuplicates(parsedBoards);
+
+    const data = await this.getData();
+
+    data.forEach((item: Item): void => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
+      item.boards = parsedBoards;
+    })
+
+    await this.save(data);
+    Renderer.instance.successMove(validatedIDs, parsedBoards);
+  }
+
+  public async restoreItems(ids: string): Promise<void> {
     Renderer.instance.startLoading();
 
     let archive = await this.getArchive();
@@ -663,6 +739,17 @@ export class Taskline {
   }
 
   public async editDescription(id: string, description: string) {
+    Renderer.instance.startLoading();
+    const parsedID: Array<number> = [parseInt(id)];
 
+    const validatedID = await this.validateIDs(parsedID).catch(() => {
+      return Promise.reject(new Error('Invalid InputID'));
+    })
+
+    const data = await this.getData();
+
+    data.find(x => x.id === validatedID[0])!.description = description;
+    await this.save(data);
+    Renderer.instance.successEdit(parsedID[0]);
   }
 }
