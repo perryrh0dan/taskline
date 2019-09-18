@@ -160,9 +160,16 @@ export class Taskline {
 
   private parseDate(input: string, format: string): Date {
     format = format || 'yyyy-mm-dd HH:MM' // Default format
-    const parts: Array<number> = input.match(/(\d+)/g)!.map((item: string) => {
-      return parseInt(item, 10);
-    });
+    let parts: Array<number>;
+    try {
+      parts = input.match(/(\d+)/g)!.map((item: string) => {
+        return parseInt(item, 10);
+      });
+    } catch (error) {
+      Renderer.instance.invalidDateFormat(input);
+      throw new Error('Cant parse to date');
+    }
+
     const fmt: any = {};
     let i = 0;
     let date;
