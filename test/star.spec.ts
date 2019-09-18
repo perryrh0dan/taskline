@@ -1,14 +1,14 @@
 import { Taskline } from '../src/taskline';
+import { Item } from '../src/item';
 import { Task } from '../src/task';
 import { Helper } from './helper';
 import { Note } from '../src/note';
-import { Item } from '../src/item';
 
 const helper = new Helper();
 helper.setConfig();
 const taskline = new Taskline();
 
-describe('Test move functionality', () => {
+describe('Test Taskline module', () => {
   //  Disable output
   process.stdout.write = jest.fn();
   //  Disable output ora problem also jest has no output than
@@ -38,34 +38,32 @@ describe('Test move functionality', () => {
       isComplete: false,
       inProgress: false,
       priority: 1
-    }))
+    }));
 
     await helper.setData(data);
     done();
   });
 
-  it('should move an item to one board', () => {
-    return taskline.moveBoards('1', 'test').then(() => {
+  it('should star one item', () => {
+    return taskline.starItems('1').then(() => {
       return helper.getData([1]).then(data => {
-        expect(data[0].boards.toString()).toBe('test');
+        expect(data[0].isStarred).toBe(true);
       });
     });
   });
 
-  it('should move an item to multiple boards', () => {
-    return taskline.moveBoards('1', 'test,test2').then(() => {
-      return helper.getData([1]).then(data => {
-        expect(data[0].boards.toString()).toBe('test,test2');
-      });
-    });
-  });
-
-  it('should move multiple items to multiple boards', () => {
-    return taskline.moveBoards('1,2', 'test,test2').then(() => {
+  it('should star multiple items', () => {
+    return taskline.starItems('1,2').then(() => {
       return helper.getData([1,2]).then(data => {
-        expect(data[0].boards).toMatchObject(['test', 'test2']);
-        expect(data[1].boards).toMatchObject(['test', 'test2']);
+        expect(data[0].isStarred).toBe(false);
+        expect(data[1].isStarred).toBe(true);
       });
+    });
+  });
+
+  it('should try to star nonexisting item', () => {
+    expect(taskline.starItems('3')).rejects.toMatchObject({
+      message: 'Invalid InputIDs'
     });
   });
 

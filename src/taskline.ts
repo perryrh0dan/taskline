@@ -266,26 +266,139 @@ export class Taskline {
     };
   }
 
-  private hasTerms(string: string, terms: Array<string>) {
+  private hasTerms(string: string, terms: Array<string>): Boolean {
     for (const term of terms) {
       if (string.toLocaleLowerCase().indexOf(term.toLocaleLowerCase()) > -1) {
-        return string;
+        return true;
       }
     }
+    return false;
   }
 
   private filterTask(data: Array<Item>): Array<Item> {
-    data.forEach((item: Item, index: number) => {
-      if (item instanceof Note) {
-        delete data[index];
-      }
-    });
+    data = data.filter((item: Item) => {
+      return item instanceof Task;
+    })
 
     return data;
   }
 
-  private filterStarred(data) {
-    
+  private filterStarred(data: Array<Item>): Array<Item> {
+    data = data.filter((item: Item) => {
+      return item.isStarred;
+    })
+
+    return data;
+  }
+
+  private filterInProgress(data: Array<Item>): Array<Item> {
+    data = data.filter((item: Item) => {
+      return item instanceof Task && item.inProgress
+    })
+
+    return data;
+  }
+
+  private filterComplete(data: Array<Item>): Array<Item> {
+    data = data.filter((item: Item) => {
+      return item instanceof Task && item.isComplete
+    })
+
+    return data;
+  }
+
+  private filterCanceled(data: Array<Item>): Array<Item> {
+    data = data.filter((item: Item) => {
+      return item instanceof Task && item.isCanceled;
+    })
+
+    return data;
+  }
+
+  private filterPending(data: Array<Item>): Array<Item> {
+    data = data.filter((item: Item) => {
+      return item instanceof Task && !item.isComplete;
+    })
+
+    return data;
+  }
+
+  private filterNote(data: Array<Item>): Array<Item> {
+    data = data.filter((item: Item) => {
+      return item instanceof Note
+    })
+
+    return data;
+  }
+
+  private filterPriority(data: Array<Item>, priority: TaskPriority): Array<Item> {
+    data = data.filter((item: Item) => {
+      return item instanceof Task && item.priority === priority;
+    })
+
+    return data;
+  }
+
+  private async filterByAttributes(attr: Array<string>) {
+    let data = await this.getData();
+
+    if (data.length === 0) {
+      return data;
+    }
+
+    attr.forEach((x: string) => {
+      switch (x) {
+        case 'star':
+        case 'starred':
+          data = this.filterStarred(data);
+          break;
+
+        case 'done':
+        case 'checked':
+        case 'complete':
+          data = this.filterComplete(data);
+          break;
+
+        case 'canceled':
+          data = this.filterCanceled(data);
+          break;
+
+        case 'progress':
+        case 'started':
+        case 'begun':
+          data = this.filterInProgress(data);
+          break;
+
+        case 'pending':
+        case 'unchecked':
+        case 'incomplete':
+          data = this.filterPending(data);
+          break;
+
+        case 'todo':
+        case 'task':
+        case 'tasks':
+          data = this.filterTask(data);
+          break;
+
+        case 'note':
+        case 'notes':
+          data = this.filterNote(data);
+          break;
+
+        case 'normal':
+        case 'medium':
+        case 'high':
+          const priority: TaskPriority = x === 'normal' ? TaskPriority.Normal : x === 'medium' ? TaskPriority.Medium : TaskPriority.High;
+          data = this.filterPriority(data, priority);
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    return data;
   }
 
   private async generateID(data?: Array<Item>) {
@@ -596,17 +709,37 @@ export class Taskline {
     Renderer.instance.successDueDate(updated, parsedDueDate);
   }
 
+  public async findItems(terms: string) {
+    Renderer.instance.startLoading();
+
+    const parsedTerms = this.parseOptions(terms);
+    const data = await this.getData();
+    const result: Array<Item> = new Array<Item>();
+
+    data.forEach((item: Item) => {
+      if (!this.hasTerms(item.description, parsedTerms)) {
+        return;
+      }
+
+      result.push(item);
+    });
+
+    const grouped = await this.groupByBoard(result);
+    Renderer.instance.displayByBoard(grouped);
+    return grouped;
+  }
+
   public async listByAttributes(terms: string) {
     Renderer.instance.startLoading();
 
     const parsedTerms = this.parseOptions(terms);
-    let [boards, attributes] = [ new Array<string>(), new Array<string>()];
+    let [boards, attributes] = [new Array<string>(), new Array<string>()];
 
     const storedBoards = await this.getBoards();
 
     parsedTerms.forEach((term: string) => {
       if (storedBoards.indexOf(term) === -1) {
-        return term === 'myboards' ? boards.push('My Boards'): attributes.push(term);
+        return term === 'myboards' ? boards.push('My Boards') : attributes.push(term);
       }
 
       return boards.push(term);
@@ -674,6 +807,36 @@ export class Taskline {
 
     await this.saveArchive(archive);
     Renderer.instance.successRestore(validatedIDs);
+  }
+
+  public async starItems(ids: string): Promise<void> {
+    Renderer.instance.startLoading();
+
+    let parsedIDs: Array<number>;
+    try {
+      parsedIDs = this.parseIDs(ids);
+    } catch (error) {
+      return Promise.reject(new Error('Invalid Input ID Range'));
+    }
+
+    let validatedIDs: Array<number>;
+    validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
+      return Promise.reject(new Error('Invalid InputIDs'));
+    });
+
+    const data = await this.getData();
+
+    const [starred, unstarred] = [new Array<number>(), new Array<number>()];
+
+    data.forEach((item: Item): void => {
+      if (validatedIDs.indexOf(item.id) === -1) return;
+      item.star()
+      item.isStarred ? starred.push(item.id) : unstarred.push(item.id);
+    })
+
+    await this.save(data);
+    Renderer.instance.markStarred(starred);
+    Renderer.instance.markUnstarred(unstarred);
   }
 
   public async updatePriority(ids: string, priority: string): Promise<void> {

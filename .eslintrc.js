@@ -1,12 +1,12 @@
 module.exports = {
-  env: {
-    node: true,
-    es6: true,
-    jest: true
-  },
+  parser: '@typescript-eslint/parser', // Specifies the ESLint parser
   extends: [
-    'standard'
+    'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
   ],
+  parserOptions: {
+    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
+    sourceType: 'module', // Allows for the use of imports
+  },
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly'

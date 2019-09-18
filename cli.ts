@@ -14,13 +14,13 @@ program.description(pkg.description);
 
 program.name('tl').usage('[command] [options]');
 
-// program
-//   .command('archive')
-//   .alias('a')
-//   .description('Display archived items')
-//   .action(() => {
-//     taskline.displayArchive().catch(() => {});
-//   });
+program
+  .command('archive')
+  .alias('a')
+  .description('Display archived items')
+  .action(() => {
+    taskline.displayArchive().catch(() => {});
+  });
 
 program
   .command('begin <ids>')
@@ -83,31 +83,31 @@ program
     taskline.editDescription(id, description).catch(() => {});
   });
 
-// program
-//   .command('find <terms>')
-//   .alias('f')
-//   .description('Search for items')
-//   .action(query => {
-//     taskline.findItems(query).catch(() => {});
-//   });
+program
+  .command('find <terms>')
+  .alias('f')
+  .description('Search for items')
+  .action(query => {
+    taskline.findItems(query).catch(() => {});
+  });
 
-// program
-//   .command('list <terms>')
-//   .alias('l')
-//   .description('List items by attributes')
-//   .action(terms => {
-//     taskline.listByAttributes(terms).then(grouped => {
-//       taskline.displayStats(grouped);
-//     });
-//   });
+program
+  .command('list <terms>')
+  .alias('l')
+  .description('List items by attributes')
+  .action(terms => {
+    taskline.listByAttributes(terms).then(grouped => {
+      taskline.displayStats(grouped);
+    });
+  });
 
-// program
-//   .command('move <ids> <boards')
-//   .alias('m')
-//   .description('Move item between boards')
-//   .action((ids, boards) => {
-//     taskline.moveBoards(ids, boards).catch(() => {});
-//   });
+program
+  .command('move <ids> <boards')
+  .alias('m')
+  .description('Move item between boards')
+  .action((ids, boards) => {
+    taskline.moveBoards(ids, boards).catch(() => {});
+  });
 
 program
   .command('note <description>')
@@ -135,13 +135,13 @@ program
     taskline.restoreItems(ids).catch(() => {});
   });
 
-// program
-//   .command('star <ids>')
-//   .alias('s')
-//   .description('Star/unstar item')
-//   .action(ids => {
-//     taskline.starItems(ids).catch(() => {});
-//   });
+program
+  .command('star <ids>')
+  .alias('s')
+  .description('Star/unstar item')
+  .action(ids => {
+    taskline.starItems(ids).catch(() => {});
+  });
 
 program
   .command('task <description>') // Sub-command name
@@ -158,15 +158,15 @@ program
       .catch(() => {});
   });
 
-// program
-//   .command('timeline')
-//   .alias('i')
-//   .description('Display timeline view')
-//   .action(() => {
-//     taskline.displayByDate().then(grouped => {
-//       taskline.displayStats(grouped);
-//     });
-//   });
+program
+  .command('timeline')
+  .alias('i')
+  .description('Display timeline view')
+  .action(() => {
+    taskline.displayByDate().then(grouped => {
+      taskline.displayStats(grouped);
+    });
+  });
 
 program.on('--help', function() {
   console.log('');

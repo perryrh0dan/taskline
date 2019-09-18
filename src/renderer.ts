@@ -563,8 +563,8 @@ export class Renderer {
     });
   }
 
-  public successMove(ids: Array<number>, boards: Array<string>) {
-    this.startLoading();
+  public successMove(ids: Array<number>, boards: Array<string>): void {
+    this.stopLoading();
     const [prefix, suffix] = ['\n', grey(boards.join(', '))];
     const message = `Move item: ${grey(ids.join(', '))} to`;
     signale.success({

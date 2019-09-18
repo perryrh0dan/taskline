@@ -116,4 +116,8 @@ export abstract class Item {
 
     return jsonObj;
   }
+
+  public star() {
+    this._isStarred = !this.isStarred;
+  }
 }

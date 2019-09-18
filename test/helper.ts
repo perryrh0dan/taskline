@@ -55,6 +55,10 @@ export class Helper {
     return this.storage.set(data)
   }
 
+  setArchive(data: Array<Item>) {
+    return this.storage.setArchive(data);
+  }
+
   clearStorage() {
     return this.storage.set(new Array<Item>()).then(() => {
       return this.storage.setArchive(new Array<Item>());
