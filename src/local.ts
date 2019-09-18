@@ -32,7 +32,7 @@ export class LocalStorage extends Storage {
     return this._instance;
   }
 
-  init() {
+  private init() {
     this.storageDir = join(this.mainAppDir, 'storage');
     this.archiveDir = join(this.mainAppDir, 'archive');
     this.tempDir = join(this.mainAppDir, '.temp');

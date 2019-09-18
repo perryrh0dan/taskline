@@ -1,14 +1,5 @@
 const now = new Date();
 
-export type ItemOptions = {
-  id?: number;
-  date?: string;
-  timestamp?: number;
-  description?: string;
-  isStarred?: Boolean;
-  boards?: Array<string>;
-}
-
 export interface ItemProperties {
   id: number;
   date?: string;

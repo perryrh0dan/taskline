@@ -803,7 +803,7 @@ export class Taskline {
 
     await this.saveItemsToStorage(validatedIDs);
 
-    archive = archive.filter(item => { return validatedIDs.indexOf(item.id) !== -1 });
+    archive = archive.filter(item => { return validatedIDs.indexOf(item.id) === -1 });
 
     await this.saveArchive(archive);
     Renderer.instance.successRestore(validatedIDs);

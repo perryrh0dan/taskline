@@ -62,7 +62,10 @@ describe('Test delete, archive and restore functionality', () => {
   it('should restore item from archive', () => {
     return taskline.restoreItems('1').then(() => {
       return helper.getData([3]).then(data => {
-        expect(data[0].description).toBe('Test Note');
+        return helper.getArchive([1]).then(archive => {
+          expect(data[0].description).toBe('Test Note');
+          expect(archive.length).toBe(0)
+        })
       });
     });
   });

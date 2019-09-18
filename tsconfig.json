@@ -5,6 +5,7 @@
     "resolveJsonModule": true,
     "noImplicitReturns": true,
     "strict": true,
+    "strictPropertyInitialization": false,
     "noUnusedLocals": true,
     "outDir": "dist",
     "sourceMap": true
