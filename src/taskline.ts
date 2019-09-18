@@ -63,14 +63,6 @@ export class Taskline {
 
     const dates: Array<string> = new Array<string>();
 
-    // data = data.sort((one, two) => {
-    //   if (one.timestamp > two.timestamp) {
-    //     return 1;
-    //   } else {
-    //     return -1;
-    //   }
-    // });
-
     data.sort((one, two) => (one.timestamp > two.timestamp ? 1 : -1))
 
     data.forEach(item => {

@@ -38,7 +38,10 @@ rm cli.ts
 
 # Delete dev dependencies
 echo 'Removing dev dependencies'
-npm prune --production
+rm -r ./node_modules
+rm -r package-lock.json
+npm install --production
+# npm prune --production
 
 # Build Snap
 echo 'Build snap'
