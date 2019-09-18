@@ -585,7 +585,7 @@ export class Renderer {
       ids.length > 1 ? 'tasks' : 'task'
       }: ${grey(ids.join(', '))} to`;
     const suffix =
-      priority === 3 ? red(priority.toString()) : priority === 2 ? yellow(priority.toString()) : green(priority.toString());
+      priority === 3 ? red(TaskPriority[priority]) : priority === 2 ? yellow(TaskPriority[priority]) : green(TaskPriority[priority]);
     signale.success({
       prefix,
       message,

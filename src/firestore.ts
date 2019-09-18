@@ -14,7 +14,7 @@ export class FirestoreStorage extends Storage {
   private _data: Array<Item>;
   private _archive: Array<Item>;
 
-  public static get Instance(): FirestoreStorage {
+  public static get instance(): FirestoreStorage {
     if (!this._instance) {
       this._instance = new FirestoreStorage();
       this._instance.init();
@@ -50,7 +50,7 @@ export class FirestoreStorage extends Storage {
         data.forEach((item: Item) => {
           // Create a ref
           const elementRef = self._db.collection(path).doc(item.id.toString());
-          batch.set(elementRef, item);
+          batch.set(elementRef, item.toJSON());
         });
 
         batch
@@ -151,7 +151,8 @@ export class FirestoreStorage extends Storage {
       .then(() => {
         this._data = [];
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
         Renderer.instance.invalidFirestoreConfig();
         process.exit(1);
       });

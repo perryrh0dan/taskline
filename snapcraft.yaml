@@ -1,5 +1,5 @@
 name: taskline
-version: '0.7.0'
+version: '1.0.0'
 summary: Tasks, boards & notes for the command-line habitat
 description: |
   By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you

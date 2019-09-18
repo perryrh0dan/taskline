@@ -1,7 +1,8 @@
 import * as clipboardy from 'clipboardy';
 
-import { Storage } from './storage'
-import { LocalStorage } from './local'
+import { Storage } from './storage';
+import { LocalStorage } from './local';
+import { FirestoreStorage } from './firestore';
 import { Item } from './item';
 import { Task, TaskPriority } from './task';
 import { Renderer } from './renderer';
@@ -12,11 +13,16 @@ export class Taskline {
   private storage: Storage;
 
   constructor() {
-    this.storage = LocalStorage.instance;
+    const { storageModule } = Config.instance.get();
+    if (storageModule === 'firestore') {
+      this.storage = FirestoreStorage.instance;
+    } else if (storageModule === 'local') {
+      this.storage = LocalStorage.instance;
+    }
   }
 
   private getData(): Promise<Array<Item>> {
-    return this.storage.get()
+    return this.storage.get();
   }
 
   private getArchive(): Promise<Array<Item>> {
@@ -24,28 +30,28 @@ export class Taskline {
   }
 
   private save(data: Array<Item>) {
-    return this.storage.set(data)
+    return this.storage.set(data);
   }
 
   private saveArchive(archive: Array<Item>) {
     return this.storage.setArchive(archive);
   }
 
-  private arrayify(x: any) {
+  private arrayify(x: any): Array<any> {
     return Array.isArray(x) ? x : [x];
   }
 
-  private removeDuplicates(x: Array<any>) {
+  private removeDuplicates(x: Array<any>): Array<any> {
     return [...new Set(this.arrayify(x))];
   }
 
-  private async getBoards() {
+  private async getBoards(): Promise<Array<string>> {
     const data = await this.getData();
     const boards = ['My Board'];
 
     data.forEach(item => {
       boards.push(...item.boards.filter(x => boards.indexOf(x) === -1));
-    })
+    });
 
     return boards;
   }
@@ -57,16 +63,29 @@ export class Taskline {
 
     const dates: Array<string> = new Array<string>();
 
+    // data = data.sort((one, two) => {
+    //   if (one.timestamp > two.timestamp) {
+    //     return 1;
+    //   } else {
+    //     return -1;
+    //   }
+    // });
+
+    data.sort((one, two) => (one.timestamp > two.timestamp ? 1 : -1))
+
     data.forEach(item => {
       if (dates.indexOf(item.date) === -1) {
         dates.push(item.date);
       }
-    })
+    });
 
     return dates;
   }
 
-  private async groupByBoard(data?: Array<Item>, boards?: Array<string>): Promise<any> {
+  private async groupByBoard(
+    data?: Array<Item>,
+    boards?: Array<string>
+  ): Promise<any> {
     if (!data) {
       data = await this.getData();
     }
@@ -85,7 +104,7 @@ export class Taskline {
       boards!.forEach((board: string) => {
         if (item.boards.includes(board)) {
           if (Array.isArray(grouped[board])) {
-            return grouped[board].push(item)
+            return grouped[board].push(item);
           }
 
           grouped[board] = [item];
@@ -94,10 +113,20 @@ export class Taskline {
       });
     });
 
-    return grouped;
+    const ordered: any = {};
+    Object.keys(grouped)
+      .sort()
+      .forEach(function(key) {
+        ordered[key] = grouped[key];
+      });
+
+    return ordered;
   }
 
-  private async groupByDate(data: Array<Item>, dates: Array<string>): Promise<any> {
+  private async groupByDate(
+    data?: Array<Item>,
+    dates?: Array<string>
+  ): Promise<any> {
     if (!data) {
       data = await this.getData();
     }
@@ -109,10 +138,10 @@ export class Taskline {
     const grouped: any = {};
 
     data.forEach((item: Item): void => {
-      dates.forEach((date: string) => {
+      dates!.forEach((date: string) => {
         if (item.date === date) {
           if (Array.isArray(grouped[date])) {
-            return grouped[date].push(item)
+            return grouped[date].push(item);
           }
 
           grouped[date] = [item];
@@ -159,7 +188,7 @@ export class Taskline {
   }
 
   private parseDate(input: string, format: string): Date {
-    format = format || 'yyyy-mm-dd HH:MM' // Default format
+    format = format || 'yyyy-mm-dd HH:MM'; // Default format
     let parts: Array<number>;
     try {
       parts = input.match(/(\d+)/g)!.map((item: string) => {
@@ -247,12 +276,16 @@ export class Taskline {
     Object.keys(grouped).forEach(group => {
       grouped[group].forEach((item: Item) => {
         if (item instanceof Task) {
-          return item.isComplete ? complete++ : item.inProgress ? inProgress++ : pending++;
+          return item.isComplete
+            ? complete++
+            : item.inProgress
+            ? inProgress++
+            : pending++;
         }
 
         return notes++;
-      })
-    })
+      });
+    });
 
     const total = complete + pending + inProgress;
     const percent = total === 0 ? 0 : Math.floor((complete * 100) / total);
@@ -278,7 +311,7 @@ export class Taskline {
   private filterTask(data: Array<Item>): Array<Item> {
     data = data.filter((item: Item) => {
       return item instanceof Task;
-    })
+    });
 
     return data;
   }
@@ -286,23 +319,23 @@ export class Taskline {
   private filterStarred(data: Array<Item>): Array<Item> {
     data = data.filter((item: Item) => {
       return item.isStarred;
-    })
+    });
 
     return data;
   }
 
   private filterInProgress(data: Array<Item>): Array<Item> {
     data = data.filter((item: Item) => {
-      return item instanceof Task && item.inProgress
-    })
+      return item instanceof Task && item.inProgress;
+    });
 
     return data;
   }
 
   private filterComplete(data: Array<Item>): Array<Item> {
     data = data.filter((item: Item) => {
-      return item instanceof Task && item.isComplete
-    })
+      return item instanceof Task && item.isComplete;
+    });
 
     return data;
   }
@@ -310,7 +343,7 @@ export class Taskline {
   private filterCanceled(data: Array<Item>): Array<Item> {
     data = data.filter((item: Item) => {
       return item instanceof Task && item.isCanceled;
-    })
+    });
 
     return data;
   }
@@ -318,23 +351,26 @@ export class Taskline {
   private filterPending(data: Array<Item>): Array<Item> {
     data = data.filter((item: Item) => {
       return item instanceof Task && !item.isComplete;
-    })
+    });
 
     return data;
   }
 
   private filterNote(data: Array<Item>): Array<Item> {
     data = data.filter((item: Item) => {
-      return item instanceof Note
-    })
+      return item instanceof Note;
+    });
 
     return data;
   }
 
-  private filterPriority(data: Array<Item>, priority: TaskPriority): Array<Item> {
+  private filterPriority(
+    data: Array<Item>,
+    priority: TaskPriority
+  ): Array<Item> {
     data = data.filter((item: Item) => {
       return item instanceof Task && item.priority === priority;
-    })
+    });
 
     return data;
   }
@@ -389,7 +425,12 @@ export class Taskline {
         case 'normal':
         case 'medium':
         case 'high':
-          const priority: TaskPriority = x === 'normal' ? TaskPriority.Normal : x === 'medium' ? TaskPriority.Medium : TaskPriority.High;
+          const priority: TaskPriority =
+            x === 'normal'
+              ? TaskPriority.Normal
+              : x === 'medium'
+              ? TaskPriority.Medium
+              : TaskPriority.High;
           data = this.filterPriority(data, priority);
           break;
 
@@ -406,11 +447,20 @@ export class Taskline {
       data = await this.getData();
     }
 
-    const max = data.length ? Math.max(...data.map(function (item) { return item.id; })) : 0;
+    const max = data.length
+      ? Math.max(
+          ...data.map(function(item) {
+            return item.id;
+          })
+        )
+      : 0;
     return max + 1;
   }
 
-  private async validateIDs(inputIDs: Array<number>, existingIDs?: Array<number>) {
+  private async validateIDs(
+    inputIDs: Array<number>,
+    existingIDs?: Array<number>
+  ) {
     if (!existingIDs) {
       existingIDs = await this.getIDs();
     }
@@ -421,9 +471,9 @@ export class Taskline {
       inputIDs.forEach((id: number) => {
         if (existingIDs!.indexOf(id) === -1) {
           Renderer.instance.invalidID(id);
-          throw new Error('Invalid InputIds')
+          throw new Error('Invalid InputIds');
         }
-      })
+      });
     } catch (error) {
       return Promise.reject(new Error('Invalid InputIDs'));
     }
@@ -432,7 +482,7 @@ export class Taskline {
   }
 
   private validatePriority(priority: string): TaskPriority {
-    const level = Number(priority)
+    const level = Number(priority);
     if (!Object.values(TaskPriority).includes(level)) {
       Renderer.instance.invalidPriority();
       throw new Error('Invalid  Priority');
@@ -441,7 +491,12 @@ export class Taskline {
     return level;
   }
 
-  public async createTask(description: string, boards?: string, priority?: string, dueDate?: string): Promise<void> {
+  public async createTask(
+    description: string,
+    boards?: string,
+    priority?: string,
+    dueDate?: string
+  ): Promise<void> {
     Renderer.instance.startLoading();
 
     const id = await this.generateID();
@@ -457,7 +512,7 @@ export class Taskline {
       }
     }
 
-    let parsedBoards: Array<string> | undefined
+    let parsedBoards: Array<string> | undefined;
     if (boards) {
       parsedBoards = this.parseOptions(boards);
     }
@@ -465,7 +520,7 @@ export class Taskline {
     let dueTime: number | undefined;
     if (dueDate) {
       try {
-        dueTime = this.parseDate(dueDate, dateformat).getTime()
+        dueTime = this.parseDate(dueDate, dateformat).getTime();
       } catch (error) {
         return Promise.reject(new Error('Invalid Date Format'));
       }
@@ -476,7 +531,7 @@ export class Taskline {
       description: description,
       boards: parsedBoards,
       priority: validatedPriority,
-      dueDate: dueTime,
+      dueDate: dueTime
     });
 
     data.push(task);
@@ -497,7 +552,6 @@ export class Taskline {
       id: id,
       description: description,
       boards: parsedBoards
-
     });
 
     data.push(note);
@@ -520,7 +574,7 @@ export class Taskline {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
 
-    const items = await this.getData()
+    const items = await this.getData();
     const description: Array<string> = new Array<string>();
 
     items.forEach(item => {
@@ -546,7 +600,7 @@ export class Taskline {
       return Promise.reject(new Error('Invalid InputIDs'));
     });
 
-    const items = await this.getData()
+    const items = await this.getData();
 
     const [checked, unchecked] = [new Array<number>(), new Array<number>()];
 
@@ -555,7 +609,7 @@ export class Taskline {
       if (item instanceof Task) {
         item.check();
         item.isComplete ? checked.push(item.id) : unchecked.push(item.id);
-      };
+      }
     });
 
     await this.save(items);
@@ -588,7 +642,7 @@ export class Taskline {
         item.begin();
         item.inProgress ? started.push(item.id) : paused.push(item.id);
       }
-    })
+    });
 
     await this.save(items);
     Renderer.instance.markStarted(started);
@@ -617,14 +671,14 @@ export class Taskline {
     data.forEach((item: Item): void => {
       if (validatedIDs.indexOf(item.id) === -1) return;
       if (item instanceof Task) {
-        item.cancel()
+        item.cancel();
         item.isCanceled ? canceled.push(item.id) : revived.push(item.id);
       }
-    })
+    });
 
     await this.save(data);
     Renderer.instance.markCanceled(canceled);
-    Renderer.instance.markRevived(revived)
+    Renderer.instance.markRevived(revived);
   }
 
   public async deleteItems(ids: string): Promise<void> {
@@ -635,7 +689,7 @@ export class Taskline {
     try {
       parsedIDs = this.parseIDs(ids);
     } catch (error) {
-      return Promise.reject(new Error('Invalid Input ID Range'))
+      return Promise.reject(new Error('Invalid Input ID Range'));
     }
 
     let data = await this.getData();
@@ -646,7 +700,9 @@ export class Taskline {
 
     await this.saveItemsToArchive(validatedIDs);
 
-    data = data.filter(item => { return validatedIDs.indexOf(item.id) === -1 });
+    data = data.filter(item => {
+      return validatedIDs.indexOf(item.id) === -1;
+    });
 
     await this.save(data);
     Renderer.instance.successDelete(validatedIDs);
@@ -684,13 +740,13 @@ export class Taskline {
 
     const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
-    })
+    });
 
     const data = await this.getData();
     let dueTime: number, parsedDueDate: Date;
 
     try {
-      parsedDueDate = this.parseDate(dueDate, dateformat)
+      parsedDueDate = this.parseDate(dueDate, dateformat);
       dueTime = parsedDueDate.getTime();
     } catch (error) {
       return Promise.reject(new Error('Invalid Date Format'));
@@ -739,7 +795,9 @@ export class Taskline {
 
     parsedTerms.forEach((term: string) => {
       if (storedBoards.indexOf(term) === -1) {
-        return term === 'myboards' ? boards.push('My Boards') : attributes.push(term);
+        return term === 'myboards'
+          ? boards.push('My Boards')
+          : attributes.push(term);
       }
 
       return boards.push(term);
@@ -767,7 +825,7 @@ export class Taskline {
 
     const validatedIDs = await this.validateIDs(parsedIDs).catch(() => {
       return Promise.reject(new Error('Invalid InputIDs'));
-    })
+    });
 
     let parsedBoards = this.parseOptions(boards);
     parsedBoards = this.removeDuplicates(parsedBoards);
@@ -777,7 +835,7 @@ export class Taskline {
     data.forEach((item: Item): void => {
       if (validatedIDs.indexOf(item.id) === -1) return;
       item.boards = parsedBoards;
-    })
+    });
 
     await this.save(data);
     Renderer.instance.successMove(validatedIDs, parsedBoards);
@@ -803,7 +861,9 @@ export class Taskline {
 
     await this.saveItemsToStorage(validatedIDs);
 
-    archive = archive.filter(item => { return validatedIDs.indexOf(item.id) === -1 });
+    archive = archive.filter(item => {
+      return validatedIDs.indexOf(item.id) === -1;
+    });
 
     await this.saveArchive(archive);
     Renderer.instance.successRestore(validatedIDs);
@@ -830,9 +890,9 @@ export class Taskline {
 
     data.forEach((item: Item): void => {
       if (validatedIDs.indexOf(item.id) === -1) return;
-      item.star()
+      item.star();
       item.isStarred ? starred.push(item.id) : unstarred.push(item.id);
-    })
+    });
 
     await this.save(data);
     Renderer.instance.markStarred(starred);
@@ -872,7 +932,7 @@ export class Taskline {
     });
 
     await this.save(data);
-    Renderer.instance.successPriority(updated, level)
+    Renderer.instance.successPriority(updated, level);
   }
 
   public async displayArchive() {
@@ -893,12 +953,21 @@ export class Taskline {
   }
 
   public async displayByDate() {
-
+    Renderer.instance.startLoading();
+    const grouped = await this.groupByDate();
+    Renderer.instance.displayByDate(grouped);
+    return grouped;
   }
 
   public displayStats(grouped: any) {
     const states = this.getStats(grouped);
-    Renderer.instance.displayStats(states.percent, states.complete, states.inProgress, states.pending, states.notes);
+    Renderer.instance.displayStats(
+      states.percent,
+      states.complete,
+      states.inProgress,
+      states.pending,
+      states.notes
+    );
   }
 
   public async editDescription(id: string, description: string) {
@@ -907,7 +976,7 @@ export class Taskline {
 
     const validatedID = await this.validateIDs(parsedID).catch(() => {
       return Promise.reject(new Error('Invalid InputID'));
-    })
+    });
 
     const data = await this.getData();
 
