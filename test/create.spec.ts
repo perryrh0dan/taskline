@@ -4,7 +4,6 @@ import { Helper } from './helper';
 import { Note } from '../src/note';
 
 const helper = new Helper();
-helper.setConfig();
 const taskline = new Taskline();
 
 describe('Test create functionality', () => {

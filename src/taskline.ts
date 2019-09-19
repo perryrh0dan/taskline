@@ -29,11 +29,11 @@ export class Taskline {
     return this.storage.getArchive();
   }
 
-  private save(data: Array<Item>) {
+  private save(data: Array<Item>): Promise<void> {
     return this.storage.set(data);
   }
 
-  private saveArchive(archive: Array<Item>) {
+  private saveArchive(archive: Array<Item>): Promise<void> {
     return this.storage.setArchive(archive);
   }
 
@@ -63,7 +63,7 @@ export class Taskline {
 
     const dates: Array<string> = new Array<string>();
 
-    data.sort((one, two) => (one.timestamp > two.timestamp ? 1 : -1))
+    data.sort((one, two) => (one.timestamp > two.timestamp ? 1 : -1));
 
     data.forEach(item => {
       if (dates.indexOf(item.date) === -1) {
@@ -108,7 +108,7 @@ export class Taskline {
     const ordered: any = {};
     Object.keys(grouped)
       .sort()
-      .forEach(function(key) {
+      .forEach((key: string) => {
         ordered[key] = grouped[key];
       });
 
@@ -145,7 +145,7 @@ export class Taskline {
     return grouped;
   }
 
-  private async saveItemsToArchive(ids: Array<number>) {
+  private async saveItemsToArchive(ids: Array<number>): Promise<void> {
     const data = await this.getData();
     const archive = await this.getArchive();
 
@@ -262,7 +262,7 @@ export class Taskline {
     return data.map((item: Item) => item.id);
   }
 
-  private getStats(grouped: any) {
+  private getStats(grouped: any): any {
     let [complete, inProgress, pending, notes] = [0, 0, 0, 0];
 
     Object.keys(grouped).forEach(group => {
@@ -271,8 +271,8 @@ export class Taskline {
           return item.isComplete
             ? complete++
             : item.inProgress
-            ? inProgress++
-            : pending++;
+              ? inProgress++
+              : pending++;
         }
 
         return notes++;
@@ -291,7 +291,7 @@ export class Taskline {
     };
   }
 
-  private hasTerms(string: string, terms: Array<string>): Boolean {
+  private hasTerms(string: string, terms: Array<string>): boolean {
     for (const term of terms) {
       if (string.toLocaleLowerCase().indexOf(term.toLocaleLowerCase()) > -1) {
         return true;
@@ -367,7 +367,7 @@ export class Taskline {
     return data;
   }
 
-  private async filterByAttributes(attr: Array<string>) {
+  private async filterByAttributes(attr: Array<string>): Promise<Array<Item>> {
     let data = await this.getData();
 
     if (data.length === 0) {
@@ -421,8 +421,8 @@ export class Taskline {
             x === 'normal'
               ? TaskPriority.Normal
               : x === 'medium'
-              ? TaskPriority.Medium
-              : TaskPriority.High;
+                ? TaskPriority.Medium
+                : TaskPriority.High;
           data = this.filterPriority(data, priority);
           break;
 
@@ -434,17 +434,17 @@ export class Taskline {
     return data;
   }
 
-  private async generateID(data?: Array<Item>) {
+  private async generateID(data?: Array<Item>): Promise<number> {
     if (!data) {
       data = await this.getData();
     }
 
     const max = data.length
       ? Math.max(
-          ...data.map(function(item) {
-            return item.id;
-          })
-        )
+        ...data.map((item: Item) => {
+          return item.id;
+        })
+      )
       : 0;
     return max + 1;
   }
@@ -452,7 +452,7 @@ export class Taskline {
   private async validateIDs(
     inputIDs: Array<number>,
     existingIDs?: Array<number>
-  ) {
+  ): Promise<Array<number>> {
     if (!existingIDs) {
       existingIDs = await this.getIDs();
     }
@@ -531,7 +531,7 @@ export class Taskline {
     Renderer.instance.successCreate(task);
   }
 
-  public async createNote(description: string, boards?: string) {
+  public async createNote(description: string, boards?: string): Promise<void> {
     Renderer.instance.startLoading();
     const id = await this.generateID();
     const data = await this.getData();
@@ -757,7 +757,7 @@ export class Taskline {
     Renderer.instance.successDueDate(updated, parsedDueDate);
   }
 
-  public async findItems(terms: string) {
+  public async findItems(terms: string): Promise<any> {
     Renderer.instance.startLoading();
 
     const parsedTerms = this.parseOptions(terms);
@@ -777,7 +777,7 @@ export class Taskline {
     return grouped;
   }
 
-  public async listByAttributes(terms: string) {
+  public async listByAttributes(terms: string): Promise<any> {
     Renderer.instance.startLoading();
 
     const parsedTerms = this.parseOptions(terms);
@@ -927,7 +927,7 @@ export class Taskline {
     Renderer.instance.successPriority(updated, level);
   }
 
-  public async displayArchive() {
+  public async displayArchive(): Promise<void> {
     Renderer.instance.startLoading();
     const archive = await this.getArchive();
     const dates = await this.getDates(archive);
@@ -937,21 +937,21 @@ export class Taskline {
     Renderer.instance.displayByDate(grouped);
   }
 
-  public async displayByBoard() {
+  public async displayByBoard(): Promise<any> {
     Renderer.instance.startLoading();
     const grouped = await this.groupByBoard();
     Renderer.instance.displayByBoard(grouped);
     return grouped;
   }
 
-  public async displayByDate() {
+  public async displayByDate(): Promise<any> {
     Renderer.instance.startLoading();
     const grouped = await this.groupByDate();
     Renderer.instance.displayByDate(grouped);
     return grouped;
   }
 
-  public displayStats(grouped: any) {
+  public displayStats(grouped: any): void {
     const states = this.getStats(grouped);
     Renderer.instance.displayStats(
       states.percent,
@@ -962,7 +962,7 @@ export class Taskline {
     );
   }
 
-  public async editDescription(id: string, description: string) {
+  public async editDescription(id: string, description: string): Promise<void> {
     Renderer.instance.startLoading();
     const parsedID: Array<number> = [parseInt(id)];
 

@@ -5,7 +5,6 @@ import { Note } from '../src/note';
 import { Item } from '../src/item';
 
 const helper = new Helper();
-helper.setConfig();
 const taskline = new Taskline();
 
 describe('Test move functionality', () => {
@@ -68,6 +67,12 @@ describe('Test move functionality', () => {
       });
     });
   });
+
+  it('should try to move nonexisting item', () => {
+    expect(taskline.moveBoards('5', 'test')).rejects.toMatchObject({
+      message: 'Invalid InputIDs' 
+    });
+  })
 
   afterAll(done => {
     helper.resetConfig();

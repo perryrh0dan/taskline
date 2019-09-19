@@ -17,8 +17,8 @@
         "node": ">=8"
     },
     "files": [
-        "src",
-        "cli.js"
+        "dist/src",
+        "dist/cli.js"
     ],
     "keywords": [
         "task",

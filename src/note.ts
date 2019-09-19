@@ -1,13 +1,9 @@
 import { Item, ItemProperties } from './item';
 
-export interface NoteProperties extends ItemProperties {
-
-}
-
 export class Note extends Item {
-  protected _isTask: Boolean;
+  protected _isTask: boolean;
 
-  constructor(kwArgs: NoteProperties) {
+  constructor(kwArgs: ItemProperties) {
     super(kwArgs);
     this._isTask = false;
   }

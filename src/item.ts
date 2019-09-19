@@ -1,11 +1,11 @@
-const now = new Date();
+const now: Date = new Date();
 
 export interface ItemProperties {
   id: number;
   date?: string;
   timestamp?: number;
   description?: string;
-  isStarred?: Boolean;
+  isStarred?: boolean;
   boards?: Array<string>;
 }
 
@@ -13,9 +13,9 @@ export abstract class Item {
   protected _id: number;
   protected _date: string;
   protected _timestamp: number;
-  protected abstract _isTask: Boolean;
+  protected abstract _isTask: boolean;
   protected _description: string;
-  protected _isStarred: Boolean;
+  protected _isStarred: boolean;
   protected _boards: Array<string>;
 
   constructor(kwArgs: ItemProperties) {
@@ -51,27 +51,27 @@ export abstract class Item {
     this._timestamp = timestamp;
   }
 
-  get isTask(): Boolean {
-    return this._isTask
+  get isTask(): boolean {
+    return this._isTask;
   }
 
-  set isTask(isTask: Boolean) {
+  set isTask(isTask: boolean) {
     this._isTask = isTask;
   }
 
   get description(): string {
-    return this._description
+    return this._description;
   }
 
   set description(description: string) {
     this._description = description;
   }
 
-  get isStarred(): Boolean {
-    return this._isStarred
+  get isStarred(): boolean {
+    return this._isStarred;
   }
 
-  set isStarred(isStarred: Boolean) {
+  set isStarred(isStarred: boolean) {
     this._isStarred = isStarred;
   }
 
@@ -83,7 +83,7 @@ export abstract class Item {
     this._boards = boards;
   }
 
-  public toJSON() {
+  public toJSON(): any {
     const protos: Array<any> = new Array<any>();
     protos.push(Object.getPrototypeOf(Object.getPrototypeOf(this)));
     protos.push(Object.getPrototypeOf(this));
@@ -96,19 +96,19 @@ export abstract class Item {
         .map(([key, descriptor]) => {
           if (descriptor && key[0] !== '_') {
             try {
-              const val = (this as any)[key];
+              const val: string = (this as any)[key];
               jsonObj[key] = val;
             } catch (error) {
               console.error(`Error calling getter ${key}`, error);
             }
           }
         });
-    })
+    });
 
     return jsonObj;
   }
 
-  public star() {
+  public star(): void {
     this._isStarred = !this.isStarred;
   }
 }

@@ -5,7 +5,6 @@ import { Note } from '../src/note';
 import { Item } from '../src/item';
 
 const helper = new Helper();
-helper.setConfig();
 const taskline = new Taskline();
 
 describe('Test delete, archive and restore functionality', () => {
@@ -46,8 +45,8 @@ describe('Test delete, archive and restore functionality', () => {
 
   it('should delete an item', () => {
     return taskline.deleteItems('1').then(() => {
-      return helper.getData([1]).then(data => {
-        expect(data.length).toBe(0)
+      return helper.getData().then(data => {
+        expect(data.length).toBe(1);
       });
     });
   });
@@ -65,7 +64,7 @@ describe('Test delete, archive and restore functionality', () => {
         return helper.getArchive([1]).then(archive => {
           expect(data[0].description).toBe('Test Note');
           expect(archive.length).toBe(0)
-        })
+        });
       });
     });
   });

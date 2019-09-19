@@ -201,14 +201,14 @@ If left undefined the home directory `~` will be used and taskline will be set-u
 
 ##### `displayCompleteTasks`
 
-- Type: `Boolean`
+- Type: `boolean`
 - Default: `true`
 
 Display tasks that are marked as complete.
 
 ##### `displayProgressOverview`
 
-- Type: `Boolean`
+- Type: `boolean`
 - Default: `true`
 
 Display progress overview below the timeline and board views.

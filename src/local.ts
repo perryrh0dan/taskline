@@ -1,5 +1,5 @@
 import { join, basename } from 'path';
-import { randomBytes } from 'crypto'
+import { randomBytes } from 'crypto';
 import * as os from 'os';
 import * as fs from 'fs';
 
@@ -32,7 +32,7 @@ export class LocalStorage extends Storage {
     return this._instance;
   }
 
-  private init() {
+  private init(): void{
     this.storageDir = join(this.mainAppDir, 'storage');
     this.archiveDir = join(this.mainAppDir, 'archive');
     this.tempDir = join(this.mainAppDir, '.temp');
@@ -42,11 +42,11 @@ export class LocalStorage extends Storage {
     this.ensureDirectories();
   }
 
-  private get mainAppDir() {
+  private get mainAppDir(): string {
     const {
       tasklineDirectory
     } = Config.instance.get();
-    const defaultAppDirectory = join(os.homedir(), '.taskline');
+    const defaultAppDirectory: string = join(os.homedir(), '.taskline');
 
     if (!tasklineDirectory) {
       return defaultAppDirectory;
@@ -60,41 +60,41 @@ export class LocalStorage extends Storage {
     return join(tasklineDirectory, '.taskline');
   }
 
-  private ensureMainAppDir() {
+  private ensureMainAppDir(): void {
     if (!fs.existsSync(this.mainAppDir)) {
       fs.mkdirSync(this.mainAppDir);
     }
   }
 
-  private ensureStorageDir() {
+  private ensureStorageDir(): void {
     if (!fs.existsSync(this.storageDir)) {
       fs.mkdirSync(this.storageDir);
     }
   }
 
-  private ensureTempDir() {
+  private ensureTempDir(): void {
     if (!fs.existsSync(this.tempDir)) {
       fs.mkdirSync(this.tempDir);
     }
   }
 
-  private ensureArchiveDir() {
+  private ensureArchiveDir(): void {
     if (!fs.existsSync(this.archiveDir)) {
       fs.mkdirSync(this.archiveDir);
     }
   }
 
-  private cleanTempDir() {
-    const tempFiles = fs
+  private cleanTempDir(): void {
+    const tempFiles: Array<string> = fs
       .readdirSync(this.tempDir)
-      .map(x => join(this.tempDir, x));
+      .map((x: string) => join(this.tempDir, x));
 
     if (tempFiles.length !== 0) {
-      tempFiles.forEach(tempFile => fs.unlinkSync(tempFile));
+      tempFiles.forEach((tempFile: string) => fs.unlinkSync(tempFile));
     }
   }
 
-  private ensureDirectories() {
+  private ensureDirectories(): void {
     this.ensureMainAppDir();
     this.ensureStorageDir();
     this.ensureArchiveDir();
@@ -102,22 +102,22 @@ export class LocalStorage extends Storage {
     this.cleanTempDir();
   }
 
-  private getRandomHexString(length = 8) {
+  private getRandomHexString(length: number = 8): string {
     return randomBytes(Math.ceil(length / 2))
       .toString('hex')
       .slice(0, length);
   }
 
-  private getTempFile(filePath: string) {
-    const randomString = this.getRandomHexString();
-    const tempFilename = basename(filePath)
+  private getTempFile(filePath: string): string {
+    const randomString: string = this.getRandomHexString();
+    const tempFilename: string = basename(filePath)
       .split('.')
       .join(`.TEMP-${randomString}.`);
     return join(this.tempDir, tempFilename);
   }
 
   private parseJson(data: any): Array<Item> {
-    const items = new Array<Item>();
+    const items: Array<Item> = new Array<Item>();
 
     Object.keys(data).forEach((id: string) => {
       if (data[id].isTask) {
@@ -140,7 +140,7 @@ export class LocalStorage extends Storage {
           isCanceled: data[id].isCanceled,
           isComplete: data[id].isComplete,
           dueDate: data[id].dueDate
-        }))
+        }));
       } else if (data[id]._isTask === false) {
         items.push(new Note({
           id: data[id]._id,
@@ -149,26 +149,19 @@ export class LocalStorage extends Storage {
           description: data[id].description,
           isStarred: data[id].isStarred,
           boards: data[id].boards
-        }))
+        }));
       }
     });
 
     return items;
   }
 
-  private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
-    if (ids) {
-      return data.filter(item => { return ids.indexOf(item.id) != -1 })
-    }
-    return data;
-  }
-
   public async get(ids?: Array<number>): Promise<Array<Item>> {
     let data: Array<Item> = new Array<Item>();
 
     if (fs.existsSync(this.mainStorageFile)) {
-      const content = fs.readFileSync(this.mainStorageFile, 'utf8');
-      const jsonData = JSON.parse(content);
+      const content: string = fs.readFileSync(this.mainStorageFile, 'utf8');
+      const jsonData: string = JSON.parse(content);
       data = this.parseJson(jsonData);
     }
 
@@ -183,8 +176,8 @@ export class LocalStorage extends Storage {
     let archive: Array<Item> = new Array<Item>();
 
     if (fs.existsSync(this.archiveFile)) {
-      const content = fs.readFileSync(this.archiveFile, 'utf8');
-      const jsonArchive = JSON.parse(content);
+      const content: string = fs.readFileSync(this.archiveFile, 'utf8');
+      const jsonArchive: string = JSON.parse(content);
       archive = this.parseJson(jsonArchive);
     }
 
@@ -195,10 +188,10 @@ export class LocalStorage extends Storage {
     return archive;
   }
 
-  public async set(data: Array<Item>) {
+  public async set(data: Array<Item>): Promise<void> {
     try {
-      const jsonData = JSON.stringify(data.map((item: Item) => item.toJSON()), null, 4);
-      const tempStorageFile = this.getTempFile(this.mainStorageFile);
+      const jsonData: string = JSON.stringify(data.map((item: Item) => item.toJSON()), null, 4);
+      const tempStorageFile: string = this.getTempFile(this.mainStorageFile);
 
       fs.writeFileSync(tempStorageFile, jsonData, 'utf8');
       fs.renameSync(tempStorageFile, this.mainStorageFile);
@@ -209,10 +202,10 @@ export class LocalStorage extends Storage {
     }
   }
 
-  public async setArchive(archive: Array<Item>) {
+  public async setArchive(archive: Array<Item>): Promise<void> {
     try {
-      const jsonArchive = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
-      const tempArchiveFile = this.getTempFile(this.archiveFile);
+      const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
+      const tempArchiveFile: string = this.getTempFile(this.archiveFile);
 
       fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
       fs.renameSync(tempArchiveFile, this.archiveFile);

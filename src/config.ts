@@ -10,7 +10,7 @@ export class Config {
   private config: any;
   private configFile: string;
 
-  public static get instance() {
+  public static get instance(): Config {
     if (!this._instance) {
       this._instance = new Config();
     }
@@ -24,7 +24,7 @@ export class Config {
     this.ensureConfigFile();
   }
 
-  private ensureConfigFile() {
+  private ensureConfigFile(): void {
     if (fs.existsSync(this.configFile)) {
       return;
     }
@@ -33,11 +33,11 @@ export class Config {
     fs.writeFileSync(this.configFile, data, 'utf8');
   }
 
-  private formatTasklineDir(path: string) {
+  private formatTasklineDir(path: string): string {
     return join(os.homedir(), path.replace(/^~/g, ''));
   }
 
-  get() {
+  get(): any {
     if (!this.config) {
       const content = fs.readFileSync(this.configFile, 'utf8');
       this.config = JSON.parse(content);
@@ -52,7 +52,7 @@ export class Config {
     return Object.assign({}, defaultConfig, this.config);
   }
 
-  set(config: any) {
+  set(config: any): void {
     const data = JSON.stringify(config, null, 4);
     fs.writeFileSync(this.configFile, data, 'utf8');
     this.config = null;

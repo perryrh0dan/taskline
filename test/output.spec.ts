@@ -5,7 +5,6 @@ import { Helper } from './helper';
 import { Note } from '../src/note';
 
 const helper = new Helper();
-helper.setConfig();
 const taskline = new Taskline();
 
 const now = new Date();
@@ -93,83 +92,86 @@ describe('Test output functionality', () => {
     done();
   });
 
-  it('should display by board', () => {
-    mockWrite.mockClear();
-
-    return taskline.displayByBoard().then(() => {
-      expect(mockWrite.mock.calls.length).toBe(6);
-      expect(mockWrite.mock.calls[0][0]).toBe(
-        '\n  [4mMy Board[24m [90m[1/2][39m\n'
-      );
-      expect(mockWrite.mock.calls[1][0]).toBe(
-        '    [90m1.[39m [34m● [39m Test Note\n'
-      );
-      expect(mockWrite.mock.calls[2][0]).toBe(
-        '    [90m2.[39m [32m✔ [39m [90mTest Task[39m\n'
-      );
-      expect(mockWrite.mock.calls[3][0]).toBe(
-        '    [90m3.[39m [35m☐ [39m Second Test Task [33m★[39m\n'
-      );
-      expect(mockWrite.mock.calls[4][0]).toBe(
-        '\n  [4mOther Board[24m [90m[0/1][39m\n'
-      );
-      expect(mockWrite.mock.calls[5][0]).toBe(
-        '    [90m4.[39m [35m☐ [39m [4m[31mThird Test Task[39m[24m [31m(!!)[39m [90m1d[39m [33m★[39m\n'
-      );
-    });
-  });
-
-  it('should display by date', () => {
-    mockWrite.mockClear();
-
-    return taskline.displayByDate().then(() => {
-      expect(mockWrite.mock.calls[0][0]).toBe(
-        '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/2][39m\n'
-      );
-      expect(mockWrite.mock.calls[1][0]).toBe(
-        '    [90m1.[39m [34m● [39m Test Note  \n'
-      );
-      expect(mockWrite.mock.calls[2][0]).toBe(
-        '    [90m2.[39m [32m✔ [39m [90mTest Task[39m  \n'
-      );
-      expect(mockWrite.mock.calls[3][0]).toBe(
-        '    [90m3.[39m [35m☐ [39m Second Test Task  [33m★[39m\n'
-      );
-      expect(mockWrite.mock.calls[4][0]).toBe(
-        '\n  [4m' + yesterday.toDateString() + '[24m [90m[0/1][39m\n'
-      );
-      expect(mockWrite.mock.calls[5][0]).toBe(
-        '    [90m4.[39m [35m☐ [39m [4m[31mThird Test Task[39m[24m [31m(!!)[39m [90mOther Board[39m [33m★[39m\n'
-      );
-    });
-  });
-
-  it('should display stats', () => {
-    return taskline.displayByBoard().then(grouped => {
+  // Run only under linux
+  if (process.platform === "linux") {
+    it('should display by board', () => {
       mockWrite.mockClear();
 
-      taskline.displayStats(grouped);
-      expect(mockWrite.mock.calls[0][0]).toBe(
-        '\n  [90m33% of all tasks complete.[39m\n'
-      );
-      expect(mockWrite.mock.calls[1][0]).toBe(
-        '  [32m1[39m [90mdone[39m[90m · [39m[34m0[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[34m1[39m [90mnote[39m \n\n'
-      );
+      return taskline.displayByBoard().then(() => {
+        expect(mockWrite.mock.calls.length).toBe(6);
+        expect(mockWrite.mock.calls[0][0]).toBe(
+          '\n  [4mMy Board[24m [90m[1/2][39m\n'
+        );
+        expect(mockWrite.mock.calls[1][0]).toBe(
+          '    [90m1.[39m [34m● [39m Test Note\n'
+        );
+        expect(mockWrite.mock.calls[2][0]).toBe(
+          '    [90m2.[39m [32m✔ [39m [90mTest Task[39m\n'
+        );
+        expect(mockWrite.mock.calls[3][0]).toBe(
+          '    [90m3.[39m [35m☐ [39m Second Test Task [33m★[39m\n'
+        );
+        expect(mockWrite.mock.calls[4][0]).toBe(
+          '\n  [4mOther Board[24m [90m[0/1][39m\n'
+        );
+        expect(mockWrite.mock.calls[5][0]).toBe(
+          '    [90m4.[39m [35m☐ [39m [4m[31mThird Test Task[39m[24m [31m(!!)[39m [90m1d[39m [33m★[39m\n'
+        );
+      });
     });
-  });
 
-  it('should display archive', () => {
-    mockWrite.mockClear();
+    it('should display by date', () => {
+      mockWrite.mockClear();
 
-    return taskline.displayArchive().then(() => {
-      expect(mockWrite.mock.calls[0][0]).toBe(
-        '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/1][39m\n'
-      );
-      expect(mockWrite.mock.calls[1][0]).toBe(
-        '    [90m1.[39m [32m✔ [39m [90mDeleted Task[39m  \n'
-      );
+      return taskline.displayByDate().then(() => {
+        expect(mockWrite.mock.calls[0][0]).toBe(
+          '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/2][39m\n'
+        );
+        expect(mockWrite.mock.calls[1][0]).toBe(
+          '    [90m1.[39m [34m● [39m Test Note  \n'
+        );
+        expect(mockWrite.mock.calls[2][0]).toBe(
+          '    [90m2.[39m [32m✔ [39m [90mTest Task[39m  \n'
+        );
+        expect(mockWrite.mock.calls[3][0]).toBe(
+          '    [90m3.[39m [35m☐ [39m Second Test Task  [33m★[39m\n'
+        );
+        expect(mockWrite.mock.calls[4][0]).toBe(
+          '\n  [4m' + yesterday.toDateString() + '[24m [90m[0/1][39m\n'
+        );
+        expect(mockWrite.mock.calls[5][0]).toBe(
+          '    [90m4.[39m [35m☐ [39m [4m[31mThird Test Task[39m[24m [31m(!!)[39m [90mOther Board[39m [33m★[39m\n'
+        );
+      });
     });
-  });
+
+    it('should display stats', () => {
+      return taskline.displayByBoard().then(grouped => {
+        mockWrite.mockClear();
+
+        taskline.displayStats(grouped);
+        expect(mockWrite.mock.calls[0][0]).toBe(
+          '\n  [90m33% of all tasks complete.[39m\n'
+        );
+        expect(mockWrite.mock.calls[1][0]).toBe(
+          '  [32m1[39m [90mdone[39m[90m · [39m[34m0[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[34m1[39m [90mnote[39m \n\n'
+        );
+      });
+    });
+
+    it('should display archive', () => {
+      mockWrite.mockClear();
+
+      return taskline.displayArchive().then(() => {
+        expect(mockWrite.mock.calls[0][0]).toBe(
+          '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/1][39m\n'
+        );
+        expect(mockWrite.mock.calls[1][0]).toBe(
+          '    [90m1.[39m [32m✔ [39m [90mDeleted Task[39m  \n'
+        );
+      });
+    });
+  }
 
   it('should display only tasks', () => {
     process.stdout.write = jest.fn();
@@ -230,6 +232,15 @@ describe('Test output functionality', () => {
       expect(grouped['My Board']).toBe(undefined);
     });
   });
+
+  it('should display only canceled tasks', () => {
+    process.stdout.write = jest.fn();
+
+    return taskline.listByAttributes('canceled').then(grouped => {
+      expect(grouped['My Baard']).toBe(undefined);
+      expect(grouped['Other Board']).toBe(undefined);
+    })
+  })
 
   it('should try to display items with the keyword Fourth', () => {
     process.stdout.write = jest.fn();

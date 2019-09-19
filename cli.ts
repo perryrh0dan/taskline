@@ -6,7 +6,7 @@ import * as program from 'commander';
 import * as updateNotifier from 'update-notifier';
 // END SNAPCRAFT IGNORE
 const pkg = require('./package.json');
-import { Taskline } from './src/taskline' 
+import { Taskline } from './src/taskline';
 const taskline = new Taskline();
 
 program.version(pkg.version);

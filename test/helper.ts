@@ -5,6 +5,7 @@ import { Config } from '../src/config';
 import { Storage } from '../src/storage';
 import { LocalStorage } from '../src/local';
 import { Item } from '../src/item';
+import { FirestoreStorage } from '../src/firestore';
 
 const contentPath = path.resolve(__dirname, './config.json');
 const sampleContentPath = path.resolve(__dirname, './sample.config.json');
@@ -14,17 +15,18 @@ export class Helper {
   private originalConfig: any;
 
   constructor() {
-    // const {
-    //   storageModule
-    // } = Config.instance.get();
-    // if (storageModule === 'firestore') {
-    //   // this._storage = FirestoreStorage.getInstance();
-    // } else if (storageModule === 'local') {
+    const {
+      storageModule
+    } = Config.instance.get();
+    this.setConfig();
+    if (storageModule === 'firestore') {
+      this.storage = FirestoreStorage.instance;
+    } else if (storageModule === 'local') {
       this.storage = LocalStorage.instance;
-    // }
+    }
   }
 
-  setConfig() {
+  setConfig(): void {
     this.originalConfig = Config.instance.get();
     let content;
     if (fs.existsSync(contentPath)) {
@@ -39,23 +41,23 @@ export class Helper {
     Config.instance.set(unitTestConfig);
   }
 
-  resetConfig() {
+  resetConfig(): void {
     Config.instance.set(this.originalConfig);
   }
 
-  getData(ids?: Array<number>) {
+  getData(ids?: Array<number>): Promise<Array<Item>> {
     return this.storage.get(ids);
   }
 
-  getArchive(ids?: Array<number>) {
+  getArchive(ids?: Array<number>): Promise<Array<Item>> {
     return this.storage.getArchive(ids);
   }
 
-  setData(data: Array<Item>) {
-    return this.storage.set(data)
+  setData(data: Array<Item>): Promise<void> {
+    return this.storage.set(data);
   }
 
-  setArchive(data: Array<Item>) {
+  setArchive(data: Array<Item>): Promise<void> {
     return this.storage.setArchive(data);
   }
 

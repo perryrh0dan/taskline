@@ -11,8 +11,8 @@ export class FirestoreStorage extends Storage {
   private _db: FirebaseFirestore.Firestore;
   private _storageName: string = '';
   private _archiveName: string = '';
-  private _data: Array<Item>;
-  private _archive: Array<Item>;
+  private _data: Array<Item> = new Array<Item>();
+  private _archive: Array<Item> = new Array<Item>();
 
   public static get instance(): FirestoreStorage {
     if (!this._instance) {
@@ -27,7 +27,7 @@ export class FirestoreStorage extends Storage {
     super();
   }
 
-  private init() {
+  private init(): void {
     const { firestoreConfig } = Config.instance.get();
 
     this._storageName = firestoreConfig.storageName;
@@ -41,12 +41,12 @@ export class FirestoreStorage extends Storage {
     this._db = firebase.firestore();
   }
 
-  private updateCollection(path: string, data: Array<Item>) {
+  private updateCollection(path: string, data: Array<Item>): Promise<void> {
     const self = this;
     const batch = this._db.batch();
 
     return self.deleteCollection(path).then(() => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject): void => {
         data.forEach((item: Item) => {
           // Create a ref
           const elementRef = self._db.collection(path).doc(item.id.toString());
@@ -68,63 +68,59 @@ export class FirestoreStorage extends Storage {
   private getCollection(path: string): Promise<Array<Item>> {
     const self = this;
 
-    return new Promise((resolve, reject) => {
-      self._db
-        .collection(path)
-        .get()
-        .then(content => {
-          const data = content.docs.map(doc => doc.data());
-          const items: Array<Item> = [];
-          data.forEach(item => {
-            if (item.isTask) {
-              items.push(new Task(item as any));
-            } else if (item.isTask === false) {
-              items.push(new Note(item as any));
-            }
+    return new Promise((resolve, reject): void => {
+      self._db.collection(path).get().then((content: any) => {
+        const data = content.docs.map((doc: any) => doc.data());
+        const items: Array<Item> = [];
+        data.forEach((item: any) => {
+          if (item.isTask) {
+            items.push(new Task(item as any));
+          } else if (item.isTask === false) {
+            items.push(new Note(item as any));
+          }
 
-            // to support old storage format
-            if (item._isTask) {
-              items.push(
-                new Task({
-                  id: item._id,
-                  date: item._date,
-                  timestamp: item._timestamp,
-                  description: item.description,
-                  isStarred: item.isStarred,
-                  boards: item.boards,
-                  priority: item.priority,
-                  inProgress: item.inProgress,
-                  isCanceled: item.isCanceled,
-                  isComplete: item.isComplete,
-                  dueDate: item.dueDate
-                })
-              );
-            } else if (item._isTask === false) {
-              items.push(
-                new Note({
-                  id: item._id,
-                  date: item._date,
-                  timestamp: item._timestamp,
-                  description: item.description,
-                  isStarred: item.isStarred,
-                  boards: item.boards
-                })
-              );
-            }
-          });
-          resolve(items);
-        })
-        .catch(error => {
-          reject(error);
+          // to support old storage format
+          if (item._isTask) {
+            items.push(
+              new Task({
+                id: item._id,
+                date: item._date,
+                timestamp: item._timestamp,
+                description: item.description,
+                isStarred: item.isStarred,
+                boards: item.boards,
+                priority: item.priority,
+                inProgress: item.inProgress,
+                isCanceled: item.isCanceled,
+                isComplete: item.isComplete,
+                dueDate: item.dueDate
+              })
+            );
+          } else if (item._isTask === false) {
+            items.push(
+              new Note({
+                id: item._id,
+                date: item._date,
+                timestamp: item._timestamp,
+                description: item.description,
+                isStarred: item.isStarred,
+                boards: item.boards
+              })
+            );
+          }
         });
+        resolve(items);
+      }).catch(error => {
+        reject(error);
+      });
     });
   }
 
-  private deleteCollection(path: string) {
+  private deleteCollection(path: string): Promise<void> {
     // Get a new write batch
     const batch = this._db.batch();
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject): void => {
       firebase
         .firestore()
         .collection(path)
@@ -144,23 +140,18 @@ export class FirestoreStorage extends Storage {
     });
   }
 
-  async set(data: Array<Item>) {
-    // const pureData = this._parse(data);
-
+  async set(data: Array<Item>): Promise<void> {
     await this.updateCollection(this._storageName, data)
       .then(() => {
         this._data = [];
       })
       .catch((error) => {
-        console.log(error)
         Renderer.instance.invalidFirestoreConfig();
         process.exit(1);
       });
   }
 
-  async setArchive(data: Array<Item>) {
-    // const pureData = this._parse(data);
-
+  async setArchive(data: Array<Item>): Promise<void> {
     await this.updateCollection(this._archiveName, data)
       .then(() => {
         this._archive = [];
@@ -171,9 +162,10 @@ export class FirestoreStorage extends Storage {
       });
   }
 
-  async get() {
-    if (!this._data) {
+  async get(ids?: Array<number>): Promise<Array<Item>> {
+    if (this._data.length === 0) {
       try {
+        console.log('test');
         this._data = await this.getCollection(this._storageName);
       } catch (error) {
         Renderer.instance.invalidFirestoreConfig();
@@ -181,17 +173,25 @@ export class FirestoreStorage extends Storage {
       }
     }
 
+    if (ids) {
+      return this.filterByID(this._data, ids);
+    }
+
     return this._data;
   }
 
-  async getArchive() {
-    if (!this._archive) {
+  async getArchive(ids?: Array<number>): Promise<Array<Item>> {
+    if (this._archive.length === 0) {
       try {
         this._archive = await this.getCollection(this._archiveName);
       } catch (error) {
         Renderer.instance.invalidFirestoreConfig();
         process.exit(1);
       }
+    }
+
+    if (ids) {
+      return this.filterByID(this._archive, ids);
     }
 
     return this._archive;

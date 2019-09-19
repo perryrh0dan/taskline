@@ -5,7 +5,6 @@ import { Note } from '../src/note';
 import { Item } from '../src/item';
 
 const helper = new Helper();
-helper.setConfig();
 const taskline = new Taskline();
 
 describe('Test edit functionality', () => {
@@ -52,7 +51,7 @@ describe('Test edit functionality', () => {
     });
   });
 
-  it('should try to edit description if nonexistent item', () => {
+  it('should try to edit description of nonexistent item', () => {
     return expect(
       taskline.editDescription('4', 'Try Edit Test Task')
     ).rejects.toMatchObject({
