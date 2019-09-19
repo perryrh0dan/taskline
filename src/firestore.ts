@@ -165,7 +165,6 @@ export class FirestoreStorage extends Storage {
   async get(ids?: Array<number>): Promise<Array<Item>> {
     if (this._data.length === 0) {
       try {
-        console.log('test');
         this._data = await this.getCollection(this._storageName);
       } catch (error) {
         Renderer.instance.invalidFirestoreConfig();
