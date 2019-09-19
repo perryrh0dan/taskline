@@ -1,7 +1,7 @@
 # What's New in Taskline
 Changelog for npm and snapcraft
 
-## Version 1.0.0
+## Version 1.0.1
 
 ### Features
 - Complete rebuild in typescript
