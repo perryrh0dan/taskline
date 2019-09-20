@@ -41,128 +41,116 @@ export class FirestoreStorage extends Storage {
     this._db = firebase.firestore();
   }
 
-  private updateCollection(path: string, data: Array<Item>): Promise<void> {
+  private async updateCollection(path: string, data: Array<Item>): Promise<void> {
     const self = this;
     const batch = this._db.batch();
 
-    return self.deleteCollection(path).then(() => {
-      return new Promise((resolve, reject): void => {
-        data.forEach((item: Item) => {
-          // Create a ref
-          const elementRef = self._db.collection(path).doc(item.id.toString());
-          batch.set(elementRef, item.toJSON());
-        });
+    try {
+      await self.deleteCollection(path);
 
-        batch
-          .commit()
-          .then(() => {
-            resolve();
-          })
-          .catch(error => {
-            reject(error);
-          });
+      data.forEach((item: Item) => {
+        // Create a ref
+        const elementRef = self._db.collection(path).doc(item.id.toString());
+        batch.set(elementRef, item.toJSON());
       });
-    });
+
+      await batch.commit()
+    } catch (error) {
+      throw new Error()
+    }
   }
 
-  private getCollection(path: string): Promise<Array<Item>> {
+  private async getCollection(path: string): Promise<Array<Item>> {
     const self = this;
 
-    return new Promise((resolve, reject): void => {
-      self._db.collection(path).get().then((content: any) => {
-        const data = content.docs.map((doc: any) => doc.data());
-        const items: Array<Item> = [];
-        data.forEach((item: any) => {
-          if (item.isTask) {
-            items.push(new Task(item as any));
-          } else if (item.isTask === false) {
-            items.push(new Note(item as any));
-          }
+    try {
+      const content = await self._db.collection(path).get();
+      const data = content.docs.map((doc: any) => doc.data());
+      const items: Array<Item> = new Array<Item>();
+      data.forEach((item: any) => {
+        if (item.isTask) {
+          items.push(new Task(item as any));
+        } else if (item.isTask === false) {
+          items.push(new Note(item as any));
+        }
 
-          // to support old storage format
-          if (item._isTask) {
-            items.push(
-              new Task({
-                id: item._id,
-                date: item._date,
-                timestamp: item._timestamp,
-                description: item.description,
-                isStarred: item.isStarred,
-                boards: item.boards,
-                priority: item.priority,
-                inProgress: item.inProgress,
-                isCanceled: item.isCanceled,
-                isComplete: item.isComplete,
-                dueDate: item.dueDate
-              })
-            );
-          } else if (item._isTask === false) {
-            items.push(
-              new Note({
-                id: item._id,
-                date: item._date,
-                timestamp: item._timestamp,
-                description: item.description,
-                isStarred: item.isStarred,
-                boards: item.boards
-              })
-            );
-          }
-        });
-        resolve(items);
-      }).catch(error => {
-        reject(error);
+        // to support old storage format
+        if (item._isTask) {
+          items.push(
+            new Task({
+              id: item._id,
+              date: item._date,
+              timestamp: item._timestamp,
+              description: item.description,
+              isStarred: item.isStarred,
+              boards: item.boards,
+              priority: item.priority,
+              inProgress: item.inProgress,
+              isCanceled: item.isCanceled,
+              isComplete: item.isComplete,
+              dueDate: item.dueDate
+            })
+          );
+        } else if (item._isTask === false) {
+          items.push(
+            new Note({
+              id: item._id,
+              date: item._date,
+              timestamp: item._timestamp,
+              description: item.description,
+              isStarred: item.isStarred,
+              boards: item.boards
+            })
+          );
+        }
       });
-    });
+      return items;
+    } catch (error) {
+      throw new Error();
+    }
   }
 
-  private deleteCollection(path: string): Promise<void> {
+  private async deleteCollection(path: string): Promise<void> {
     // Get a new write batch
-    const batch = this._db.batch();
+    try {
+      const batch = this._db.batch();
 
-    return new Promise((resolve, reject): void => {
-      firebase
+      const data = await firebase
         .firestore()
         .collection(path)
-        .listDocuments()
-        .then(val => {
-          val.forEach(val => {
-            batch.delete(val);
-          });
+        .listDocuments();
 
-          batch.commit().then(() => {
-            resolve();
-          });
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  }
-
-  async set(data: Array<Item>): Promise<void> {
-    await this.updateCollection(this._storageName, data)
-      .then(() => {
-        this._data = [];
-      })
-      .catch((error) => {
-        Renderer.instance.invalidFirestoreConfig();
-        process.exit(1);
+      data.forEach(item => {
+        batch.delete(item);
       });
+
+      await batch.commit();
+    } catch (error) {
+      throw new Error();
+    }
   }
 
-  async setArchive(data: Array<Item>): Promise<void> {
-    await this.updateCollection(this._archiveName, data)
-      .then(() => {
-        this._archive = [];
-      })
-      .catch(() => {
-        Renderer.instance.invalidFirestoreConfig();
-        process.exit(1);
-      });
+  public async set(data: Array<Item>): Promise<void> {
+    try {
+      await this.updateCollection(this._storageName, data);
+      this._data = [];
+    } catch (error) {
+      Renderer.instance.invalidFirestoreConfig();
+      process.exit(1);
+    }
   }
 
-  async get(ids?: Array<number>): Promise<Array<Item>> {
+  public async setArchive(data: Array<Item>): Promise<void> {
+    try {
+      await this.updateCollection(this._archiveName, data);
+      this._archive = [];
+    } catch (error) {
+      Renderer.instance.invalidFirestoreConfig();
+      process.exit(1);
+    }
+  }
+
+  public async get(ids?: Array<number>): Promise<Array<Item>> {
     if (this._data.length === 0) {
       try {
         this._data = await this.getCollection(this._storageName);
@@ -179,7 +167,7 @@ export class FirestoreStorage extends Storage {
     return this._data;
   }
 
-  async getArchive(ids?: Array<number>): Promise<Array<Item>> {
+  public async getArchive(ids?: Array<number>): Promise<Array<Item>> {
     if (this._archive.length === 0) {
       try {
         this._archive = await this.getCollection(this._archiveName);

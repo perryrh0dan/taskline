@@ -145,13 +145,23 @@ export class Taskline {
     return grouped;
   }
 
+  private copyItem(item?: Item): Item | undefined {
+    if (item instanceof Task) {
+      return new Task(item.toJSON());
+    } else if (item instanceof Note) {
+      return new Note(item.toJSON());
+    } else {
+      return undefined;
+    }
+  }
+
   private async saveItemsToArchive(ids: Array<number>): Promise<void> {
     const data = await this.getData();
     const archive = await this.getArchive();
 
     for (const id of ids) {
       const archiveID = await this.generateID(archive);
-      const item = data.find(x => x.id === id);
+      const item = this.copyItem(data.find(x => x.id === id));
       if (!item) continue;
       item.id = archiveID;
       archive.push(item);
@@ -166,7 +176,7 @@ export class Taskline {
 
     for (const id of ids) {
       const restoreID = await this.generateID(data);
-      const item = archive.find(x => x.id === id);
+      const item = this.copyItem(archive.find(x => x.id === id));
       if (!item) continue;
       item.id = restoreID;
       data.push(item);
