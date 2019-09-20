@@ -1,6 +1,11 @@
 # What's New in Taskline
 Changelog for npm and snapcraft
 
+## Version 1.0.3
+
+### Fixes
+- Fixed bug that `clear` command deleted pending tasks 
+
 ## Version 1.0.1
 
 ### Features
