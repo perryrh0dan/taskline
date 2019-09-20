@@ -707,7 +707,7 @@ export class Taskline {
     const ids: Array<number> = new Array<number>();
 
     data.forEach(item => {
-      if (item instanceof Task && (item.isTask || item.isCanceled)) {
+      if (item instanceof Task && (item.isComplete || item.isCanceled)) {
         ids.push(item.id);
       }
     });

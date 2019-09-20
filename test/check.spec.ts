@@ -65,6 +65,19 @@ describe('Test check functionality', () => {
       priority: 1
     }));
 
+    data.push(new Task({
+      id: 5,
+      date: 'Mon Sep 02 2019',
+      timestamp: 1567434272855,
+      description: 'Third Test Task',
+      isStarred: false,
+      boards: ['My Board'],
+      dueDate: 0,
+      isComplete: false,
+      inProgress: false,
+      priority: 1
+    }));
+
     await helper.setData(data);
     done();
   });
@@ -113,7 +126,7 @@ describe('Test check functionality', () => {
       return taskline.clear().then(() => {
         return helper.getData().then(data => {
           return helper.getArchive().then(archive => {
-            expect(data.length).toBe(1);
+            expect(data.length).toBe(2);
             oldData[0].id -= 1;
             expect(JSON.parse(JSON.stringify(archive[0]))).toMatchObject(oldData[0]);
             oldData[1].id -= 1;
@@ -127,7 +140,7 @@ describe('Test check functionality', () => {
   });
 
   it('should try to check a nonexisting item', () => {
-    expect(taskline.checkTasks('5')).rejects.toMatchObject({
+    expect(taskline.checkTasks('6')).rejects.toMatchObject({
       message: 'Invalid InputIDs'
     });
   });

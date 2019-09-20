@@ -16,6 +16,7 @@ describe('Test begin functionality', () => {
   beforeAll(async done => {
     await helper.clearStorage();
     const data: Array<Item> = new Array<Item>();
+
     data.push(new Note({
       id: 1,
       date: 'Mon Sep 02 2019',
@@ -24,6 +25,7 @@ describe('Test begin functionality', () => {
       isStarred: false,
       boards: ['My Board']
     }));
+
     data.push(new Task({
       id: 2,
       date: 'Mon Sep 02 2019',
@@ -36,6 +38,7 @@ describe('Test begin functionality', () => {
       inProgress: false,
       priority: 1
     }));
+
     data.push(new Task({
       id: 3,
       date: 'Mon Sep 02 2019',
@@ -53,14 +56,12 @@ describe('Test begin functionality', () => {
     done();
   });
 
-  it('should begin one task', () => {
-    return taskline.beginTasks('2').then(() => {
-      return helper.getData([2]).then((data: Array<Item>) => {
-        expect((data[0] as Task).inProgress).toBe(true);
-        expect((data[0] as Task).isCanceled).toBe(false);
-        expect((data[0] as Task).isComplete).toBe(false);
-      });
-    });
+  it('should begin one task', async() => {
+    await taskline.beginTasks('2');
+    const data: Array<Item> = await helper.getData([2]);
+    expect((data[0] as Task).inProgress).toBe(true);
+    expect((data[0] as Task).isCanceled).toBe(false);
+    expect((data[0] as Task).isComplete).toBe(false);
   });
 
   it('should begin multiple tasks', () => {
