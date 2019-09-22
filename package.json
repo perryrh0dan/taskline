@@ -18,7 +18,8 @@
     },
     "files": [
         "src",
-        "cli.js"
+        "cli.js",
+        "postinstall.js"
     ],
     "keywords": [
         "task",
@@ -63,7 +64,8 @@
         "test": "npm run lint && npm run jshint && npm run unit",
         "lint": "eslint ./",
         "jshint": "jshint src/",
-        "unit": "jest --runInBand --testPathIgnorePatterns=parts"
+        "unit": "jest --runInBand --testPathIgnorePatterns=parts",
+        "postinstall" : "node postinstall.js"
     },
     "dependencies": {
         "chalk": "^2.4.1",

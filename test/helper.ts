@@ -15,10 +15,10 @@ export class Helper {
   private originalConfig: any;
 
   constructor() {
+    this.setConfig();
     const {
       storageModule
     } = Config.instance.get();
-    this.setConfig();
     if (storageModule === 'firestore') {
       this.storage = FirestoreStorage.instance;
     } else if (storageModule === 'local') {
