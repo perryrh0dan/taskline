@@ -4,6 +4,7 @@
     "module": "commonjs",
     "resolveJsonModule": true,
     "noImplicitReturns": true,
+    "noImplicitAny": true,
     "strict": true,
     "strictPropertyInitialization": false,
     "noUnusedLocals": true,
