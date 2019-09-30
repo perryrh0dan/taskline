@@ -634,4 +634,14 @@ export class Renderer {
       suffix
     });
   }
+
+  public successRearrangeIDs(): void {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = `Rearranged ids of all items`;
+    signale.success({
+      prefix,
+      message
+    });
+  }
 }

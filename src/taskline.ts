@@ -937,6 +937,21 @@ export class Taskline {
     Renderer.instance.successPriority(updated, level);
   }
 
+  public async editDescription(id: string, description: string): Promise<void> {
+    Renderer.instance.startLoading();
+    const parsedID: Array<number> = [parseInt(id)];
+
+    const validatedID = await this.validateIDs(parsedID).catch(() => {
+      return Promise.reject(new Error('Invalid InputID'));
+    });
+
+    const data = await this.getData();
+
+    data.find(x => x.id === validatedID[0])!.description = description;
+    await this.save(data);
+    Renderer.instance.successEdit(parsedID[0]);
+  }
+
   public async displayArchive(): Promise<void> {
     Renderer.instance.startLoading();
     const archive = await this.getArchive();
@@ -972,18 +987,20 @@ export class Taskline {
     );
   }
 
-  public async editDescription(id: string, description: string): Promise<void> {
+  public async rearrangeIDs(): Promise<void> {
     Renderer.instance.startLoading();
-    const parsedID: Array<number> = [parseInt(id)];
-
-    const validatedID = await this.validateIDs(parsedID).catch(() => {
-      return Promise.reject(new Error('Invalid InputID'));
-    });
 
     const data = await this.getData();
+    data.sort((one, two) => (one.id > two.id ? 1 : -1));
 
-    data.find(x => x.id === validatedID[0])!.description = description;
+    let nextID = 0;
+    data.forEach((item: Item) => {
+      item.id = nextID;
+      nextID += 1;
+    });
+
     await this.save(data);
-    Renderer.instance.successEdit(parsedID[0]);
+
+    Renderer.instance.successRearrangeIDs();
   }
 }

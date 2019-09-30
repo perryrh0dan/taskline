@@ -1,6 +1,9 @@
 # What's New in Taskline
 Changelog for npm and snapcraft
 
+## Version 1.0.6
+- Rearrange IDs
+
 ## Version 1.0.5
 - Fixed issue that lead to problems during deletion and recovery of items.
 

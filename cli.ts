@@ -168,6 +168,13 @@ program
     });
   });
 
+program
+  .command('resetIDs')
+  .description('Rearrange the IDs of all items')
+  .action(() => {
+    taskline.rearrangeIDs().catch(() => {});
+  });
+
 program.on('--help', function() {
   console.log('');
   console.log('Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual');
