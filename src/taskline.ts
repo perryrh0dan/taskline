@@ -106,11 +106,18 @@ export class Taskline {
     });
 
     const ordered: any = {};
+
+    // Sort boards
     Object.keys(grouped)
       .sort()
       .forEach((key: string) => {
         ordered[key] = grouped[key];
       });
+
+    // Sort items in boards
+    Object.keys(grouped).forEach((key: string) => {
+      ordered[key] = ordered[key].sort((one: Item, two: Item) => { return one.id > two.id ? 1 : -1; });
+    });
 
     return ordered;
   }
@@ -958,7 +965,6 @@ export class Taskline {
     const dates = await this.getDates(archive);
 
     const grouped = await this.groupByDate(archive, dates);
-
     Renderer.instance.displayByDate(grouped);
   }
 
@@ -987,7 +993,7 @@ export class Taskline {
     );
   }
 
-  public async rearrangeIDs(): Promise<void> {
+  public async refactorIDs(): Promise<void> {
     Renderer.instance.startLoading();
 
     const data = await this.getData();

@@ -172,7 +172,7 @@ program
   .command('refactor')
   .description('Rearrange the IDs of all items')
   .action(() => {
-    taskline.rearrangeIDs().catch(() => {});
+    taskline.refactorIDs().catch(() => {});
   });
 
 program.on('--help', function() {
