@@ -61,7 +61,7 @@ program
   });
 
 program
-  .command('delete <ids>')  
+  .command('delete <ids>')
   .alias('d')
   .description('Delete item')
   .action(ids => {
@@ -169,7 +169,7 @@ program
   });
 
 program
-  .command('resetIDs')
+  .command('refactor')
   .description('Rearrange the IDs of all items')
   .action(() => {
     taskline.refactorIDs().catch(() => {});
@@ -193,7 +193,7 @@ program.on('command:*', function() {
 
 // START SNAPCRAFT IGNORE disable this for snap
 updateNotifier({
-  pkg,
+  pkg
 }).notify();
 // END SNAPCRAFT IGNORE
 

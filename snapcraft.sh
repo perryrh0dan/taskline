@@ -12,6 +12,7 @@ cp ../package.json ./
 cp ../snapcraft.yaml ./
 cp -r ../src ./src
 cp ../cli.ts ./
+cp ../postinstall.js ./
 cp ../license.md ./
 cp ../tsconfig.json ./
 
