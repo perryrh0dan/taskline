@@ -18,8 +18,7 @@
     },
     "files": [
         "src",
-        "cli.js",
-        "postinstall.js"
+        "cli.js"
     ],
     "keywords": [
         "task",
