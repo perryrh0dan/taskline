@@ -999,7 +999,7 @@ export class Taskline {
     const data = await this.getData();
     data.sort((one, two) => (one.id > two.id ? 1 : -1));
 
-    let nextID = 0;
+    let nextID = 1;
     data.forEach((item: Item) => {
       item.id = nextID;
       nextID += 1;
