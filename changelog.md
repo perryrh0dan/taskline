@@ -2,7 +2,36 @@
 Changelog for npm and snapcraft
 
 ## Version 1.0.6
-- Rearrange IDs
+- Add functionality to refactor the IDs of items
+
+Before (Simplified):
+```
+Items: [{
+  id: 34
+  description: "Test 1"
+},{
+  id: 107
+  description: "Test 2"
+},{
+  id: 114
+  description: "Test 2"
+}]
+```
+
+After (Simplified):
+```
+Items: [{
+  id: 1
+  description: "Test 1"
+},{
+  id: 2
+  description: "Test 2"
+},{
+  id: 3
+  description: "Test 2"
+}]
+```
+- Items in boards are now sorted by ID
 
 ## Version 1.0.5
 - Fixed issue that lead to problems during deletion and recovery of items.

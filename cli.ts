@@ -172,7 +172,7 @@ program
   .command('resetIDs')
   .description('Rearrange the IDs of all items')
   .action(() => {
-    taskline.rearrangeIDs().catch(() => {});
+    taskline.refactorIDs().catch(() => {});
   });
 
 program.on('--help', function() {
@@ -193,7 +193,7 @@ program.on('command:*', function() {
 
 // START SNAPCRAFT IGNORE disable this for snap
 updateNotifier({
-  pkg
+  pkg,
 }).notify();
 // END SNAPCRAFT IGNORE
 
