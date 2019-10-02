@@ -55,7 +55,6 @@
       },
       "dateformat": "dd.mm.yyyy HH:MM",
       "colors": {
-        "default": "white",
         "pale": "grey",
         "task": {
           "priority": {

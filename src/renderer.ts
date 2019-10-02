@@ -40,8 +40,17 @@ export class Renderer {
     this.loadColorConfiguration();
   }
 
+  private getColor(type: string): string {
+    const configValue = type.split('.').reduce((p, prop) => { return p[prop]; }, this.configuration.colors);
+    const defaultValue = type.split('.').reduce((p, prop) => { return p[prop]; }, Config.instance.getDefault().colors);
+    if (typeof chalk[configValue] === 'function') {
+      return configValue;
+    } else {
+      return defaultValue;
+    }
+  }
+
   private loadColorConfiguration(): void {
-    const { colors } = this.configuration;
     const signaleOptions: SignaleOptions = {
       config: {
         displayLabel: false
@@ -49,30 +58,14 @@ export class Renderer {
     };
 
     let color: string;
-    if (typeof chalk[colors.pale] === 'function') {
-      this.colorPale = chalk[colors.pale];
-    } else {
-      this.colorPale = chalk[Config.instance.getDefault().colors.pale];
-    }
+    this.colorPale = chalk[this.getColor('pale')];
 
-    if (typeof chalk[colors.task.priority.medium] === 'function') {
-      this.colorMedium = chalk[colors.task.priority.medium];
-    } else {
-      this.colorMedium = chalk[Config.instance.getDefault().colors.task.priority.medium];
-    }
+    this.colorMedium = chalk[this.getColor('task.priority.medium')];
 
-    if (typeof chalk[colors.task.priority.high] === 'function') {
-      this.colorHigh = chalk[colors.task.priority.high];
-    } else {
-      this.colorHigh = chalk[Config.instance.getDefault().colors.task.priority.high];
-    }
+    this.colorHigh = chalk[this.getColor('task.priority.high')];
 
     // Note
-    if (typeof chalk[colors.icons.note] === 'function') {
-      color = colors.icons.note;
-    } else {
-      color = Config.instance.getDefault().colors.icons.note;
-    }
+    color = this.getColor('icons.note');
 
     signaleOptions.types = {
       note: {
@@ -84,12 +77,7 @@ export class Renderer {
     this.colorNote = chalk[color];
 
     // Success
-    if (typeof chalk[colors.icons.success] === 'function') {
-      color = colors.icons.success;
-      this.colorSuccess = chalk[colors.icons.success];
-    } else {
-      color = Config.instance.getDefault().colors.icons.success;
-    }
+    color = this.getColor('icons.success');
 
     signaleOptions.types = Object.assign(signaleOptions.types, {
       success: {
@@ -101,11 +89,7 @@ export class Renderer {
     this.colorSuccess = chalk[color];
 
     // Star
-    if (typeof chalk[colors.icons.star] === 'function') {
-      color = colors.icons.star;
-    } else {
-      color = Config.instance.getDefault().colors.icons.star;
-    }
+    color = this.getColor('icons.star');
 
     signaleOptions.types = Object.assign(signaleOptions.types, {
       star: {
@@ -117,11 +101,7 @@ export class Renderer {
     this.colorStar = chalk[color];
 
     // Progress
-    if (typeof chalk[colors.icons.progress] === 'function') {
-      color = colors.icons.progress;
-    } else {
-      color = Config.instance.getDefault().colors.icons.progress;
-    }
+    color = this.getColor('icons.progress');
 
     signaleOptions.types = Object.assign(signaleOptions.types, {
       await: {
@@ -133,11 +113,7 @@ export class Renderer {
     this.colorProgress = chalk[color];
 
     // Pending
-    if (typeof chalk[colors.icons.pending] === 'function') {
-      color = colors.icons.pending;
-    } else {
-      color = Config.instance.getDefault().colors.icons.pending;
-    }
+    color = this.getColor('icons.pending');
 
     signaleOptions.types = Object.assign(signaleOptions.types, {
       pending: {
@@ -149,11 +125,7 @@ export class Renderer {
     this.colorPending = chalk[color];
 
     // Canceled
-    if (typeof chalk[colors.icons.canceled] === 'function') {
-      color = colors.icons.canceled;
-    } else {
-      color = Config.instance.getDefault().colors.icons.canceled;
-    }
+    color = this.getColor('icons.canceled');
 
     signaleOptions.types = Object.assign(signaleOptions.types, {
       canceled: {
@@ -292,25 +264,10 @@ export class Renderer {
   }
 
   private getTaskColor(task: Task): string {
-    const { colors } = this.configuration;
-    if (task.priority === 1) {
-      if (typeof chalk[colors.default] === 'function') {
-        return colors.default; 
-      } else {
-        return Config.instance.getDefault().colors.default;
-      }
-    } else if (task.priority === 2) {
-      if (typeof chalk[colors.task.priority.medium] === 'function') {
-        return colors.task.priority.medium; 
-      } else {
-        return Config.instance.getDefault().colors.task.priority.medium;
-      }
+    if (task.priority === 2) {
+      return this.getColor('task.priority.medium');
     } else {
-      if (typeof chalk[colors.task.priority.high] === 'function') {
-        return colors.task.priority.high;
-      } else {
-        return Config.instance.getDefault().colors.task.priority.high;
-      }
+      return this.getColor('task.priority.high');
     }
   }
 
