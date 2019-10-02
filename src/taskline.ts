@@ -298,7 +298,7 @@ export class Taskline {
       });
     });
 
-    const total = complete + pending + inProgress;
+    const total = complete + canceled + pending + inProgress;
     const percent = total === 0 ? 0 : Math.floor((complete * 100 + canceled * 100) / total);
 
     return {
