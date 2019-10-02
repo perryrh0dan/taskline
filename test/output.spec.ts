@@ -154,7 +154,7 @@ describe('Test output functionality', () => {
           '\n  [90m33% of all tasks complete.[39m\n'
         );
         expect(mockWrite.mock.calls[1][0]).toBe(
-          '  [32m1[39m [90mdone[39m[90m · [39m[34m0[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[34m1[39m [90mnote[39m \n\n'
+          '  [32m1[39m [90mdone[39m[90m · [39m[31m0[39m [90mcanceled[39m[90m · [39m[34m0[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[34m1[39m [90mnote[39m \n\n'
         );
       });
     });
