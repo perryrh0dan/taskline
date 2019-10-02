@@ -280,7 +280,7 @@ export class Taskline {
   }
 
   private getStats(grouped: any): any {
-    let [complete, inProgress, pending, notes] = [0, 0, 0, 0];
+    let [complete, canceled, inProgress, pending, notes] = [0, 0, 0, 0, 0];
 
     Object.keys(grouped).forEach(group => {
       grouped[group].forEach((item: Item) => {
@@ -289,7 +289,9 @@ export class Taskline {
             ? complete++
             : item.inProgress
               ? inProgress++
-              : pending++;
+              : item.isCanceled
+                ? canceled++
+                : pending++;
         }
 
         return notes++;
@@ -297,11 +299,12 @@ export class Taskline {
     });
 
     const total = complete + pending + inProgress;
-    const percent = total === 0 ? 0 : Math.floor((complete * 100) / total);
+    const percent = total === 0 ? 0 : Math.floor((complete * 100 + canceled * 100) / total);
 
     return {
       percent,
       complete,
+      canceled,
       inProgress,
       pending,
       notes
@@ -987,6 +990,7 @@ export class Taskline {
     Renderer.instance.displayStats(
       states.percent,
       states.complete,
+      states.canceled,
       states.inProgress,
       states.pending,
       states.notes

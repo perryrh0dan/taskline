@@ -37,7 +37,7 @@ export class Config {
     return join(os.homedir(), path.replace(/^~/g, ''));
   }
 
-  get(): any {
+  public get(): any {
     if (!this.config) {
       const content = fs.readFileSync(this.configFile, 'utf8');
       this.config = JSON.parse(content);
@@ -52,9 +52,13 @@ export class Config {
     return Object.assign({}, defaultConfig, this.config);
   }
 
-  set(config: any): void {
+  public set(config: any): void {
     const data = JSON.stringify(config, null, 4);
     fs.writeFileSync(this.configFile, data, 'utf8');
     this.config = null;
+  }
+
+  public getDefault(): any {
+    return defaultConfig;
   }
 }

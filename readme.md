@@ -141,7 +141,7 @@ Commands:
   star|s <ids>                    Star/unstar item
   task|t [options] <description>  Create task
   timeline|i                      Display timeline view
-  resetIDs                        Rearrange the IDs of all items
+  refactor                        Rearrange the IDs of all items
 ```
 
 # Views
@@ -435,12 +435,12 @@ To search for one of more items, use the `find` / `f` command, followed by your 
 > tl f documentation
 ```
 
-### Reset IDs
+### Refactor IDs
 
-To reset/rearrange the ids of all item, when they are getting to high, run the `resetids` command. The `resetids` command has no available shorter alias. This command will keep the correct order of all items but shift all ids back starting by 1.
+To reset/rearrange the ids of all item, when they are getting to high, run the `refactor` command. The `refactor` command has no available shorter alias. This command will keep the correct order of all items but shift all ids back starting by 1.
 
 ```
-> tl resetids
+> tl refactor
 ```
 
 ## Development
