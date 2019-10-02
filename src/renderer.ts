@@ -17,16 +17,6 @@ export class Renderer {
   private spinner: Ora;
   private signale: Signale;
 
-  private colorPale: Function;
-  private colorMedium: Function;
-  private colorHigh: Function;
-  private colorNote: Function;
-  private colorSuccess: Function;
-  private colorStar: Function;
-  private colorProgress: Function;
-  private colorPending: Function;
-  private colorCanceled: Function;
-
   public static get instance(): Renderer {
     if (!this._instance) {
       this._instance = new Renderer();
@@ -37,7 +27,7 @@ export class Renderer {
 
   private constructor() {
     this.spinner = ora();
-    this.loadColorConfiguration();
+    this.configureSignale();
   }
 
   private getColor(type: string): string {
@@ -50,93 +40,50 @@ export class Renderer {
     }
   }
 
-  private loadColorConfiguration(): void {
+  private configureSignale(): void {
     const signaleOptions: SignaleOptions = {
       config: {
         displayLabel: false
       },
+      types: {
+        note: {
+          badge: figures.bullet,
+          color: this.getColor('icons.note'),
+          label: 'note'
+        },
+        success: {
+          badge: figures.tick,
+          color: this.getColor('icons.success'),
+          label: 'success'
+        },
+        star: {
+          badge: figures.star,
+          color: this.getColor('icons.star'),
+          label: 'star'
+        },
+        await: {
+          badge: figures.ellipsis,
+          color: this.getColor('icons.progress'),
+          label: 'awaiting'
+        },
+        pending: {
+          badge: figures.checkboxOff,
+          color: this.getColor('icons.pending'),
+          label: 'pending'
+        },
+        fatal: {
+          badge: figures.cross,
+          color: this.getColor('icons.canceled'),
+          label: 'error'
+        }
+      }
     };
-
-    let color: string;
-    this.colorPale = chalk[this.getColor('pale')];
-
-    this.colorMedium = chalk[this.getColor('task.priority.medium')];
-
-    this.colorHigh = chalk[this.getColor('task.priority.high')];
-
-    // Note
-    color = this.getColor('icons.note');
-
-    signaleOptions.types = {
-      note: {
-        badge: figures.bullet,
-        color: color,
-        label: 'note'
-      },
-    };
-    this.colorNote = chalk[color];
-
-    // Success
-    color = this.getColor('icons.success');
-
-    signaleOptions.types = Object.assign(signaleOptions.types, {
-      success: {
-        badge: figures.tick,
-        color: 'green',
-        label: 'success'
-      }
-    });
-    this.colorSuccess = chalk[color];
-
-    // Star
-    color = this.getColor('icons.star');
-
-    signaleOptions.types = Object.assign(signaleOptions.types, {
-      star: {
-        badge: figures.star,
-        color: color,
-        label: 'star'
-      }
-    });
-    this.colorStar = chalk[color];
-
-    // Progress
-    color = this.getColor('icons.progress');
-
-    signaleOptions.types = Object.assign(signaleOptions.types, {
-      await: {
-        badge: figures.ellipsis,
-        color: color,
-        label: 'awaiting'
-      }
-    });
-    this.colorProgress = chalk[color];
-
-    // Pending
-    color = this.getColor('icons.pending');
-
-    signaleOptions.types = Object.assign(signaleOptions.types, {
-      pending: {
-        badge: figures.checkboxOff,
-        color: color,
-        label: 'pending'
-      }
-    });
-    this.colorPending = chalk[color];
-
-    // Canceled
-    color = this.getColor('icons.canceled');
-
-    signaleOptions.types = Object.assign(signaleOptions.types, {
-      canceled: {
-        badge: figures.cross,
-        color: color,
-        label: 'error'
-      }
-    });
-    this.colorCanceled = chalk[color];
 
     this.signale = new Signale(signaleOptions);
+  }
+
+  printColor(type: string, value: string): string {
+    return chalk[this.getColor(type)](value);
   }
 
   private get configuration(): any {
@@ -144,7 +91,7 @@ export class Renderer {
   }
 
   private colorBoards(boards: any): any {
-    return boards.map((x: any) => this.colorPale(x)).join(' ');
+    return boards.map((x: any) => this.printColor('pale', x)).join(' ');
   }
 
   private isBoardComplete(items: Array<Item>): boolean {
@@ -155,7 +102,7 @@ export class Renderer {
   private getAge(birthday: number): string {
     const daytime: number = 24 * 60 * 60 * 1000;
     const age: number = Math.round(Math.abs(birthday - Date.now()) / daytime);
-    return age === 0 ? '' : this.colorPale(`${age}d`);
+    return age === 0 ? '' : this.printColor('pale', `${age}d`);
   }
 
   private getRelativeHumanizedDate(dueDate: Date, now?: Date): string {
@@ -204,19 +151,19 @@ export class Renderer {
     const isUrgent = isBefore(dueDate, endOfDay(now));
 
     if (isUrgent) {
-      return this.colorHigh(underline(text));
+      return this.printColor('task.priority.high', underline(text));
     }
 
     if (isSoon) {
-      return this.colorMedium(text);
+      return this.printColor('task.priority.medium', text);
     }
 
-    return this.colorPale(text);
+    return this.printColor('pale', text);
   }
 
   private getCorrelation(items: Array<Item>): string {
     const { tasks, complete } = this.getItemStats(items);
-    return this.colorPale(`[${complete}/${tasks}]`);
+    return this.printColor('pale', `[${complete}/${tasks}]`);
   }
 
   private getItemStats(items: Array<Item>): any {
@@ -241,12 +188,12 @@ export class Renderer {
   }
 
   private getStar(item: Item): string {
-    return item.isStarred ? this.colorStar('★') : '';
+    return item.isStarred ? this.printColor('icons.star', '★') : '';
   }
 
   private buildTitle(key: string, items: Array<Item>): any {
     const title =
-      key === new Date().toDateString() ? `${underline(key)} ${this.colorPale('[Today]')}` : underline(key);
+      key === new Date().toDateString() ? `${underline(key)} ${this.printColor('pale', '[Today]')}` : underline(key);
     const correlation = this.getCorrelation(items);
     return {
       title,
@@ -258,7 +205,7 @@ export class Renderer {
     const prefix: Array<string> = [];
 
     prefix.push(' '.repeat(4 - String(item.id).length));
-    prefix.push(this.colorPale(`${item.id}.`));
+    prefix.push(this.printColor('pale', `${item.id}.`));
 
     return prefix.join(' ');
   }
@@ -278,11 +225,11 @@ export class Renderer {
       if (!item.isComplete && item.priority > 1) {
         message.push(underline[this.getTaskColor(item)](item.description));
       } else {
-        message.push(item.isComplete ? this.colorPale(item.description) : item.description);
+        message.push(item.isComplete ? this.printColor('pale', item.description) : item.description);
       }
 
       if (!item.isComplete && item.priority > 1) {
-        message.push(item.priority === 2 ? this.colorMedium('(!)') : this.colorHigh('(!!)'));
+        message.push(item.priority === 2 ? this.printColor('task.priority.medium', '(!)') : this.printColor('task.priority.high', '(!!)'));
       }
     } else {
       message.push(item.description);
@@ -417,21 +364,21 @@ export class Renderer {
       return;
     }
 
-    percent = percent >= 75 ? this.colorSuccess(`${percent}%`) : percent >= 50 ? this.colorMedium(`${percent}%`) : `${percent}%`;
+    const percentText = percent >= 75 ? this.printColor('icons.success', `${percent}%`) : percent >= 50 ? this.printColor('task.priority.medium', `${percent}%`) : `${percent}%`;
 
     const status: Array<string> = [
-      `${this.colorSuccess(complete)} ${this.colorPale('done')}`,
-      `${this.colorCanceled(canceled)} ${this.colorPale('canceled')}`,
-      `${this.colorProgress(inProgress)} ${this.colorPale('in-progress')}`,
-      `${this.colorPending(pending)} ${this.colorPale('pending')}`,
-      `${this.colorNote(notes)} ${this.colorPale(notes === 1 ? 'note' : 'notes')}`
+      `${this.printColor('icons.success', complete.toString())} ${this.printColor('pale', 'done')}`,
+      `${this.printColor('icons.canceled', canceled.toString())} ${this.printColor('pale', 'canceled')}`,
+      `${this.printColor('icons.progress', inProgress.toString())} ${this.printColor('pale', 'in-progress')}`,
+      `${this.printColor('icons.pending', pending.toString())} ${this.printColor('pale', 'pending')}`,
+      `${this.printColor('icons.note', notes.toString())} ${this.printColor('pale', notes === 1 ? 'note' : 'notes')}`
     ];
 
     if (complete !== 0 && inProgress === 0 && pending === 0 && notes === 0) {
       this.signale.log({
         prefix: '\n ',
         message: 'All done!',
-        suffix: this.colorStar('★')
+        suffix: this.printColor('icons.star', '★')
       });
     }
 
@@ -439,17 +386,17 @@ export class Renderer {
       this.signale.log({
         prefix: '\n ',
         message: 'Type `tl --help` to get started!',
-        suffix: this.colorStar('★')
+        suffix: this.printColor('icons.star', '★')
       });
     }
 
     this.signale.log({
       prefix: '\n ',
-      message: this.colorPale(`${percent} of all tasks complete.`)
+      message: this.printColor('pale', `${percentText} of all tasks complete.`)
     });
     this.signale.log({
       prefix: ' ',
-      message: status.join(this.colorPale(' · ')),
+      message: status.join(this.printColor('pale', ' · ')),
       suffix: '\n'
     });
   }
@@ -460,7 +407,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message: string = `Checked ${ids.length > 1 ? 'tasks' : 'task'}:`;
     this.signale.success({
       prefix,
@@ -475,7 +422,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message: string = `Unchecked ${ids.length > 1 ? 'tasks' : 'task'}:`;
     this.signale.success({
       prefix,
@@ -490,7 +437,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Started ${ids.length > 1 ? 'tasks' : 'task'}:`;
     this.signale.success({
       prefix,
@@ -505,7 +452,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Paused ${ids.length > 1 ? 'tasks' : 'task'}:`;
     this.signale.success({
       prefix,
@@ -520,7 +467,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Canceled ${ids.length > 1 ? 'tasks' : 'task'}:`;
     this.signale.success({
       prefix,
@@ -535,7 +482,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Revived ${ids.length > 1 ? 'tasks' : 'task'}:`;
     this.signale.success({
       prefix,
@@ -550,7 +497,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Starred ${ids.length > 1 ? 'items' : 'item'}:`;
     this.signale.success({
       prefix,
@@ -565,7 +512,7 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Unstarred ${ids.length > 1 ? 'items' : 'item'}:`;
     this.signale.success({
       prefix,
@@ -576,7 +523,7 @@ export class Renderer {
 
   invalidCustomAppDir(path: string): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorHigh(path)];
+    const [prefix, suffix] = ['\n', this.printColor('task.priority.high', path)];
     const message = 'Custom app directory was not found on your system:';
     this.signale.error({
       prefix,
@@ -598,7 +545,7 @@ export class Renderer {
 
   public invalidID(id: number): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(id)];
+    const [prefix, suffix] = ['\n', this.printColor('pale', id.toString())];
     const message = 'Unable to find item with id:';
     this.signale.error({
       prefix,
@@ -609,7 +556,7 @@ export class Renderer {
 
   public invalidIDRange(range: string): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(range)];
+    const [prefix, suffix] = ['\n', this.printColor('pale', range)];
     const message = 'Unable to resolve ID range:';
     this.signale.error({
       prefix,
@@ -630,7 +577,7 @@ export class Renderer {
 
   public invalidDateFormat(date: string): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(date)];
+    const [prefix, suffix] = ['\n', this.printColor('pale', date)];
     const message = 'Unable to parse date:';
     this.signale.error({
       prefix,
@@ -641,7 +588,7 @@ export class Renderer {
 
   public successCreate(item: Item): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(item.id)];
+    const [prefix, suffix] = ['\n', this.printColor('pale', item.id.toString())];
     const message = `Created ${item.isTask ? 'task:' : 'note:'}`;
     this.signale.success({
       prefix,
@@ -652,7 +599,7 @@ export class Renderer {
 
   public successEdit(id: number): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(id)];
+    const [prefix, suffix] = ['\n', this.printColor('pale', id.toString())];
     const message = 'Updated description of item:';
     this.signale.success({
       prefix,
@@ -663,7 +610,7 @@ export class Renderer {
 
   public successDelete(ids: Array<number>): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message: string = `Deleted ${ids.length > 1 ? 'items' : 'item'}:`;
     this.signale.success({
       prefix,
@@ -674,8 +621,8 @@ export class Renderer {
 
   public successMove(ids: Array<number>, boards: Array<string>): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(boards.join(', '))];
-    const message: string = `Move item: ${this.colorPale(ids.join(', '))} to`;
+    const [prefix, suffix] = ['\n', this.printColor('pale', boards.join(', '))];
+    const message: string = `Move item: ${this.printColor('pale', ids.join(', '))} to`;
     this.signale.success({
       prefix,
       message,
@@ -692,9 +639,9 @@ export class Renderer {
     const prefix: string = '\n';
     const message = `Updated priority of ${
       ids.length > 1 ? 'tasks' : 'task'
-      }: ${this.colorPale(ids.join(', '))} to`;
+      }: ${this.printColor('pale', ids.join(', '))} to`;
     const suffix =
-      priority === 3 ? this.colorHigh(TaskPriority[priority]) : priority === 2 ? this.colorMedium(TaskPriority[priority]) : this.colorSuccess(TaskPriority[priority]);
+      priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium',TaskPriority[priority]) : this.printColor('icons.success',TaskPriority[priority]);
     this.signale.success({
       prefix,
       message,
@@ -711,7 +658,7 @@ export class Renderer {
     const prefix = '\n';
     const message = `Updated duedate of ${
       ids.length > 1 ? 'tasks' : 'task'
-      }: ${this.colorPale(ids.join(', '))} to`;
+      }: ${this.printColor('pale', ids.join(', '))} to`;
     const suffix = dueDate;
     this.signale.success({
       prefix,
@@ -722,7 +669,7 @@ export class Renderer {
 
   public successRestore(ids: Array<number>): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Restored ${ids.length > 1 ? 'items' : 'item'}:`;
     this.signale.success({
       prefix,
@@ -733,7 +680,7 @@ export class Renderer {
 
   public successCopyToClipboard(ids: Array<number>): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.colorPale(ids.join(', '))];
+    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
     const message = `Copied the ${
       ids.length > 1 ? 'descriptions of items' : 'description of item'
       }:`;
