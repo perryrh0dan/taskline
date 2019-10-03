@@ -17,5 +17,22 @@
     "auth_provider_x509_cert_url": "",
     "client_x509_cert_url": ""
   },
-  "dateformat": "dd.mm.yyyy"
+  "dateformat": "dd.mm.yyyy",
+  "colors": {
+    "pale": "grey",
+    "task": {
+      "priority": {
+        "medium": "yellow",
+        "high": "red"
+      }
+    },
+    "icons": {
+      "note": "blue",
+      "success": "green",
+      "star": "yellow",
+      "progress": "blue",
+      "pending": "magenta",
+      "canceled": "red"
+    }
+  }
 }

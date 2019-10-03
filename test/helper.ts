@@ -16,9 +16,7 @@ export class Helper {
 
   constructor() {
     this.setConfig();
-    const {
-      storageModule
-    } = Config.instance.get();
+    const { storageModule } = Config.instance.get();
     if (storageModule === 'firestore') {
       this.storage = FirestoreStorage.instance;
     } else if (storageModule === 'local') {
@@ -68,8 +66,15 @@ export class Helper {
   }
 
   changeConfig(key: string, value: any) {
-    const localConfig = Config.instance.get();
-    localConfig[key] = value;
+    const keys = key.split('.');
+    let localConfig = Config.instance.get();
+    let temp = localConfig;
+    while (keys.length > 1) {
+      let n = keys.shift();
+      if (!n) return
+      temp = temp[n];
+    }
+    temp[keys[0]] = value;
     Config.instance.set(localConfig);
   }
 }
