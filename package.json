@@ -54,21 +54,24 @@
         "databaseURL": ""
       },
       "dateformat": "dd.mm.yyyy HH:MM",
-      "colors": {
-        "pale": "grey",
-        "task": {
-          "priority": {
-            "medium": "yellow",
-            "high": "red"
+      "theme": {
+        "mode": "keyword",
+        "colors": {
+          "pale": "grey",
+          "task": {
+            "priority": {
+              "medium": "yellow",
+              "high": "red"
+            }
+          },
+          "icons": {
+            "note": "blue",
+            "success": "green",
+            "star": "yellow",
+            "progress": "blue",
+            "pending": "magenta",
+            "canceled": "red"
           }
-        },
-        "icons": {
-          "note": "blue",
-          "success": "green",
-          "star": "yellow",
-          "progress": "blue",
-          "pending": "magenta",
-          "canceled": "red"
         }
       }
     }

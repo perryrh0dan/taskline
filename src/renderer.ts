@@ -12,10 +12,32 @@ import { TaskPriority, Task } from './task';
 
 const { underline } = chalk;
 
+type Theme = {
+  mode: string;
+  colors: {
+    pale: string,
+    task: {
+      priority: {
+        medium: string,
+        high: string
+      }
+    },
+    icons: {
+      note: string,
+      success: string,
+      star: string,
+      progress: string,
+      pending: string,
+      canceled: string
+    }
+  }
+}
+
 export class Renderer {
   private static _instance: Renderer
   private spinner: Ora;
   private signale: Signale;
+  private theme: Theme;
 
   public static get instance(): Renderer {
     if (!this._instance) {
@@ -27,16 +49,27 @@ export class Renderer {
 
   private constructor() {
     this.spinner = ora();
+    this.loadTheme();
     this.configureSignale();
   }
 
+  private loadTheme(): void {
+    this.theme = this.configuration.theme;
+  }
+
   private getColor(type: string): string {
-    const configValue = type.split('.').reduce((p, prop) => { return p[prop]; }, this.configuration.colors);
-    const defaultValue = type.split('.').reduce((p, prop) => { return p[prop]; }, Config.instance.getDefault().colors);
-    if (typeof chalk[configValue] === 'function') {
-      return configValue;
-    } else {
-      return defaultValue;
+    const configValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
+    const defaultValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
+    switch (this.theme.mode) {
+      case 'keyword':
+        if (typeof chalk[configValue] === 'function') {
+          return configValue;
+        } else {
+          return defaultValue;
+        }
+
+      default:
+        return defaultValue;
     }
   }
 
@@ -641,7 +674,7 @@ export class Renderer {
       ids.length > 1 ? 'tasks' : 'task'
       }: ${this.printColor('pale', ids.join(', '))} to`;
     const suffix =
-      priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium',TaskPriority[priority]) : this.printColor('icons.success',TaskPriority[priority]);
+      priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium', TaskPriority[priority]) : this.printColor('icons.success', TaskPriority[priority]);
     this.signale.success({
       prefix,
       message,
