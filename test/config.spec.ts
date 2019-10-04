@@ -85,10 +85,10 @@ describe('Test config functionality', () => {
       isComplete: true,
       inProgress: false,
       priority: 1
-    }))
+    }));
 
     promises.push(helper.setArchive(archive));
-    await Promise.all(promises)
+    await Promise.all(promises);
     done();
   });
 
@@ -96,7 +96,7 @@ describe('Test config functionality', () => {
   if (process.platform === "linux") {
     it('should display red note', () => {
       mockWrite.mockClear();
-      helper.changeConfig('colors.icons.note', 'red');
+      helper.changeConfig('theme.colors.icons.note', 'red');
 
       return taskline.displayByBoard().then(() => {
         expect(mockWrite.mock.calls.length).toBe(6);
@@ -123,8 +123,8 @@ describe('Test config functionality', () => {
 
     it('should display by date', () => {
       mockWrite.mockClear();
-      helper.changeConfig('colors.icons.star', 'green');
-      helper.changeConfig('colors.task.priority.high', 'grey');
+      helper.changeConfig('theme.colors.icons.star', 'green');
+      helper.changeConfig('theme.colors.task.priority.high', 'grey');
 
       return taskline.displayByDate().then(() => {
         expect(mockWrite.mock.calls[0][0]).toBe(
