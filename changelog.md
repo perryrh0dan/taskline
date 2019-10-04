@@ -8,7 +8,6 @@ Changelog for npm and snapcraft
 
 ```json
 "theme": {
-  "mode": "keyword",
   "colors": {
     "pale": "grey",
     "task": {
