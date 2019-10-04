@@ -1,7 +1,7 @@
 {
   "name": "@perryrh0dan/taskline",
   "productName": "Taskline",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
@@ -93,14 +93,14 @@
     "figures": "^3.0.0",
     "firebase-admin": "^8.4.0",
     "ora": "^3.4.0",
-    "signale": "1.4.0",
+    "@perryrh0dan/signale": "^1.4.2",
     "update-notifier": "^3.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.6.0",
     "@types/chalk": "^2.2.0",
     "@types/jest": "^24.0.18",
-    "@types/signale": "^1.2.1",
+    "@types/perryrh0dan_signale": "^1.4.2",
     "@types/update-notifier": "^2.5.0",
     "@typescript-eslint/eslint-plugin": "^2.3.0",
     "@typescript-eslint/parser": "^2.3.0",

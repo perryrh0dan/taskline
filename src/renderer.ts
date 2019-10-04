@@ -1,4 +1,4 @@
-import { Signale, SignaleOptions } from 'signale';
+import { Signale, SignaleConstructorOptions } from '@perryrh0dan/signale';
 import { Ora } from 'ora';
 import { addWeeks, isBefore, endOfDay, toDate } from 'date-fns';
 import * as figures from 'figures';
@@ -36,7 +36,7 @@ type Theme = {
 export class Renderer {
   private static _instance: Renderer
   private spinner: Ora;
-  private signale: Signale;
+  private signale: any;
   private theme: Theme;
 
   public static get instance(): Renderer {
@@ -57,56 +57,40 @@ export class Renderer {
     this.theme = this.configuration.theme;
   }
 
-  private getColor(type: string): string {
-    const configValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
-    const defaultValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
-    switch (this.theme.mode) {
-      case 'keyword':
-        if (typeof chalk[configValue] === 'function') {
-          return configValue;
-        } else {
-          return defaultValue;
-        }
-
-      default:
-        return defaultValue;
-    }
-  }
-
   private configureSignale(): void {
-    const signaleOptions: SignaleOptions = {
+    const signaleOptions: SignaleConstructorOptions = {
       config: {
         displayLabel: false
       },
       types: {
         note: {
           badge: figures.bullet,
-          color: this.getColor('icons.note'),
+          color: this.getColorValue('icons.note'),
           label: 'note'
         },
         success: {
           badge: figures.tick,
-          color: this.getColor('icons.success'),
+          color: this.getColorValue('icons.success'),
           label: 'success'
         },
         star: {
           badge: figures.star,
-          color: this.getColor('icons.star'),
+          color: this.getColorValue('icons.star'),
           label: 'star'
         },
         await: {
           badge: figures.ellipsis,
-          color: this.getColor('icons.progress'),
+          color: this.getColorValue('icons.progress'),
           label: 'awaiting'
         },
         pending: {
           badge: figures.checkboxOff,
-          color: this.getColor('icons.pending'),
+          color: this.getColorValue('icons.pending'),
           label: 'pending'
         },
         fatal: {
           badge: figures.cross,
-          color: this.getColor('icons.canceled'),
+          color: this.getColorValue('icons.canceled'),
           label: 'error'
         }
       }
@@ -115,8 +99,55 @@ export class Renderer {
     this.signale = new Signale(signaleOptions);
   }
 
+  private getColorType(color: string): string {
+    if (color.includes('rgb')) {
+      return 'rgb';
+    } else if (color.includes('#')) {
+      return 'hex';
+    } else {
+      return 'keyword';
+    }
+  }
+
+  private getColorValue(type: string): string {
+    const configValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
+    const defaultValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
+    switch (this.getColorType(configValue)) {
+      case 'rgb':
+        return configValue;
+      case 'hex':
+        return configValue;
+      case 'keyword':
+        if (typeof chalk[configValue] === 'function') {
+          return configValue;
+        }
+        break;
+    }
+    return defaultValue;
+  }
+
+  private getColorMethod(type: string): Function {
+    const color = this.getColorValue(type);
+    let result;
+    switch (this.getColorType(color)) {
+      case 'rgb':
+        result = /rgb\((\d*),(\d*),(\d*)\)/.exec(color);
+        if (!result) break;
+        const red = result[1];
+        const green = result[2];
+        const blue = result[3];
+        return chalk.rgb(red, green, blue);
+      case 'hex':
+        result = /#(\w{6})/.exec(color);
+        if (!result) break;
+        const hex = result[0];
+        return chalk.hex(hex);
+    }
+    return chalk[color];
+  }
+
   printColor(type: string, value: string): string {
-    return chalk[this.getColor(type)](value);
+    return this.getColorMethod(type)(value);
   }
 
   private get configuration(): any {
@@ -243,11 +274,11 @@ export class Renderer {
     return prefix.join(' ');
   }
 
-  private getTaskColor(task: Task): string {
+  private getTaskColorMethod(task: Task): any {
     if (task.priority === 2) {
-      return this.getColor('task.priority.medium');
+      return this.getColorMethod('task.priority.medium');
     } else {
-      return this.getColor('task.priority.high');
+      return this.getColorMethod('task.priority.high');
     }
   }
 
@@ -256,7 +287,7 @@ export class Renderer {
 
     if (item instanceof Task) {
       if (!item.isComplete && item.priority > 1) {
-        message.push(underline[this.getTaskColor(item)](item.description));
+        message.push(this.getTaskColorMethod(item).underline(item.description));
       } else {
         message.push(item.isComplete ? this.printColor('pale', item.description) : item.description);
       }
