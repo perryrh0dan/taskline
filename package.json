@@ -100,7 +100,6 @@
     "@babel/preset-env": "^7.6.0",
     "@types/chalk": "^2.2.0",
     "@types/jest": "^24.0.18",
-    "@types/perryrh0dan_signale": "^1.4.2",
     "@types/update-notifier": "^2.5.0",
     "@typescript-eslint/eslint-plugin": "^2.3.0",
     "@typescript-eslint/parser": "^2.3.0",
