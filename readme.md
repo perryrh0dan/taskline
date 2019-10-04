@@ -155,22 +155,25 @@ The following illustrates all the available options with their respective defaul
     "auth_provider_x509_cert_url": "",
     "client_x509_cert_url": ""
   },
-  "dateformat": "dd.mm.yyyy",
-  "colors": {
-    "pale": "grey",
-    "task": {
-      "priority": {
-        "medium": "yellow",
-        "high": "red"
+  "dateformat": "dd.mm.yyyy HH:MM",
+  "theme": {
+    "mode": "keyword",
+    "colors": {
+      "pale": "grey",
+      "task": {
+        "priority": {
+          "medium": "yellow",
+          "high": "red"
+        }
+      },
+      "icons": {
+        "note": "blue",
+        "success": "green",
+        "star": "yellow",
+        "progress": "blue",
+        "pending": "magenta",
+        "canceled": "red"
       }
-    },
-    "icons": {
-      "note": "blue",
-      "success": "green",
-      "star": "yellow",
-      "progress": "blue",
-      "pending": "magenta",
-      "canceled": "red"
     }
   }
 }
@@ -223,9 +226,9 @@ Configuration of the firestore module.
 
 Dateformat used for duedate.
 
-#### `color`
+#### `theme`
 
-Customize colors of all texts and icons. Available are all colors of [chalk](https://github.com/chalk/chalk#colors). 
+Customize colors of all texts and icons. Available are all foreground colors of [chalk](https://github.com/chalk/chalk#colors). 
 
 ## Before flight
 

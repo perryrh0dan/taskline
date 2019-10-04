@@ -4,24 +4,27 @@ Changelog for npm and snapcraft
 
 ## Version 1.1.0
 
-- Colors can now be customized in `.taskline.json`. Possible are all colors from [chalk](https://github.com/chalk/chalk#colors).
+- Colors can now be customized in `.taskline.json`. Possible are all foreground colors of [chalk](https://github.com/chalk/chalk#colors).
 
 ```json
-"colors": {
-  "pale": "grey",
-  "task": {
-  "priority": {
-    "medium": "yellow",
-    "high": "red"
+"theme": {
+  "mode": "keyword",
+  "colors": {
+    "pale": "grey",
+    "task": {
+      "priority": {
+        "medium": "yellow",
+        "high": "red"
+      }
+    },
+    "icons": {
+      "note": "blue",
+      "success": "green",
+      "star": "yellow",
+      "progress": "blue",
+      "pending": "magenta",
+      "canceled": "red"
     }
-  },
-  "icons": {
-    "note": "blue",
-    "success": "green",
-    "star": "yellow",
-    "progress": "blue",
-    "pending": "magenta",
-    "canceled": "red"
   }
 }
 ```

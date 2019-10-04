@@ -143,7 +143,7 @@ describe('Test config functionality', () => {
           '\n  [4m' + yesterday.toDateString() + '[24m [90m[0/1][39m\n'
         );
         expect(mockWrite.mock.calls[5][0]).toBe(
-          '    [90m4.[39m [35m☐ [39m [4m[90mThird Test Task[39m[24m [90m(!!)[39m [90mOther Board[39m [32m★[39m\n'
+          '    [90m4.[39m [35m☐ [39m [4m[31mThird Test Task[39m[24m [31m(!!)[39m [90mOther Board[39m [32m★[39m\n'
         );
       });
     });

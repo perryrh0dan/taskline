@@ -83,7 +83,7 @@
     "test": "npm run lint && npm run jshint && npm run unit",
     "lint": "eslint ./",
     "jshint": "jshint src/",
-    "unit": "jest --runInBand --testPathIgnorePatterns=parts"
+    "unit": "jest --runInBand"
   },
   "dependencies": {
     "chalk": "^2.4.1",
