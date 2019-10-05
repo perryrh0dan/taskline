@@ -85,6 +85,7 @@
     "unit": "jest --runInBand"
   },
   "dependencies": {
+    "@perryrh0dan/signale": "^1.4.4",
     "chalk": "^2.4.1",
     "clipboardy": "^2.1.0",
     "commander": "^3.0.0",
@@ -92,7 +93,6 @@
     "figures": "^3.0.0",
     "firebase-admin": "^8.4.0",
     "ora": "^3.4.0",
-    "@perryrh0dan/signale": "^1.4.2",
     "update-notifier": "^3.0.1"
   },
   "devDependencies": {
