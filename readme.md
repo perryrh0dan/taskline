@@ -59,6 +59,7 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 * Replaced Meow with commander.js
 * Advanced duedate functionality
 * Display loadingspinner while fetching network requests
+* Custom color themes
 * New list filter attributes
 * Possibility to use id ranges
 * Possibility to cancel tasks
@@ -82,6 +83,7 @@ View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0
 * [Configuration](#configuration)
 * [Before Flight](#before-flight)
 * [Flight Manual](#flight-manual)
+* [Themes](#themes)
 * [Development](#development)
 * [Team](#team)
 * [License](#license)
@@ -227,7 +229,7 @@ Dateformat used for duedate.
 
 #### `theme`
 
-Customize colors of all texts and icons. Available are all foreground colors of [chalk](https://github.com/chalk/chalk#colors). 
+Customize colors of all texts and icons. Available are all foreground colors of [chalk](https://github.com/chalk/chalk#colors). More information under [Themes](#themes)
 
 ## Before flight
 
@@ -478,6 +480,23 @@ To reset/rearrange the ids of all item, when they are getting to high, run the `
 > tl refactor
 
 ```
+
+## Themes
+
+Since Taskline 1.1.0 custom themes can be created. The colors of the individual icons and texts can be adjusted in the configuration file under theme.
+
+### Default theme
+
+<div align="center">
+  <img alt="Boards" width="70%" src="media/default-theme.png"/>
+</div>
+
+### Ocean blue theme
+
+<div align="center">
+  <img alt="Boards" width="70%" src="media/ocean-blue-theme.png"/>
+</div>
+
 
 ## Development
 

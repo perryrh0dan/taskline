@@ -111,7 +111,7 @@ export class Renderer {
 
   private getColorValue(type: string): string {
     const configValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
-    const defaultValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, this.theme.colors);
+    const defaultValue = type.split('.').reduce((p: any, prop: any) => { return p[prop]; }, Config.instance.getDefault().theme.colors);
     switch (this.getColorType(configValue)) {
       case 'rgb':
         return configValue;
