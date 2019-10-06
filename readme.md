@@ -83,7 +83,6 @@ View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0
 * [Before Flight](#before-flight)
 * [Flight Manual](#flight-manual)
 * [Development](#development)
-* [Related](#related)
 * [Team](#team)
 * [License](#license)
 
@@ -491,10 +490,6 @@ For more info on how to contribute to the project, please read the [contributing
 ### Test
 
 Currently there are three automated test. ESLint, JSHint and unit tests written with jest. To Run all tests at the same time use `npm test` . To run unit tests for other storage modules than the local storage module you have to edit the `test/config.json` file and insert your db credentials.
-
-## Related
-
-* [signale](https://github.com/klaussinani/signale) - Highly configurable logging utility
 
 ## Team
 
