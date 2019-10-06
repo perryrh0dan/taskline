@@ -13,7 +13,6 @@ import { TaskPriority, Task } from './task';
 const { underline } = chalk;
 
 type Theme = {
-  mode: string;
   colors: {
     pale: string,
     task: {

@@ -158,7 +158,6 @@ The following illustrates all the available options with their respective defaul
   },
   "dateformat": "dd.mm.yyyy HH:MM",
   "theme": {
-    "mode": "keyword",
     "colors": {
       "pale": "grey",
       "task": {
@@ -483,7 +482,32 @@ To reset/rearrange the ids of all item, when they are getting to high, run the `
 
 ## Themes
 
-Since Taskline 1.1.0 custom themes can be created. The colors of the individual icons and texts can be adjusted in the configuration file under theme.
+Since Taskline 1.1.0 custom themes can be created. The colors of the individual icons and texts can be adjusted in the configuration file under theme. Valid colors are all foreground colors of [chalk](https://github.com/chalk/chalk#colors), rgb or hex codes.
+
+
+``` json
+
+"theme": {
+    "colors": {
+      "pale": "#66CCFF",
+      "task": {
+        "priority": {
+          "medium": "#F9BE02",
+          "high": "#F53240"
+        }
+      },
+      "icons": {
+        "note": "rgb(0,0,255)",
+        "success": "#02C8A7",
+        "star": "#F9BE02",
+        "progress": "#7EDCD5",
+        "pending": "#0099CC",
+        "canceled": "#F53240"
+      }
+    }
+  }
+
+```
 
 ### Default theme
 
