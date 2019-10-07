@@ -21,7 +21,10 @@
     <img alt="NPM Downloads" src="https://img.shields.io/npm/dt/@perryrh0dan/taskline" />
   </a>
   <a href="https://snapcraft.io/taskline">
-    <img alt="taskline" src="https://snapcraft.io/taskline/badge.svg" />
+    <img alt="snapcraft" src="https://snapcraft.io/taskline/badge.svg" />
+  </a>
+  <a href="https://snapcraft.io.taskline">
+    <img alt="snapcraft" src="https://img.shields.io/badge/Taskline-617%20active%20Users-blue?&logo=snapcraft">
   </a>
 </div>
 
