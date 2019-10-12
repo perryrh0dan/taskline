@@ -54,9 +54,10 @@ export class FirestoreStorage extends Storage {
         batch.set(elementRef, item.toJSON());
       });
 
-      await batch.commit()
+      await batch.commit();
     } catch (error) {
-      throw new Error()
+      Renderer.instance.stopLoading();
+      throw new Error('Cant connect to Firestore');
     }
   }
 
@@ -106,7 +107,8 @@ export class FirestoreStorage extends Storage {
       });
       return items;
     } catch (error) {
-      throw new Error();
+      Renderer.instance.stopLoading();
+      throw new Error('Cant connect to Firestore');
     }
   }
 

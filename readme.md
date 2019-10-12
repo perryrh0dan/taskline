@@ -24,7 +24,7 @@
     <img alt="snapcraft" src="https://snapcraft.io/taskline/badge.svg" />
   </a>
   <a href="https://snapcraft.io.taskline">
-    <img alt="snapcraft" src="https://img.shields.io/badge/Taskline-814%20active%20Users-blue?&logo=snapcraft">
+    <img alt="snapcraft" src="https://img.shields.io/badge/Taskline-814%20active%20users-blue?&logo=snapcraft">
   </a>
 </div>
 
