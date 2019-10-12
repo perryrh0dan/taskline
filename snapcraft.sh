@@ -9,6 +9,7 @@ cd temp
 # Copy all necessery files to the temp directory
 echo 'Copying all necessery files to temp directory'
 cp ../package.json ./
+cp ../package-lock.json ./
 cp ../snapcraft.yaml ./
 cp -r ../src ./src
 cp ../cli.ts ./

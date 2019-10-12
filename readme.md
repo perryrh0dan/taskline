@@ -24,7 +24,7 @@
     <img alt="snapcraft" src="https://snapcraft.io/taskline/badge.svg" />
   </a>
   <a href="https://snapcraft.io.taskline">
-    <img alt="snapcraft" src="https://img.shields.io/badge/Taskline-617%20active%20Users-blue?&logo=snapcraft">
+    <img alt="snapcraft" src="https://img.shields.io/badge/Taskline-814%20active%20Users-blue?&logo=snapcraft">
   </a>
 </div>
 
@@ -491,24 +491,24 @@ Since Taskline 1.1.0 custom themes can be created. The colors of the individual 
 ``` json
 
 "theme": {
-    "colors": {
-      "pale": "#66CCFF",
-      "task": {
-        "priority": {
-          "medium": "#F9BE02",
-          "high": "#F53240"
-        }
-      },
-      "icons": {
-        "note": "rgb(0,0,255)",
-        "success": "#02C8A7",
-        "star": "#F9BE02",
-        "progress": "#7EDCD5",
-        "pending": "#0099CC",
-        "canceled": "#F53240"
+  "colors": {
+    "pale": "grey",
+    "task": {
+      "priority": {
+        "medium": "#F9BE02",
+        "high": "#F53240"
       }
+    },
+    "icons": {
+      "note": "rgb(0,0,255)",
+      "success": "#02C8A7",
+      "star": "#F9BE02",
+      "progress": "#7EDCD5",
+      "pending": "#0099CC",
+      "canceled": "#F53240"
     }
   }
+}
 
 ```
 
