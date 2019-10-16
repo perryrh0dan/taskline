@@ -386,7 +386,7 @@ To update the duedate of a specified task after its creation, use the `due` comm
 
 ``` 
 
-> tl due 1,2,23 15.09.2019 13:15
+> tl due 1,2,23 "15.09.2019 13:15"
 
 ```
 
