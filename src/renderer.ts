@@ -288,7 +288,7 @@ export class Renderer {
       if (!item.isComplete && item.priority > 1) {
         message.push(this.getTaskColorMethod(item).underline(item.description));
       } else {
-        message.push(item.isComplete ? this.printColor('pale', item.description) : item.description);
+        message.push(item.isComplete ? this.printColor('pale', item.description) : item.isCanceled ? this.printColor('pale', item.description) : item.description);
       }
 
       if (!item.isComplete && item.priority > 1) {
@@ -461,6 +461,28 @@ export class Renderer {
       prefix: ' ',
       message: status.join(this.printColor('pale', ' · ')),
       suffix: '\n'
+    });
+  }
+
+  public displayConfig(config: any): void {
+    this.iterateObject(config, 0);
+  }
+
+  private iterateObject(obj: any, depth: number): void {
+    Object.keys(obj).forEach(key => {
+      if (typeof obj[key] !== 'object') {
+        // check for private key
+        let text: string = obj[key].toString() ? obj[key].toString() : '';
+        if (text.includes('PRIVATE KEY')) {
+          text = text.slice(0,50).replace('\n',' ').concat('...');
+        }
+        this.signale.log({
+          prefix: ' ',
+          message: `${key}: ${text}`
+        });
+      } else {
+        this.iterateObject(obj[key], depth++);
+      }
     });
   }
 

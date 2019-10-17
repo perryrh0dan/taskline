@@ -1013,4 +1013,10 @@ export class Taskline {
 
     Renderer.instance.successRearrangeIDs();
   }
+
+  public async displayConfig(): Promise<void> {
+    const config = Config.instance.get();
+
+    Renderer.instance.displayConfig(config);
+  }
 }

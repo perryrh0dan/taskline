@@ -53,6 +53,13 @@ program
   });
 
 program
+  .command('config')
+  .description('Display active config')
+  .action(() => {
+    taskline.displayConfig();
+  });
+
+program
   .command('copy <ids>')
   .alias('y')
   .description('Copy description to clipboard')

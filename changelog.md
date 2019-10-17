@@ -2,6 +2,11 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.1.1
+
+- Canceled task texts have the same color as completed task texts.
+- Added 'config' command to display active configuration.
+
 ## Version 1.1.0
 
 - Colors can now be customized in `.taskline.json`. Possible are all foreground colors of [chalk](https://github.com/chalk/chalk#colors), rgb and hex colors.
