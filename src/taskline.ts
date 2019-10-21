@@ -1016,7 +1016,8 @@ export class Taskline {
 
   public async displayConfig(): Promise<void> {
     const config = Config.instance.get();
+    const path = Config.instance.getConfigPath();
 
-    Renderer.instance.displayConfig(config);
+    Renderer.instance.displayConfig(config, path);
   }
 }

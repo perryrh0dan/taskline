@@ -464,7 +464,17 @@ export class Renderer {
     });
   }
 
-  public displayConfig(config: any): void {
+  public displayConfig(config: any, path: string): void {
+    this.signale.log({
+      prefix: ' ',
+      message: chalk.green(`Config loaded from ${path}\n`)
+    });
+
+    this.signale.log({
+      prefix: ' ',
+      message: `#### Configuration ####`
+    });
+
     this.iterateObject(config, 0);
   }
 

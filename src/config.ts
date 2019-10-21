@@ -61,4 +61,8 @@ export class Config {
   public getDefault(): any {
     return defaultConfig;
   }
+
+  public getConfigPath(): string {
+    return this.configFile;
+  }
 }
