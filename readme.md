@@ -116,7 +116,40 @@ snap alias taskline tl # set alias
 
 ## Usage
 
-$mdFormatter$3$mdFormatter$
+```
+> tl --help
+Usage: tl [command] [options]
+
+Tasks, boards & notes for the command-line habitat
+
+Options:
+  -V, --version                   output the version number
+  -h, --help                      output usage information
+
+Commands:
+  archive|a                       Display archived items
+  begin|b <ids>                   Start/pause task
+  cancel <ids>                    Cancel/revive task
+  check|c <ids>                   Check/uncheck task
+  clear                           Delete all checked items
+  copy|y <ids>                    Copy description to clipboard
+  delete|d <ids>                  Delete item
+  due <ids> <dueDate>             Update duedateof task
+  edit|e <id> <description>       Edit item description
+  find|f <terms>                  Search for items
+  list|l <terms>                  List items by attributes
+  move|m <ids> <board>            Move item between boards
+  note|n [options] <description>  Create note
+  priority|p <id> <priority>      Update priority of task
+  restore|r <ids>                 Restore items from archive
+  star|s <ids>                    Star/unstar item
+  task|t [options] <description>  Create task
+  timeline|i                      Display timeline view
+  refactor                        Rearrange the IDs of all items
+
+Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual
+```
+
 # Views
 
 ### Board View
