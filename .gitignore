@@ -9,7 +9,8 @@ yarn.lock
 .DS_Store
 
 # IDE
-.vscode
+.vscode/*
+!.vscode/extensions.json
 .idea
 *.swp
 *.swo
