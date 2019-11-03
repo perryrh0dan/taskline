@@ -219,7 +219,7 @@ export class Taskline {
     });
 
     // Some simple date checks
-    if (parts[fmt.yyyy] < 0 || parts[fmt.mm] > 11 || parts[fmt.dd] > 31) {
+    if (parts[fmt.dd] < 1 || parts[fmt.dd] > 31 || parts[fmt.yyyy] < 0 || parts[fmt.mm] < 1 || parts[fmt.mm] > 12 ) {
       Renderer.instance.invalidDateFormat(input);
       throw new Error('Cant parse to date');
     }

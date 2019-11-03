@@ -2,6 +2,10 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.1.2
+
+- Fixed date parse bug for december. 
+
 ## Version 1.1.1
 
 - Canceled task texts have the same color as completed task texts.
