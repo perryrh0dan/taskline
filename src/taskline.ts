@@ -15,12 +15,15 @@ export class Taskline {
   private dateNames: { weekshort: Array<string>, weeklong: Array<string>, weekday?: string };
 
   constructor() {
+    // Create instance of storage module
     const { storageModule } = Config.instance.get();
     if (storageModule === 'firestore') {
       this.storage = FirestoreStorage.instance;
     } else if (storageModule === 'local') {
       this.storage = LocalStorage.instance;
     }
+
+
     this.dateNames = {  // can depend on locale, can be fetched from CONFIG
       weekshort: ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
       weeklong: ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
