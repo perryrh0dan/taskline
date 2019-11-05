@@ -13,3 +13,6 @@ jobs:
       script: npm run jshint
     - stage: unit
       script: npm run unit
+    - stage: deploy
+      if: branch = master
+      script: bash ./scripts/deploy.sh

@@ -77,7 +77,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:prod": "tsc --sourcemap false",
+    "build:prod": "gulp",
     "start": "node dist/cli.js",
     "test": "npm run lint && npm run jshint && npm run unit",
     "lint": "eslint ./",
@@ -113,12 +113,14 @@
     "eslint-plugin-node": "^9.2.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "gulp": "^4.0.0",
+    "gulp-typescript": "^5.0.1",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "jshint": "^2.10.2",
     "semantic-release": "^15.13.30",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   },
   "jest": {
     "verbose": true
