@@ -5,6 +5,8 @@ node_js:
 before_install:
   - npm install --global npm@6.4.0
   - npm --version
+env:
+  - secure: x5EVSDff/64gQQjhadyD9oHFbODu+kR4N9xFUpFRUBItaqmNNFtOjCm5poqiX80RE5r2NLk6FP38wA7sywBwEbGRO+ZZ6YuBiKqE5kgM38SKXzxE1QFxhI606lqoS6hQSeNCoWHfrU+ukDOccBjNCOmtn8o/rcC/Ys1lqf6WyGfhE2H/I35D0Yd/tHndTlIehXJIwmkzztvshRFswmigyJvBLYeaT3DiDKgbWutCpWBESPCs9Mm14BJlCN3sLusg66PaNuxoKhyCYBGYaiKhTg5DqtbAOLBDtOq1XyzfR18a+4csVe3F7BI+Ni3iVqaiZZIc6iNglorhiKIO0cllfMrLE/5s7paYwh0pQkmVzi+dYjdNq2EsrwLA1FsbWFzo2FqxpBuziU0ZAHw03ylmMNAmGYvaCtxHfD785u2O3uZxQ1SJwPFxV8jzm3BeGvIrSFbX/+j+srN/tidkWAH0i0zaf57ic6pVH/2PkTNGEpb5P4urOBW5j5AySD5zmHDrWE8AE24rUkBfhEWN3sdyEB5+dDaZ24qZ2mJ1UDqtM6XOG7W5NslF+d7u9HS9cY4ArXY6rtLsbvubs6GP65hLYnnEfNbYBiuBQGCoCmPnxblLJDFKxdG7U51z6fBlDt0YS/kuHAHsHq/WuC3xqTCybx8dn4B5yOT0y9x7EHM5bl8=
 jobs:
   include:
     - stage: lint
