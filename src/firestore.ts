@@ -9,8 +9,8 @@ import * as firebase from 'firebase-admin';
 export class FirestoreStorage extends Storage {
   private static _instance: FirestoreStorage;
   private _db: FirebaseFirestore.Firestore;
-  private _storageName = '';
-  private _archiveName = '';
+  private _storageName: string = '';
+  private _archiveName: string = '';
   private _data: Array<Item> = new Array<Item>();
   private _archive: Array<Item> = new Array<Item>();
 
