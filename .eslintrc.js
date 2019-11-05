@@ -27,5 +27,13 @@ module.exports = {
     "no-inferrable-types": [0, "always"],
     "semi": [2, "always"],
     "space-before-function-paren": [2, "never"]
-  }
+  },
+  overrides: [
+    {
+      files: "*.js",
+      rules: {
+        "@typescript-eslint/explicit-function-return-type": ["off"]
+      }
+    }
+  ]
 }

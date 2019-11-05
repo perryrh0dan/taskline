@@ -1,33 +1,49 @@
-var gulp = require('gulp');
-var ts = require('gulp-typescript');
-var tsProject = ts.createProject('tsconfig.json');
+const gulp = require('gulp');
+const ts = require('gulp-typescript');
+const sourcemaps = require('gulp-sourcemaps');
+const merge = require('merge-stream');
 
-const paths = {
-  readme: ['readme.md'],
-  package: ['package.json'],
+const tsProject = ts.createProject('tsconfig.json');
+
+const dirs = {
   packagelock: ['package-lock.json'],
   dist: ['dist']
 };
 
-gulp.task('copy-readme', function() {
-  return gulp.src(paths.readme)
-    .pipe(gulp.dest(paths.dist));
-});
+const buildPackage = () => {
+  return gulp.src("package.json")
+    .pipe(gulp.dest(dirs.dist));
+};
 
-gulp.task('copy-package', function() {
-  return gulp.src(paths.package)
-    .pipe(gulp.dest(paths.dist));
-});
+const buildReadme = () => {
+  return gulp.src("readme.md")
+    .pipe(gulp.dest(dirs.dist));
+};
 
-gulp.task('copy-package-lock', function() {
-  return gulp.src(paths.packagelock)
-    .pipe(gulp.dest(paths.dist));
-});
+const compileTest = () => {
+  const tsResult = tsProject.src()
+    .pipe(sourcemaps.init())
+    .pipe(tsProject());
+  return merge(tsResult, tsResult.js)
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(dirs.dist));
+};
 
-gulp.task('compile', function() {
+const compileProd = () => {
   return tsProject.src()
-      .pipe(tsProject())
-      .js.pipe(gulp.dest(paths.dist));
-});
+    .pipe(tsProject())
+    .js.pipe(gulp.dest(dirs.dist));
+};
 
-gulp.task('default', gulp.series(gulp.parallel('compile', 'copy-readme', 'copy-package', 'copy-package-lock')));
+const build = gulp.series(compileProd);
+const buildMeta = gulp.parallel(buildPackage, buildReadme);
+
+module.exports = {
+  build,
+  buildMeta,
+  default: build
+};
+
+gulp.task('watch', gulp.series(function() {
+  gulp.watch(['src/*.ts', 'cli.ts'], gulp.series(compileTest));
+}));
