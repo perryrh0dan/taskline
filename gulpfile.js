@@ -11,12 +11,12 @@ const dirs = {
 };
 
 const buildPackage = () => {
-  return gulp.src("package.json")
+  return gulp.src('package.json')
     .pipe(gulp.dest(dirs.dist));
 };
 
 const buildReadme = () => {
-  return gulp.src("readme.md")
+  return gulp.src('readme.md')
     .pipe(gulp.dest(dirs.dist));
 };
 

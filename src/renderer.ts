@@ -472,7 +472,7 @@ export class Renderer {
 
     this.signale.log({
       prefix: ' ',
-      message: `#### Configuration ####`
+      message: '#### Configuration ####'
     });
 
     this.iterateObject(config, 0);
@@ -789,7 +789,7 @@ export class Renderer {
   public successRearrangeIDs(): void {
     this.stopLoading();
     const prefix = '\n';
-    const message = `Rearranged ids of all items`;
+    const message = 'Rearranged ids of all items';
     this.signale.success({
       prefix,
       message
