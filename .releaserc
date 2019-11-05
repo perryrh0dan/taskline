@@ -1,0 +1,13 @@
+{
+  "pkgRoot": "dist",
+  "branches": [
+    {
+      "name": "feat/cd",
+      "channel": "latest"
+    }
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator"
+  ]
+}
