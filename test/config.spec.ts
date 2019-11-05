@@ -89,11 +89,12 @@ describe('Test config functionality', () => {
 
     promises.push(helper.setArchive(archive));
     await Promise.all(promises);
+    helper.setConfig();
     done();
   });
 
   // Run only under linux
-  if (process.platform === "linux") {
+  if (process.platform === 'linux') {
     it('should display red note', () => {
       mockWrite.mockClear();
       helper.changeConfig('theme.colors.icons.note', 'red');

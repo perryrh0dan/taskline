@@ -14,6 +14,7 @@ describe('Test create functionality', () => {
 
   beforeAll(async done => {
     await helper.clearStorage();
+    helper.setConfig();
     done();
   });
 
