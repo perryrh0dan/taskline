@@ -6,7 +6,6 @@ const merge = require('merge-stream');
 const tsProject = ts.createProject('tsconfig.json');
 
 const dirs = {
-  packagelock: ['package-lock.json'],
   dist: ['dist']
 };
 
