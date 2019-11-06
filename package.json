@@ -83,7 +83,8 @@
     "test": "npm run lint && npm run jshint && npm run unit",
     "lint": "eslint ./",
     "jshint": "jshint src/",
-    "unit": "jest --runInBand"
+    "unit": "jest --runInBand",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@perryrh0dan/signale": "^1.4.4",
