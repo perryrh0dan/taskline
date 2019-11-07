@@ -495,7 +495,7 @@ The by default supported listing attributes, together with their respective alia
 * `progress` , `started` , `begun` - Items that are in-progress tasks.
 * `done` , `checked` , `complete` - Items that complete tasks.
 * `star` , `starred` - Items that are starred.
-* `default` , `medium` , `high` - Task that have the given priority.
+* `default` , `medium` , `high` - Tasks with the given priority.
 
 ### Search Items
 
