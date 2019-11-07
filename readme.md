@@ -196,6 +196,7 @@ The following illustrates all the available options with their respective defaul
   "theme": {
     "colors": {
       "pale": "grey",
+      "error": "red",
       "task": {
         "priority": {
           "medium": "yellow",
@@ -526,6 +527,7 @@ Since Taskline 1.1.0 custom themes can be created. The colors of the individual 
 "theme": {
   "colors": {
     "pale": "grey",
+    "error": "#F53240",
     "task": {
       "priority": {
         "medium": "#F9BE02",

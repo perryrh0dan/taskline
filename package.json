@@ -57,6 +57,7 @@
       "theme": {
         "colors": {
           "pale": "grey",
+          "error": "red",
           "task": {
             "priority": {
               "medium": "yellow",
@@ -80,9 +81,8 @@
     "build:prod": "bash scripts/build.sh",
     "start": "node dist/cli.js",
     "dev": "gulp watch",
-    "test": "npm run lint && npm run jshint && npm run unit",
-    "lint": "eslint ./",
-    "jshint": "jshint src/",
+    "test": "npm run lint && npm run unit",
+    "lint": "eslint ./src/**",
     "unit": "jest --runInBand",
     "semantic-release": "semantic-release"
   },
@@ -94,7 +94,6 @@
     "date-fns": "^2.6.0",
     "figures": "^3.1.0",
     "firebase-admin": "^8.7.0",
-    "gulp-sourcemaps": "^2.6.5",
     "ora": "^3.4.0",
     "update-notifier": "^3.0.1"
   },
@@ -110,6 +109,7 @@
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
     "commitlint": "^8.2.0",
+    "del": "^5.1.0",
     "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
@@ -117,10 +117,10 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "gulp": "^4.0.0",
+    "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^5.0.1",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
-    "jshint": "^2.10.2",
     "semantic-release": "^15.13.30",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.4"
