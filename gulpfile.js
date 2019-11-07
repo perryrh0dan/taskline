@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
 const merge = require('merge-stream');
+var del = require('del');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -19,6 +20,13 @@ const buildReadme = () => {
     .pipe(gulp.dest(dirs.dist));
 };
 
+
+const compileProd = () => {
+  return tsProject.src()
+    .pipe(tsProject())
+    .js.pipe(gulp.dest(dirs.dist));
+};
+
 const compileTest = () => {
   const tsResult = tsProject.src()
     .pipe(sourcemaps.init())
@@ -28,13 +36,11 @@ const compileTest = () => {
     .pipe(gulp.dest(dirs.dist));
 };
 
-const compileProd = () => {
-  return tsProject.src()
-    .pipe(tsProject())
-    .js.pipe(gulp.dest(dirs.dist));
-};
+const delDist = () => {
+  return del(['dist/**/*']);
+}
 
-const build = gulp.series(compileProd);
+const build = gulp.series(delDist, compileProd);
 const buildMeta = gulp.parallel(buildPackage, buildReadme);
 
 module.exports = {
