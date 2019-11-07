@@ -8,7 +8,7 @@ import { Task, TaskPriority } from './task';
 import { Renderer } from './renderer';
 import { Config } from './config';
 import { Note } from './note';
-import { DateParser } from './date';
+import { parseDate } from './libs/date';
 
 export class Taskline {
   private storage: Storage;
@@ -485,8 +485,9 @@ export class Taskline {
     let dueTime: number | undefined;
     if (dueDate) {
       try {
-        dueTime = DateParser.instance.parseDate(dueDate, dateformat).getTime();
+        dueTime = parseDate(dueDate, dateformat).getTime();
       } catch (error) {
+        Renderer.instance.invalidDateFormat(dueDate);
         return Promise.reject(new Error('Invalid Date Format'));
       }
     }
@@ -711,9 +712,10 @@ export class Taskline {
     let dueTime: number, parsedDueDate: Date;
 
     try {
-      parsedDueDate = DateParser.instance.parseDate(dueDate, dateformat);
+      parsedDueDate = parseDate(dueDate, dateformat);
       dueTime = parsedDueDate.getTime();
     } catch (error) {
+      Renderer.instance.invalidDateFormat(dueDate);
       return Promise.reject(new Error('Invalid Date Format'));
     }
 
