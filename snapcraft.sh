@@ -14,7 +14,12 @@ cp ../snapcraft.yaml ./
 cp -r ../src ./src
 cp ../cli.ts ./
 cp ../license.md ./
+cp ../readme.md ./
 cp ../tsconfig.json ./
+
+# Copy extra files
+cp -r ../scripts/ ./scripts
+cp ../gulpfile.js ./
 
 # Comment out update notifier for snap
 echo 'Comment out update notifier'
@@ -43,6 +48,10 @@ rm -r ./node_modules
 rm -r package-lock.json
 npm install --production
 # npm prune --production
+
+# Delete seperate files
+rm -r ./scripts
+rm ./gulpfile.js
 
 # Build Snap
 echo 'Build snap'
