@@ -1,4 +1,4 @@
-import { join } from "path";
+import { join } from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import pkg = require('../package.json');
@@ -19,7 +19,7 @@ export class Config {
   }
 
   private constructor() {
-    this.configFile = join(os.homedir(), '.taskline.json')
+    this.configFile = join(os.homedir(), '.taskline.json');
 
     this.ensureConfigFile();
   }

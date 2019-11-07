@@ -21,11 +21,22 @@ module.exports = {
         "variableDeclaration": false,
         "call-signature": true,
         "property-declaration": true,
+        "memberVariableDeclaration": true,
         "no-inferrable-types": true
       }
     ],
+    "@typescript-eslint/explicit-member-accessibility": ["error"],
     "no-inferrable-types": [0, "always"],
     "semi": [2, "always"],
+    "quotes": ["error", "single"],
     "space-before-function-paren": [2, "never"]
-  }
+  },
+  overrides: [
+    {
+      files: "*.js",
+      rules: {
+        "@typescript-eslint/explicit-function-return-type": ["off"]
+      }
+    }
+  ]
 }

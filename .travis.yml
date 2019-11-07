@@ -7,9 +7,6 @@ before_install:
   - npm --version
 jobs:
   include:
-    - stage: lint
-      script: npm run lint
-    - stage: jshint
-      script: npm run jshint
-    - stage: unit
-      script: npm run unit
+    - stage: deploy
+      if: branch = master
+      script: bash ./scripts/deploy.sh

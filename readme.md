@@ -196,6 +196,7 @@ The following illustrates all the available options with their respective defaul
   "theme": {
     "colors": {
       "pale": "grey",
+      "error": "red",
       "task": {
         "priority": {
           "medium": "yellow",
@@ -494,7 +495,7 @@ The by default supported listing attributes, together with their respective alia
 * `progress` , `started` , `begun` - Items that are in-progress tasks.
 * `done` , `checked` , `complete` - Items that complete tasks.
 * `star` , `starred` - Items that are starred.
-* `default` , `medium` , `high` - Task that have the given priority.
+* `default` , `medium` , `high` - Tasks with the given priority.
 
 ### Search Items
 
@@ -526,6 +527,7 @@ Since Taskline 1.1.0 custom themes can be created. The colors of the individual 
 "theme": {
   "colors": {
     "pale": "grey",
+    "error": "#F53240",
     "task": {
       "priority": {
         "medium": "#F9BE02",

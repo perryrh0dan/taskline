@@ -85,15 +85,15 @@ describe('Test output functionality', () => {
       isComplete: true,
       inProgress: false,
       priority: 1
-    }))
+    }));
 
     promises.push(helper.setArchive(archive));
-    await Promise.all(promises)
+    await Promise.all(promises);
     done();
   });
 
   // Run only under linux
-  if (process.platform === "linux") {
+  if (process.platform === 'linux') {
     it('should display by board', () => {
       mockWrite.mockClear();
 
@@ -239,8 +239,8 @@ describe('Test output functionality', () => {
     return taskline.listByAttributes('canceled').then(grouped => {
       expect(grouped['My Baard']).toBe(undefined);
       expect(grouped['Other Board']).toBe(undefined);
-    })
-  })
+    });
+  });
 
   it('should try to display items with the keyword Fourth', () => {
     process.stdout.write = jest.fn();

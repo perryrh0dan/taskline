@@ -145,7 +145,7 @@ export class Renderer {
     return chalk[color];
   }
 
-  printColor(type: string, value: string): string {
+  private printColor(type: string, value: string): string {
     return this.getColorMethod(type)(value);
   }
 
@@ -203,7 +203,7 @@ export class Renderer {
     return humanizedDate;
   }
 
-  getDueDate(dueTimestamp: number): string {
+  private getDueDate(dueTimestamp: number): string {
     const now = new Date();
     const dueDate = toDate(dueTimestamp);
 
@@ -472,7 +472,7 @@ export class Renderer {
 
     this.signale.log({
       prefix: ' ',
-      message: `#### Configuration ####`
+      message: '#### Configuration ####'
     });
 
     this.iterateObject(config, 0);
@@ -616,9 +616,9 @@ export class Renderer {
     });
   }
 
-  invalidCustomAppDir(path: string): void {
+  public invalidCustomAppDir(path: string): void {
     this.stopLoading();
-    const [prefix, suffix] = ['\n', this.printColor('task.priority.high', path)];
+    const [prefix, suffix] = ['\n', this.printColor('error', path)];
     const message = 'Custom app directory was not found on your system:';
     this.signale.error({
       prefix,
@@ -627,7 +627,7 @@ export class Renderer {
     });
   }
 
-  invalidFirestoreConfig(): void {
+  public invalidFirestoreConfig(): void {
     this.stopLoading();
     const [prefix, suffix] = ['\n', ''];
     const message = 'Firestore config contains error';
@@ -789,7 +789,7 @@ export class Renderer {
   public successRearrangeIDs(): void {
     this.stopLoading();
     const prefix = '\n';
-    const message = `Rearranged ids of all items`;
+    const message = 'Rearranged ids of all items';
     this.signale.success({
       prefix,
       message

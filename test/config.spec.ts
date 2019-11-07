@@ -93,7 +93,7 @@ describe('Test config functionality', () => {
   });
 
   // Run only under linux
-  if (process.platform === "linux") {
+  if (process.platform === 'linux') {
     it('should display red note', () => {
       mockWrite.mockClear();
       helper.changeConfig('theme.colors.icons.note', 'red');

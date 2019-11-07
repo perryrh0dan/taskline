@@ -2,6 +2,11 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.1.3
+
+- Added seperat color for errors
+- Small bug fixes
+
 ## Version 1.1.2
 
 - Fixed date parse bug for december. 
