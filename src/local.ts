@@ -8,6 +8,7 @@ import { Config } from './config';
 import { Item } from './item';
 import { Task } from './task';
 import { Note } from './note';
+import { Renderer } from './renderer';
 
 // const render = require('./render')
 
@@ -53,7 +54,7 @@ export class LocalStorage extends Storage {
     }
 
     if (!fs.existsSync(tasklineDirectory)) {
-      // render.invalidCustomAppDir(tasklineDirectory);
+      Renderer.instance.invalidCustomAppDir(tasklineDirectory);
       process.exit(1);
     }
 

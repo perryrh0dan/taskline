@@ -14,7 +14,7 @@ export class Helper {
   private storage: Storage;
   private originalConfig: any;
 
-  constructor() {
+  public constructor() {
     this.setConfig();
     const { storageModule } = Config.instance.get();
     if (storageModule === 'firestore') {
@@ -24,7 +24,7 @@ export class Helper {
     }
   }
 
-  setConfig(): void {
+  private setConfig(): void {
     this.originalConfig = Config.instance.get();
     let content;
     if (fs.existsSync(contentPath)) {
@@ -39,39 +39,38 @@ export class Helper {
     Config.instance.set(unitTestConfig);
   }
 
-  resetConfig(): void {
+  public resetConfig(): void {
     Config.instance.set(this.originalConfig);
   }
 
-  getData(ids?: Array<number>): Promise<Array<Item>> {
+  public getData(ids?: Array<number>): Promise<Array<Item>> {
     return this.storage.get(ids);
   }
 
-  getArchive(ids?: Array<number>): Promise<Array<Item>> {
+  public getArchive(ids?: Array<number>): Promise<Array<Item>> {
     return this.storage.getArchive(ids);
   }
 
-  setData(data: Array<Item>): Promise<void> {
+  public setData(data: Array<Item>): Promise<void> {
     return this.storage.set(data);
   }
 
-  setArchive(data: Array<Item>): Promise<void> {
+  public setArchive(data: Array<Item>): Promise<void> {
     return this.storage.setArchive(data);
   }
 
-  clearStorage() {
-    return this.storage.set(new Array<Item>()).then(() => {
-      return this.storage.setArchive(new Array<Item>());
-    });
+  public async clearStorage(): Promise<void> {
+    await this.storage.set(new Array<Item>());
+    return this.storage.setArchive(new Array<Item>());
   }
 
-  changeConfig(key: string, value: any) {
+  public changeConfig(key: string, value: any): void {
     const keys = key.split('.');
     let localConfig = Config.instance.get();
     let temp = localConfig;
     while (keys.length > 1) {
       let n = keys.shift();
-      if (!n) return
+      if (!n) return;
       temp = temp[n];
     }
     temp[keys[0]] = value;

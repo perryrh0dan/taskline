@@ -22,7 +22,7 @@ export class Task extends Item {
   private _isComplete: boolean;
   private _dueDate: number;
 
-  constructor(kwArgs: TaskProperties) {
+  public constructor(kwArgs: TaskProperties) {
     super(kwArgs);
     this._isTask = true;
     this._priority = kwArgs.priority || TaskPriority.Normal;

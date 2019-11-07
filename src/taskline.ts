@@ -12,7 +12,7 @@ import { Note } from './note';
 export class Taskline {
   private storage: Storage;
 
-  constructor() {
+  public constructor() {
     const { storageModule } = Config.instance.get();
     if (storageModule === 'firestore') {
       this.storage = FirestoreStorage.instance;

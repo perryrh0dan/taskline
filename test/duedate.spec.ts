@@ -53,7 +53,6 @@ describe('Test duedate functionality', () => {
     }));
 
     await helper.setData(data);
-    helper.setConfig();
     done();
   });
 

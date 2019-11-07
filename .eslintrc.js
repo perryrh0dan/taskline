@@ -25,6 +25,7 @@ module.exports = {
         "no-inferrable-types": true
       }
     ],
+    "@typescript-eslint/explicit-member-accessibility": ["error"],
     "no-inferrable-types": [0, "always"],
     "semi": [2, "always"],
     "quotes": ["error", "single"],

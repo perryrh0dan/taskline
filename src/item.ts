@@ -18,7 +18,7 @@ export abstract class Item {
   protected _isStarred: boolean;
   protected _boards: Array<string>;
 
-  constructor(kwArgs: ItemProperties) {
+  public constructor(kwArgs: ItemProperties) {
     this._id = kwArgs.id;
     this._date = kwArgs.date || now.toDateString();
     this._timestamp = kwArgs.timestamp || now.getTime();
@@ -27,59 +27,59 @@ export abstract class Item {
     this._boards = kwArgs.boards || ['My Board'];
   }
 
-  get id(): number {
+  public get id(): number {
     return this._id;
   }
 
-  set id(id: number) {
+  public set id(id: number) {
     this._id = id;
   }
 
-  get date(): string {
+  public get date(): string {
     return this._date;
   }
 
-  set date(date: string) {
+  public set date(date: string) {
     this._date = date;
   }
 
-  get timestamp(): number {
+  public get timestamp(): number {
     return this._timestamp;
   }
 
-  set timestamp(timestamp: number) {
+  public set timestamp(timestamp: number) {
     this._timestamp = timestamp;
   }
 
-  get isTask(): boolean {
+  public get isTask(): boolean {
     return this._isTask;
   }
 
-  set isTask(isTask: boolean) {
+  public set isTask(isTask: boolean) {
     this._isTask = isTask;
   }
 
-  get description(): string {
+  public get description(): string {
     return this._description;
   }
 
-  set description(description: string) {
+  public set description(description: string) {
     this._description = description;
   }
 
-  get isStarred(): boolean {
+  public get isStarred(): boolean {
     return this._isStarred;
   }
 
-  set isStarred(isStarred: boolean) {
+  public set isStarred(isStarred: boolean) {
     this._isStarred = isStarred;
   }
 
-  get boards(): Array<string> {
+  public get boards(): Array<string> {
     return this._boards;
   }
 
-  set boards(boards: Array<string>) {
+  public set boards(boards: Array<string>) {
     this._boards = boards;
   }
 

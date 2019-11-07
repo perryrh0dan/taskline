@@ -89,7 +89,6 @@ describe('Test config functionality', () => {
 
     promises.push(helper.setArchive(archive));
     await Promise.all(promises);
-    helper.setConfig();
     done();
   });
 
