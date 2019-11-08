@@ -15,7 +15,7 @@ export class Localization {
   }
 
   private constructor() {
-    const language = Config.instance.get().lanugage;
+    const language = Config.instance.get().language;
 
     try {
       this.load(language ? language : 'en');
@@ -68,6 +68,9 @@ export class Localization {
       if (!n) return '';
       temp = temp[n];
     }
-    return temp[keys[0]][type];
+    if (Array.isArray(temp[keys[0]])) {
+      return temp[keys[0]][type];
+    }
+    return temp[keys[0]];
   }
 }

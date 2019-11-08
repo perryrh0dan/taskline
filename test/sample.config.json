@@ -1,4 +1,5 @@
 {
+  "language": "en",
   "tasklineDirectory": "~",
   "displayCompleteTasks": true,
   "displayProgressOverview": true,
@@ -21,6 +22,7 @@
   "theme": {
     "colors": {
       "pale": "grey",
+      "error": "red",
       "task": {
         "priority": {
           "medium": "yellow",

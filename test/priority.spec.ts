@@ -56,20 +56,16 @@ describe('Test priority functionality', () => {
     done();
   });
 
-  it('should change priority of task', () => {
-    return taskline.updatePriority('2', '3').then(() => {
-      return helper.getData([2]).then(data => {
-        expect((data[0] as Task).priority).toBe(3);
-      });
-    });
+  it('should change priority of task', async() => {
+    await taskline.updatePriority('2', '3');
+    const data = await helper.getData([2]);
+    expect((data[0] as Task).priority).toBe(3);
   });
 
-  it('should try to change priority of task', () => {
-    return taskline.updatePriority('1', '3').then(() => {
-      return helper.getData([1]).then(data => {
-        expect(data[0] instanceof Note).toBe(true);
-      });
-    });
+  it('should try to change priority of task', async() => {
+    await taskline.updatePriority('1', '3');
+    const data = await helper.getData([1]);
+    expect(data[0] instanceof Note).toBe(true);
   });
 
   it('should try to change to nonexisting priority', () => {

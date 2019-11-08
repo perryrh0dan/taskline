@@ -43,30 +43,24 @@ describe('Test delete, archive and restore functionality', () => {
     done();
   });
 
-  it('should delete an item', () => {
-    return taskline.deleteItems('1').then(() => {
-      return helper.getData().then(data => {
-        expect(data.length).toBe(1);
-      });
-    });
+  it('should delete an item', async() => {
+    await taskline.deleteItems('1');
+    const data = await helper.getData();
+    expect(data.length).toBe(1);
   });
 
-  it('should find item in archive', () => {
-    return helper.getArchive([1]).then(data => {
-      expect(data[0].description).toBe('Test Note');
-      expect(data[0] instanceof Note).toBe(true);
-    });
+  it('should find item in archive', async() => {
+    const data = await helper.getArchive([1]);
+    expect(data[0].description).toBe('Test Note');
+    expect(data[0] instanceof Note).toBe(true);
   });
 
-  it('should restore item from archive', () => {
-    return taskline.restoreItems('1').then(() => {
-      return helper.getData([3]).then(data => {
-        return helper.getArchive([1]).then(archive => {
-          expect(data[0].description).toBe('Test Note');
-          expect(archive.length).toBe(0)
-        });
-      });
-    });
+  it('should restore item from archive', async() => {
+    await taskline.restoreItems('1');
+    const data = await helper.getData([3]);
+    const archive = await helper.getArchive([1]);
+    expect(data[0].description).toBe('Test Note');
+    expect(archive.length).toBe(0);
   });
 
   afterAll(done => {

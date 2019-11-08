@@ -1,0 +1,46 @@
+{
+  "help": "Tippe `tl --help` um anzufangen!",
+  "config": {
+    "path": "Konfiguration geladen aus {0}",
+    "title": "Konfiguration"
+  },
+  "errors": {
+
+  },
+  "stats": {
+    "allDone": "Alles erledigt!",
+    "canceled": "abgebrochen",
+    "done": "erledigt",
+    "note": "notiz | notizen",
+    "pending": "anstehend",
+    "percentage": "{0} aller Aufgaben erledigt",
+    "progress": "laufend"
+  },
+  "success": {
+    "cancel": "Aufgabe abgebrochen: | Aufgaben abgebrochen:",
+    "check": "Aufgabe erledigt | Aufgaben erledigt",
+    "clipboard": "Beschreibung des Items kopiert: | Beschreibung der Items kopiert:",
+    "create": "Task erstellt: | Notiz erstellt:",
+    "delete": "Item gelöscht: | Items gelöscht:",
+    "duedate": "Updated duedate of task: {0} to | Updated duedate of tasks: {0} to",
+    "edit": "Updated description of item:",
+    "move": "Moved item: {0} to | Moved items: {0} to",
+    "pause": "Paused task | Paused tasks",
+    "priority": "Updated priority of task: {0} to | Updated priority of tasks: {0} to",
+    "rearrange": "Rearranged ids of all items",
+    "restore": "Restored item: | Restored items:",
+    "revive": "Revived task | Revived tasks",
+    "star": "Starred item: | Starred items:",
+    "start": "Started task | Started tasks",
+    "uncheck": "Unchecked task | Unchecked tasks",
+    "unstar": "Unstarred item: | Unstared items"
+  },
+  "warning": {
+    "appDir": "Custom app directory was not found on your system:",
+    "dateFormat": "Unable to parse date:",
+    "firestoreConfig": "Firestore config contains error",
+    "id": "Unable to find item with id:",
+    "idRange": "Unable to resolve ID range:",
+    "priority": "Priority can only be 1, 2 or 3"
+  }
+}

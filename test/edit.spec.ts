@@ -43,12 +43,10 @@ describe('Test edit functionality', () => {
     done();
   });
 
-  it('should edit description of one item', () => {
-    return taskline.editDescription('2', 'Edited Test Task').then(() => {
-      return helper.getData([2]).then(data => {
-        expect(data[0].description).toBe('Edited Test Task');
-      });
-    });
+  it('should edit description of one item', async() => {
+    await taskline.editDescription('2', 'Edited Test Task');
+    const data = await helper.getData([2]);
+    expect(data[0].description).toBe('Edited Test Task');
   });
 
   it('should try to edit description of nonexistent item', () => {

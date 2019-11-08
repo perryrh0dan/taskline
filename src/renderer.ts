@@ -441,17 +441,17 @@ export class Renderer {
     const percentText = percent >= 75 ? this.printColor('icons.success', `${percent}%`) : percent >= 50 ? this.printColor('task.priority.medium', `${percent}%`) : `${percent}%`;
 
     const status: Array<string> = [
-      `${this.printColor('icons.success', complete.toString())} ${this.printColor('pale', 'done')}`,
-      `${this.printColor('icons.canceled', canceled.toString())} ${this.printColor('pale', 'canceled')}`,
-      `${this.printColor('icons.progress', inProgress.toString())} ${this.printColor('pale', 'in-progress')}`,
-      `${this.printColor('icons.pending', pending.toString())} ${this.printColor('pale', 'pending')}`,
-      `${this.printColor('icons.note', notes.toString())} ${this.printColor('pale', notes === 1 ? 'note' : 'notes')}`
+      `${this.printColor('icons.success', complete.toString())} ${this.printColor('pale', local.get('stats.done'))}`,
+      `${this.printColor('icons.canceled', canceled.toString())} ${this.printColor('pale', local.get('stats.canceled'))}`,
+      `${this.printColor('icons.progress', inProgress.toString())} ${this.printColor('pale', local.get('stats.progress'))}`,
+      `${this.printColor('icons.pending', pending.toString())} ${this.printColor('pale', local.get('stats.pending'))}`,
+      `${this.printColor('icons.note', notes.toString())} ${this.printColor('pale', local.get('stats.note', notes === 1 ? 0 : 1))}`
     ];
 
     if (complete !== 0 && inProgress === 0 && pending === 0 && notes === 0) {
       this.signale.log({
         prefix: '\n ',
-        message: 'All done!',
+        message: local.get('stats.allDone'),
         suffix: this.printColor('icons.star', '★')
       });
     }
@@ -459,15 +459,16 @@ export class Renderer {
     if (pending + inProgress + complete + notes === 0) {
       this.signale.log({
         prefix: '\n ',
-        message: 'Type `tl --help` to get started!',
+        message: local.get('help'),
         suffix: this.printColor('icons.star', '★')
       });
     }
 
     this.signale.log({
       prefix: '\n ',
-      message: this.printColor('pale', `${percentText} of all tasks complete.`)
+      message: this.printColor('pale', this.format(local.get('stats.percentage'), [percentText]))
     });
+
     this.signale.log({
       prefix: ' ',
       message: status.join(this.printColor('pale', ' · ')),
@@ -478,12 +479,12 @@ export class Renderer {
   public displayConfig(config: any, path: string): void {
     this.signale.log({
       prefix: ' ',
-      message: chalk.green(`Config loaded from ${path}\n`)
+      message: chalk.green(this.format(local.get('config.path'), [path]))
     });
 
     this.signale.log({
       prefix: ' ',
-      message: '#### Configuration ####'
+      message: `#### ${local.get('config.title')} ####`
     });
 
     this.iterateObject(config, 0);
@@ -514,7 +515,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message: string = `Checked ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    const message: string = local.get('success.check', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -529,7 +531,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message: string = `Unchecked ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    const message: string = local.get('success.uncheck', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -544,7 +547,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Started ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    const message = local.get('success.start', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -559,7 +563,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Paused ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    const message = local.get('success.pause', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -574,7 +579,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Canceled ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    const message = local.get('success.cancel', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -589,7 +595,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Revived ${ids.length > 1 ? 'tasks' : 'task'}:`;
+    const message = local.get('revive', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -604,7 +611,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Starred ${ids.length > 1 ? 'items' : 'item'}:`;
+    const message = local.get('success.star', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -619,7 +627,8 @@ export class Renderer {
     }
 
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Unstarred ${ids.length > 1 ? 'items' : 'item'}:`;
+    const message = local.get('success.unstar', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -629,8 +638,10 @@ export class Renderer {
 
   public invalidCustomAppDir(path: string): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('error', path)];
-    const message = 'Custom app directory was not found on your system:';
+    const message = local.get('warning.appDir');
+
     this.signale.error({
       prefix,
       message,
@@ -640,8 +651,10 @@ export class Renderer {
 
   public invalidFirestoreConfig(): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', ''];
-    const message = 'Firestore config contains error';
+    const message = local.get('warning.firestoreConfig');
+
     this.signale.error({
       prefix,
       message,
@@ -651,8 +664,10 @@ export class Renderer {
 
   public invalidID(id: number): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', id.toString())];
-    const message = 'Unable to find item with id:';
+    const message = local.get('warning.id');
+
     this.signale.error({
       prefix,
       message,
@@ -662,8 +677,10 @@ export class Renderer {
 
   public invalidIDRange(range: string): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', range)];
-    const message = 'Unable to resolve ID range:';
+    const message = local.get('warning.idRange');
+
     this.signale.error({
       prefix,
       message,
@@ -673,8 +690,10 @@ export class Renderer {
 
   public invalidPriority(): void {
     this.stopLoading();
+
     const prefix = '\n';
-    const message = 'Priority can only be 1, 2 or 3';
+    const message = local.get('warning.priority');
+
     this.signale.error({
       prefix,
       message
@@ -683,8 +702,10 @@ export class Renderer {
 
   public invalidDateFormat(date: string): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', date)];
-    const message = 'Unable to parse date:';
+    const message = local.get('warning.dateFormat');
+
     this.signale.error({
       prefix,
       message,

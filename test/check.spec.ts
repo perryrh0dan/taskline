@@ -82,61 +82,48 @@ describe('Test check functionality', () => {
     done();
   });
 
-  it('should check one task', () => {
-    return taskline.checkTasks('2').then(() => {
-      return helper.getData([2]).then(data => {
-        expect((data[0] as Task).isComplete).toBe(true);
-      });
-    });
+  it('should check one task', async() => {
+    await taskline.checkTasks('2');
+    const data = await helper.getData([2]);
+    expect((data[0] as Task).isComplete).toBe(true);
   });
 
-  it('should check multiple tasks', () => {
-    return taskline.checkTasks('3,4').then(() => {
-      return helper.getData([3,4]).then(data => {
-        expect((data[0] as Task).isComplete).toBe(true);
-        expect((data[1] as Task).isComplete).toBe(true);
-      });
-    });
+  it('should check multiple tasks', async() => {
+    await taskline.checkTasks('3,4');
+    const data = await helper.getData([3, 4]);
+    expect((data[0] as Task).isComplete).toBe(true);
+    expect((data[1] as Task).isComplete).toBe(true);
   });
 
-  it('should check multiple tasks by id range', () => {
-    return taskline.checkTasks('2-4').then(() => {
-      return helper.getData([2,3,4]).then(data => {
-        expect((data[0] as Task).isComplete).toBe(false);
-        expect((data[1] as Task).isComplete).toBe(false);
-        expect((data[2] as Task).isComplete).toBe(false);
-      });
-    });
+  it('should check multiple tasks by id range', async() => {
+    await taskline.checkTasks('2-4');
+    const data = await helper.getData([2, 3, 4]);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[1] as Task).isComplete).toBe(false);
+    expect((data[2] as Task).isComplete).toBe(false);
   });
 
-  it('should check multiple tasks by id range and list', () => {
-    return taskline.checkTasks('2,3-4').then(() => {
-      return helper.getData([2,3,4]).then(data => {
-        expect((data[0] as Task).isComplete).toBe(true);
-        expect((data[1] as Task).isComplete).toBe(true);
-        expect((data[2] as Task).isComplete).toBe(true);
-      });
-    });
+  it('should check multiple tasks by id range and list', async() => {
+    await taskline.checkTasks('2,3-4');
+    const data = await helper.getData([2, 3, 4]);
+    expect((data[0] as Task).isComplete).toBe(true);
+    expect((data[1] as Task).isComplete).toBe(true);
+    expect((data[2] as Task).isComplete).toBe(true);
   });
 
-  it('should delete all checked tasks', () => {
-    return helper.getData([2,3,4]).then(data => {
-      const oldData = JSON.parse(JSON.stringify(data));
-
-      return taskline.clear().then(() => {
-        return helper.getData().then(data => {
-          return helper.getArchive().then(archive => {
-            expect(data.length).toBe(2);
-            oldData[0].id -= 1;
-            expect(JSON.parse(JSON.stringify(archive[0]))).toMatchObject(oldData[0]);
-            oldData[1].id -= 1;
-            expect(JSON.parse(JSON.stringify(archive[1]))).toMatchObject(oldData[1]);
-            oldData[2].id -= 1;
-            expect(JSON.parse(JSON.stringify(archive[2]))).toMatchObject(oldData[2]);
-          });
-        });
-      });
-    });
+  it('should delete all checked tasks', async() => {
+    const data = await helper.getData([2, 3, 4]);
+    const oldData = JSON.parse(JSON.stringify(data));
+    await taskline.clear();
+    const data_1 = await helper.getData();
+    const archive = await helper.getArchive();
+    expect(data_1.length).toBe(2);
+    oldData[0].id -= 1;
+    expect(JSON.parse(JSON.stringify(archive[0]))).toMatchObject(oldData[0]);
+    oldData[1].id -= 1;
+    expect(JSON.parse(JSON.stringify(archive[1]))).toMatchObject(oldData[1]);
+    oldData[2].id -= 1;
+    expect(JSON.parse(JSON.stringify(archive[2]))).toMatchObject(oldData[2]);
   });
 
   it('should try to check a nonexisting item', () => {
