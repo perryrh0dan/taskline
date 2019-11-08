@@ -83,7 +83,7 @@
     "start": "node dist/cli.js",
     "dev": "gulp watch",
     "test": "npm run lint && npm run unit",
-    "lint": "eslint ./src/**",
+    "lint": "eslint ./src/**/*.ts",
     "unit": "jest --runInBand",
     "semantic-release": "semantic-release"
   },
