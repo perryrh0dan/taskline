@@ -14,8 +14,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "cli.ts",
-    "postinstall.ts"
+    "cli.ts"
   ],
   "exclude": [
     "node_modules",

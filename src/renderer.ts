@@ -6,11 +6,13 @@ import * as figures from 'figures';
 const chalk = require('chalk');
 
 import { Config } from './config';
+import { Localization } from './localization';
 import ora = require('ora');
 import { Item } from './item';
 import { TaskPriority, Task } from './task';
 
 const { underline } = chalk;
+const local = Localization.instance;
 
 type Theme = {
   colors: {
@@ -33,7 +35,7 @@ type Theme = {
 }
 
 export class Renderer {
-  private static _instance: Renderer
+  private static _instance: Renderer;
   private spinner: Ora;
   private signale: any;
   private theme: Theme;
@@ -367,6 +369,15 @@ export class Renderer {
     return this.signale.note(msgObj);
   }
 
+  private format(source: string, params: Array<any>): string {
+    params.forEach((value, index) => {
+      const re = new RegExp('\\{' + index + '\\}', 'g');
+      source = source.replace(re, value);
+    });
+
+    return source;
+  }
+
   public startLoading(): void {
     this.spinner.start();
   }
@@ -484,7 +495,7 @@ export class Renderer {
         // check for private key
         let text: string = obj[key].toString() ? obj[key].toString() : '';
         if (text.includes('PRIVATE KEY')) {
-          text = text.slice(0,50).replace('\n',' ').concat('...');
+          text = text.slice(0, 50).replace('\n', ' ').concat('...');
         }
         this.signale.log({
           prefix: ' ',
@@ -683,8 +694,10 @@ export class Renderer {
 
   public successCreate(item: Item): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', item.id.toString())];
-    const message = `Created ${item.isTask ? 'task:' : 'note:'}`;
+    const message = local.get('success.create', item.isTask ? 0 : 1);
+
     this.signale.success({
       prefix,
       message,
@@ -694,8 +707,10 @@ export class Renderer {
 
   public successEdit(id: number): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', id.toString())];
-    const message = 'Updated description of item:';
+    const message = local.get('success.edit');
+
     this.signale.success({
       prefix,
       message,
@@ -705,8 +720,10 @@ export class Renderer {
 
   public successDelete(ids: Array<number>): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message: string = `Deleted ${ids.length > 1 ? 'items' : 'item'}:`;
+    const message: string = local.get('success.delete', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -716,8 +733,11 @@ export class Renderer {
 
   public successMove(ids: Array<number>, boards: Array<string>): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', boards.join(', '))];
-    const message: string = `Move item: ${this.printColor('pale', ids.join(', '))} to`;
+    const text = local.get('success.move', ids.length > 1 ? 1 : 0);
+    const message = this.format(text, [this.printColor('pale', ids.join(', '))]);
+
     this.signale.success({
       prefix,
       message,
@@ -732,11 +752,10 @@ export class Renderer {
     }
 
     const prefix: string = '\n';
-    const message = `Updated priority of ${
-      ids.length > 1 ? 'tasks' : 'task'
-      }: ${this.printColor('pale', ids.join(', '))} to`;
-    const suffix =
-      priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium', TaskPriority[priority]) : this.printColor('icons.success', TaskPriority[priority]);
+    const text = local.get('success.priority', ids.length > 1 ? 1 : 0);
+    const message = this.format(text, [this.printColor('pale', ids.join(', '))]);
+    const suffix = priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium', TaskPriority[priority]) : this.printColor('icons.success', TaskPriority[priority]);
+
     this.signale.success({
       prefix,
       message,
@@ -751,9 +770,9 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = `Updated duedate of ${
-      ids.length > 1 ? 'tasks' : 'task'
-      }: ${this.printColor('pale', ids.join(', '))} to`;
+    const text = local.get('success.duedate', ids.length > 1 ? 1 : 0);
+    const message = this.format(text, [this.printColor('pale', ids.join(', '))]);
+
     const suffix = dueDate;
     this.signale.success({
       prefix,
@@ -764,8 +783,10 @@ export class Renderer {
 
   public successRestore(ids: Array<number>): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Restored ${ids.length > 1 ? 'items' : 'item'}:`;
+    const message = local.get('success.restore', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -775,10 +796,10 @@ export class Renderer {
 
   public successCopyToClipboard(ids: Array<number>): void {
     this.stopLoading();
+
     const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = `Copied the ${
-      ids.length > 1 ? 'descriptions of items' : 'description of item'
-      }:`;
+    const message = local.get('success.clipboard', ids.length > 1 ? 1 : 0);
+
     this.signale.success({
       prefix,
       message,
@@ -788,8 +809,10 @@ export class Renderer {
 
   public successRearrangeIDs(): void {
     this.stopLoading();
+
     const prefix = '\n';
-    const message = 'Rearranged ids of all items';
+    const message = local.get('success.rearrange');
+
     this.signale.success({
       prefix,
       message

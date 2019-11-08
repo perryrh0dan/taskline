@@ -5,6 +5,52 @@ import pkg = require('../package.json');
 
 const defaultConfig = pkg.configuration.default;
 
+export type ITheme = {
+  colors: {
+    pale: string,
+    error: string,
+    task: {
+      priority: {
+        medium: string,
+        high: string
+      }
+    },
+    icons: {
+      note: string,
+      success: string,
+      star: string,
+      progress: string,
+      pending: string,
+      canceled: string
+    }
+  }
+}
+
+export interface IConfig {
+  language: string,
+  tasklineDirectory: string,
+  displayCompleteTasks: boolean,
+  displayProgressOverview: boolean,
+  storageModule: string,
+  firestoreConfig: {
+    storageName: string,
+    archiveName: string,
+    type: string,
+    project_id: string,
+    private_key_id: string,
+    private_key: string,
+    client_email: string,
+    client_id: string,
+    auth_uri: string,
+    token_uri: string,
+    auth_provider_x509_cert_url: string,
+    client_x509_cert_url: string,
+    databaseURL: string
+  },
+  dateformat: string,
+  theme: ITheme
+}
+
 export class Config {
   private static _instance: Config
   private config: any;

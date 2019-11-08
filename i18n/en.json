@@ -1,0 +1,16 @@
+{
+  "errors": {
+
+  },
+  "success": {
+    "clipboard": "Copied the description of item: | Copied the descriptions of items:",
+    "create": "Created task: | Created note:",
+    "delete": "Deleted item: | Deleted items:",
+    "duedate": "Updated duedate of task: {0} to | Updated duedate of tasks: {0} to",
+    "edit": "Updated description of item:",
+    "move": "Moved item: {0} to | Moved items: {0} to",
+    "priority": "Updated priority of task: {0} to | Updated priority of tasks: {0} to",
+    "rearrange": "Rearranged ids of all items",
+    "restore": "Restored item: | Restored items:"
+  }
+}

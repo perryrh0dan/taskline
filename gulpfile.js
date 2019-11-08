@@ -10,16 +10,20 @@ const dirs = {
   dist: ['dist']
 };
 
-const buildPackage = () => {
+const movePackage = () => {
   return gulp.src('package.json')
     .pipe(gulp.dest(dirs.dist));
 };
 
-const buildReadme = () => {
+const moveReadme = () => {
   return gulp.src('readme.md')
     .pipe(gulp.dest(dirs.dist));
 };
 
+const moveLocals = () => {
+  return gulp.src('i18n/**/*.json')
+    .pipe(gulp.dest(dirs.dist + '/i18n'))
+}
 
 const compileProd = () => {
   return tsProject.src()
@@ -40,8 +44,8 @@ const delDist = () => {
   return del(['dist/**/*']);
 }
 
-const build = gulp.series(delDist, compileProd);
-const buildMeta = gulp.parallel(buildPackage, buildReadme);
+const build = gulp.series(delDist, compileProd, moveLocals);
+const buildMeta = gulp.parallel(movePackage, moveReadme);
 
 module.exports = {
   build,
@@ -50,5 +54,5 @@ module.exports = {
 };
 
 gulp.task('watch', gulp.series(function() {
-  gulp.watch(['src/*.ts', 'cli.ts'], gulp.series(compileTest));
+  gulp.watch(['src/*.ts', 'cli.ts'], gulp.series(compileTest, moveLocals));
 }));
