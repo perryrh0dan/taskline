@@ -2,6 +2,17 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.2.0
+
+- Added possibility to use humanized dates (big thanks to [Aditya Sriram](https://github.com/aditya95sriram) for contributing this feature). Complete list of all commands can be found in the readme.
+
+```bash
+tl t "humanized" -d tomorrow
+tl t "thats cool" -d next monday
+```
+
+- Added localization feature. Default language is english. This can be changed in the configuration file under `language`.
+
 ## Version 1.1.3
 
 - Added seperat color for errors

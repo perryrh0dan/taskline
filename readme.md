@@ -176,6 +176,7 @@ The following illustrates all the available options with their respective defaul
 
 ``` json
 {
+  "language": "en",
   "tasklineDirectory": "~",
   "displayCompleteTasks": true,
   "displayProgressOverview": true,
