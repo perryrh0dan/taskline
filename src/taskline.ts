@@ -618,6 +618,7 @@ export class Taskline {
   public async cancelTasks(ids: string): Promise<void> {
     Renderer.instance.startLoading();
 
+    debugger;
     let parsedIDs: Array<number>;
 
     try {

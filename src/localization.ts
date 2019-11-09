@@ -77,7 +77,7 @@ export class Localization {
       if (!n) return '';
       temp = temp[n];
     }
-    if (options && options.type) {
+    if (options && options.type != undefined) {
       return temp[keys[0]][options.type];
     }
     return temp[keys[0]];
@@ -85,10 +85,11 @@ export class Localization {
 
   public getf(key: string, options: { type?: number, params: Array<any> }): string {
     let text = '';
-    if (options && options.type) {
+    if (options && options.type != undefined) {
       text = this.get(key, {type: options.type});
+    } else {
+      text = this.get(key);
     }
-    text = this.get(key);
     return format(text, options.params);
   }
 }

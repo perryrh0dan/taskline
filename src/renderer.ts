@@ -533,6 +533,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
+    debugger;
     const message = local.getf('success.cancel', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
@@ -548,7 +549,8 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('revive', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    debugger;
+    const message = local.getf('success.revive', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -563,6 +565,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
+    debugger;
     const message = local.getf('success.star', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({

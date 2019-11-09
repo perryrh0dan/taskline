@@ -16,7 +16,7 @@
     "done": "done",
     "note": "note | notes",
     "pending": "pending",
-    "percentage": "{0} of all tasks complete",
+    "percentage": "{0} of all tasks complete.",
     "progress": "in-progress"
   },
   "success": {
