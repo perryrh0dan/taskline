@@ -4,6 +4,9 @@
     "path": "Konfiguration geladen aus {0}",
     "title": "Konfiguration"
   },
+  "date": {
+    "today": "Heute"
+  },
   "errors": {
 
   },
@@ -17,23 +20,23 @@
     "progress": "laufend"
   },
   "success": {
-    "cancel": "Aufgabe abgebrochen: | Aufgaben abgebrochen:",
-    "check": "Aufgabe erledigt | Aufgaben erledigt",
-    "clipboard": "Beschreibung des Items kopiert: | Beschreibung der Items kopiert:",
-    "create": "Task erstellt: | Notiz erstellt:",
-    "delete": "Item gelöscht: | Items gelöscht:",
-    "duedate": "Updated duedate of task: {0} to | Updated duedate of tasks: {0} to",
-    "edit": "Updated description of item:",
-    "move": "Moved item: {0} to | Moved items: {0} to",
-    "pause": "Paused task | Paused tasks",
-    "priority": "Updated priority of task: {0} to | Updated priority of tasks: {0} to",
-    "rearrange": "Rearranged ids of all items",
-    "restore": "Restored item: | Restored items:",
-    "revive": "Revived task | Revived tasks",
-    "star": "Starred item: | Starred items:",
-    "start": "Started task | Started tasks",
-    "uncheck": "Unchecked task | Unchecked tasks",
-    "unstar": "Unstarred item: | Unstared items"
+    "cancel": "Aufgabe abgebrochen: {0} | Aufgaben abgebrochen: {0}",
+    "check": "Aufgabe erledigt: {0} | Aufgaben erledigt: {0}",
+    "clipboard": "Beschreibung des Items kopiert: {0} | Beschreibung der Items kopiert: {0}",
+    "create": "Task erstellt: {0} | Notiz erstellt: {0}",
+    "delete": "Item gelöscht: {0} | Items gelöscht: {0}",
+    "duedate": "Updated duedate of task: {0} to {1} | Updated duedate of tasks: {0} to {1}",
+    "edit": "Updated description of item: {0}",
+    "move": "Moved item: {0} to {1} | Moved items: {0} to {1}",
+    "pause": "Paused task: {0} | Paused tasks: {0}",
+    "priority": "Updated priority of task: {0} to {1} | Updated priority of tasks: {0} to {1}",
+    "rearrange": "Rearranged ids of all items {0}",
+    "restore": "Restored item: {0} | Restored items: {0}",
+    "revive": "Revived task: {0} | Revived tasks: {0}",
+    "star": "Starred item: {0} | Starred items: {0}",
+    "start": "Started task: {0} | Started tasks: {0}",
+    "uncheck": "Unchecked task: {0} | Unchecked tasks: {0}",
+    "unstar": "Unstarred item: {0} | Unstared items: {0}"
   },
   "warning": {
     "appDir": "Custom app directory was not found on your system:",

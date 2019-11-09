@@ -80,6 +80,7 @@
   "scripts": {
     "build": "tsc",
     "build:prod": "bash scripts/build.sh",
+    "build:prod:snapcraft": "gulp snapcraft",
     "start": "node dist/cli.js",
     "dev": "gulp watch",
     "test": "npm run lint && npm run unit",
@@ -95,6 +96,7 @@
     "date-fns": "^2.6.0",
     "figures": "^3.1.0",
     "firebase-admin": "^8.7.0",
+    "gulp-json-editor": "^2.5.4",
     "ora": "^3.4.0",
     "update-notifier": "^3.0.1"
   },

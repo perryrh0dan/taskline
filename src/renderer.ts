@@ -222,10 +222,8 @@ export class Renderer {
   }
 
   private buildTitle(key: string, items: Array<Item>): any {
-    let today = local.get('date.today');
-    today = today.charAt(0).toUpperCase() + today.slice(1);
     const title =
-      key === new Date().toDateString() ? `${underline(key)} ${this.printColor('pale', `[${today}]`)}` : underline(key);
+      key === new Date().toDateString() ? `${underline(key)} ${this.printColor('pale', `[${local.get('date.today')}]`)}` : underline(key);
     const correlation = this.getCorrelation(items);
     return {
       title,

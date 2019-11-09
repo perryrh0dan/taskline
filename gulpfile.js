@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
+const jeditor = require("gulp-json-editor");
 const merge = require('merge-stream');
 var del = require('del');
 
@@ -9,6 +10,15 @@ const tsProject = ts.createProject('tsconfig.json');
 const dirs = {
   dist: ['dist']
 };
+
+const editPackageSnapcraft = () => {
+  return gulp.src('package.json')
+    .pipe(jeditor(function(json) {
+      json.devDependencies = {}
+      return json
+    }))
+    .pipe(gulp.dest('./'))
+}
 
 const movePackage = () => {
   return gulp.src('package.json')
@@ -46,10 +56,12 @@ const delDist = () => {
 
 const build = gulp.series(delDist, compileProd, moveLocals);
 const buildMeta = gulp.parallel(movePackage, moveReadme);
+const snapcraft = gulp.series(compileProd, editPackageSnapcraft)
 
 module.exports = {
   build,
   buildMeta,
+  snapcraft,
   default: build
 };
 
