@@ -1,15 +1,15 @@
 import { Signale, SignaleConstructorOptions } from '@perryrh0dan/signale';
-import { Ora } from 'ora';
 import { addWeeks, isBefore, endOfDay, toDate } from 'date-fns';
 import * as figures from 'figures';
+import ora = require('ora');
 
 const chalk = require('chalk');
 
 import { Config } from './config';
-import { Localization } from './localization';
-import ora = require('ora');
+import { Localization, format } from './localization';
 import { Item } from './item';
 import { TaskPriority, Task } from './task';
+import { getRelativeHumanizedDate } from './libs/date';
 
 const { underline } = chalk;
 const local = Localization.instance;
@@ -36,7 +36,7 @@ type Theme = {
 
 export class Renderer {
   private static _instance: Renderer;
-  private spinner: Ora;
+  private spinner: ora.Ora;
   private signale: any;
   private theme: Theme;
 
@@ -170,46 +170,11 @@ export class Renderer {
     return age === 0 ? '' : this.printColor('pale', `${age}d`);
   }
 
-  private getRelativeHumanizedDate(dueDate: Date, now?: Date): string {
-    if (!now) now = new Date();
-
-    // get date diff
-    const diffTime: number = dueDate.getTime() - now.getTime();
-    const diffSeconds: number = Math.ceil(diffTime / 1000);
-    let unit = '';
-    let value = 0;
-
-    if (Math.abs(diffSeconds) < 60) {
-      value = diffSeconds;
-      unit = 'seconds';
-    } else if (Math.abs(diffSeconds) < 60 * 60) {
-      value = Math.round(diffSeconds / 60);
-      unit = 'minutes';
-    } else if (Math.abs(diffSeconds) < 60 * 60 * 24) {
-      value = Math.round(diffSeconds / (60 * 60));
-      unit = 'hours';
-    } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 7) {
-      value = Math.round(diffSeconds / (60 * 60 * 24));
-      unit = 'days';
-    } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 30) {
-      value = Math.round(diffSeconds / (60 * 60 * 24 * 7));
-      unit = 'weeks';
-    } else {
-      value = Math.round(diffSeconds / (60 * 60 * 24 * 30));
-      unit = 'months';
-    }
-
-    const absValue = Math.abs(value);
-    unit = absValue === 1 ? unit.slice(0, unit.length - 1) : unit;
-    const humanizedDate = value >= 1 ? `in ${value} ${unit}` : `${absValue} ${unit} ago`;
-    return humanizedDate;
-  }
-
   private getDueDate(dueTimestamp: number): string {
     const now = new Date();
     const dueDate = toDate(dueTimestamp);
 
-    const humanizedDate = this.getRelativeHumanizedDate(dueDate);
+    const humanizedDate = getRelativeHumanizedDate(dueDate);
     const text = `(Due ${humanizedDate})`;
 
     const isSoon = isBefore(dueDate, addWeeks(now, 1));
@@ -257,8 +222,10 @@ export class Renderer {
   }
 
   private buildTitle(key: string, items: Array<Item>): any {
+    let today = local.get('date.today');
+    today = today.charAt(0).toUpperCase() + today.slice(1);
     const title =
-      key === new Date().toDateString() ? `${underline(key)} ${this.printColor('pale', '[Today]')}` : underline(key);
+      key === new Date().toDateString() ? `${underline(key)} ${this.printColor('pale', `[${today}]`)}` : underline(key);
     const correlation = this.getCorrelation(items);
     return {
       title,
@@ -369,15 +336,6 @@ export class Renderer {
     return this.signale.note(msgObj);
   }
 
-  private format(source: string, params: Array<any>): string {
-    params.forEach((value, index) => {
-      const re = new RegExp('\\{' + index + '\\}', 'g');
-      source = source.replace(re, value);
-    });
-
-    return source;
-  }
-
   public startLoading(): void {
     this.spinner.start();
   }
@@ -445,7 +403,7 @@ export class Renderer {
       `${this.printColor('icons.canceled', canceled.toString())} ${this.printColor('pale', local.get('stats.canceled'))}`,
       `${this.printColor('icons.progress', inProgress.toString())} ${this.printColor('pale', local.get('stats.progress'))}`,
       `${this.printColor('icons.pending', pending.toString())} ${this.printColor('pale', local.get('stats.pending'))}`,
-      `${this.printColor('icons.note', notes.toString())} ${this.printColor('pale', local.get('stats.note', notes === 1 ? 0 : 1))}`
+      `${this.printColor('icons.note', notes.toString())} ${this.printColor('pale', local.get('stats.note', { type: notes === 1 ? 0 : 1 }))}`
     ];
 
     if (complete !== 0 && inProgress === 0 && pending === 0 && notes === 0) {
@@ -466,7 +424,7 @@ export class Renderer {
 
     this.signale.log({
       prefix: '\n ',
-      message: this.printColor('pale', this.format(local.get('stats.percentage'), [percentText]))
+      message: this.printColor('pale', local.getf('stats.percentage', { params: [percentText] }))
     });
 
     this.signale.log({
@@ -479,7 +437,7 @@ export class Renderer {
   public displayConfig(config: any, path: string): void {
     this.signale.log({
       prefix: ' ',
-      message: chalk.green(this.format(local.get('config.path'), [path]))
+      message: chalk.green(local.getf('config.path', { params: [path] }))
     });
 
     this.signale.log({
@@ -493,7 +451,7 @@ export class Renderer {
   private iterateObject(obj: any, depth: number): void {
     Object.keys(obj).forEach(key => {
       if (typeof obj[key] !== 'object') {
-        // check for private key
+        // Dont show privat key
         let text: string = obj[key].toString() ? obj[key].toString() : '';
         if (text.includes('PRIVATE KEY')) {
           text = text.slice(0, 50).replace('\n', ' ').concat('...');
@@ -514,13 +472,12 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message: string = local.get('success.check', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message: string = local.getf('success.check', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -530,13 +487,12 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message: string = local.get('success.uncheck', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message: string = local.getf('success.uncheck', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -546,13 +502,12 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('success.start', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('success.start', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -562,13 +517,12 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('success.pause', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('success.pause', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -578,13 +532,12 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('success.cancel', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('success.cancel', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -594,13 +547,12 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('revive', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('revive', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -610,13 +562,12 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('success.star', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('success.star', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -626,65 +577,60 @@ export class Renderer {
       return;
     }
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('success.unstar', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('success.unstar', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public invalidCustomAppDir(path: string): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('error', path)];
-    const message = local.get('warning.appDir');
+    const prefix = '\n';
+    const message = local.getf('warning.appDir', { params: [this.printColor('error', path)] });
 
     this.signale.error({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public invalidFirestoreConfig(): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', ''];
+    const prefix = '\n';
     const message = local.get('warning.firestoreConfig');
 
     this.signale.error({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public invalidID(id: number): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', id.toString())];
-    const message = local.get('warning.id');
+    const prefix = '\n';
+    const message = local.getf('warning.id', { params: [this.printColor('pale', id.toString())] });
 
     this.signale.error({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public invalidIDRange(range: string): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', range)];
-    const message = local.get('warning.idRange');
+    const prefix = '\n';
+    const message = local.getf('warning.idRange', { params: [this.printColor('pale', range)] });
 
     this.signale.error({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -703,66 +649,60 @@ export class Renderer {
   public invalidDateFormat(date: string): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', date)];
-    const message = local.get('warning.dateFormat');
+    const prefix = '\n';
+    const message = local.getf('warning.dateFormat', { params: [this.printColor('pale', date)] });
 
     this.signale.error({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public successCreate(item: Item): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', item.id.toString())];
-    const message = local.get('success.create', item.isTask ? 0 : 1);
+    const prefix = '\n';
+    const message = local.getf('success.create', { type: item.isTask ? 0 : 1, params: [this.printColor('pale', item.id.toString())] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public successEdit(id: number): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', id.toString())];
-    const message = local.get('success.edit');
+    const prefix = '\n';
+    const message = local.getf('success.edit', { params: [this.printColor('pale', id.toString())] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public successDelete(ids: Array<number>): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message: string = local.get('success.delete', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message: string = local.getf('success.delete', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public successMove(ids: Array<number>, boards: Array<string>): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', boards.join(', '))];
-    const text = local.get('success.move', ids.length > 1 ? 1 : 0);
-    const message = this.format(text, [this.printColor('pale', ids.join(', '))]);
+    const prefix = '\n';
+    const message = local.getf('success.move', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', ')), this.printColor('pale', boards.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -773,14 +713,13 @@ export class Renderer {
     }
 
     const prefix: string = '\n';
-    const text = local.get('success.priority', ids.length > 1 ? 1 : 0);
-    const message = this.format(text, [this.printColor('pale', ids.join(', '))]);
-    const suffix = priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium', TaskPriority[priority]) : this.printColor('icons.success', TaskPriority[priority]);
+    const text = local.get('success.priority', { type: ids.length > 1 ? 1 : 0 });
+    const prioText = priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium', TaskPriority[priority]) : this.printColor('icons.success', TaskPriority[priority]);
+    const message = format(text, [this.printColor('pale', ids.join(', ')), prioText]);
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
@@ -791,40 +730,35 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const text = local.get('success.duedate', ids.length > 1 ? 1 : 0);
-    const message = this.format(text, [this.printColor('pale', ids.join(', '))]);
+    const message = local.getf('success.duedate', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', ')), dueDate] });
 
-    const suffix = dueDate;
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public successRestore(ids: Array<number>): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('success.restore', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('success.restore', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 
   public successCopyToClipboard(ids: Array<number>): void {
     this.stopLoading();
 
-    const [prefix, suffix] = ['\n', this.printColor('pale', ids.join(', '))];
-    const message = local.get('success.clipboard', ids.length > 1 ? 1 : 0);
+    const prefix = '\n';
+    const message = local.getf('success.clipboard', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
-      message,
-      suffix
+      message
     });
   }
 

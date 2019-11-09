@@ -8,7 +8,6 @@ const dateNames = {  // can depend on locale, can be fetched from CONFIG
 
 dateNames.weekday = `(${dateNames.weekshort.join('|')})\\b|(${dateNames.weeklong.join('|')})`;
 
-
 const parseHumanDate = function(input: string): Date | undefined {
   // const weekday: string = '(mon|fri|sun)(\\b|day)|tue(sday)?|wed(nesday)?|thu(rsday)?|sat(urday)?';
   const periods = ['day', 'week', 'month', 'year'];
@@ -161,4 +160,39 @@ export const parseDate = function(input: string, format: string): Date {
   }
 
   return date;
+};
+
+export const getRelativeHumanizedDate = function(dueDate: Date, now?: Date): string {
+  if (!now) now = new Date();
+
+  // get date diff
+  const diffTime: number = dueDate.getTime() - now.getTime();
+  const diffSeconds: number = Math.ceil(diffTime / 1000);
+  let unit = '';
+  let value = 0;
+
+  if (Math.abs(diffSeconds) < 60) {
+    value = diffSeconds;
+    unit = 'seconds';
+  } else if (Math.abs(diffSeconds) < 60 * 60) {
+    value = Math.round(diffSeconds / 60);
+    unit = 'minutes';
+  } else if (Math.abs(diffSeconds) < 60 * 60 * 24) {
+    value = Math.round(diffSeconds / (60 * 60));
+    unit = 'hours';
+  } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 7) {
+    value = Math.round(diffSeconds / (60 * 60 * 24));
+    unit = 'days';
+  } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 30) {
+    value = Math.round(diffSeconds / (60 * 60 * 24 * 7));
+    unit = 'weeks';
+  } else {
+    value = Math.round(diffSeconds / (60 * 60 * 24 * 30));
+    unit = 'months';
+  }
+
+  const absValue = Math.abs(value);
+  unit = absValue === 1 ? unit.slice(0, unit.length - 1) : unit;
+  const humanizedDate = value >= 1 ? `in ${value} ${unit}` : `${absValue} ${unit} ago`;
+  return humanizedDate;
 };

@@ -2,6 +2,15 @@ import { Config } from './config';
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 
+export const format = function(source: string, params: Array<any>): string {
+    params.forEach((value, index) => {
+      const re = new RegExp('\\{' + index + '\\}', 'g');
+      source = source.replace(re, value);
+    });
+
+    return source;
+};
+
 export class Localization {
   private static _instance: Localization
   private _locals: any;
@@ -59,7 +68,7 @@ export class Localization {
     });
   }
 
-  public get(key: string, type: number = 0): string {
+  public get(key: string, options?: {type: number}): string {
     const keys = key.split('.');
     let localConfig = this.locals;
     let temp = localConfig;
@@ -68,9 +77,18 @@ export class Localization {
       if (!n) return '';
       temp = temp[n];
     }
-    if (Array.isArray(temp[keys[0]])) {
-      return temp[keys[0]][type];
+    if (options && options.type) {
+      return temp[keys[0]][options.type];
     }
     return temp[keys[0]];
+  }
+
+  public getf(key: string, options: { type?: number, params: Array<any> }): string {
+    let text = '';
+    if (options && options.type) {
+      text = this.get(key, {type: options.type});
+    }
+    text = this.get(key);
+    return format(text, options.params);
   }
 }

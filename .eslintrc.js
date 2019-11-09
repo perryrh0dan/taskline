@@ -29,7 +29,8 @@ module.exports = {
     "no-inferrable-types": [0, "always"],
     "semi": [2, "always"],
     "quotes": ["error", "single"],
-    "space-before-function-paren": [2, "never"]
+    "space-before-function-paren": [2, "never"],
+    "comma-spacing": ["error", { "before": false, "after": true }]
   },
   overrides: [
     {
