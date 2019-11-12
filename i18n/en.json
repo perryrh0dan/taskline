@@ -30,7 +30,7 @@
     "move": "Moved item: {0} to {1}| Moved items: {0} to {1}",
     "pause": "Paused task: {0} | Paused tasks: {0}",
     "priority": "Updated priority of task: {0} to {1} | Updated priority of tasks: {0} to {1}",
-    "rearrange": "Rearranged ids of all items: {0}",
+    "rearrange": "Rearranged ids of all items",
     "restore": "Restored item: {0}| Restored items: {0}",
     "revive": "Revived task: {0} | Revived tasks: {0}",
     "star": "Starred item: {0} | Starred items: {0}",
