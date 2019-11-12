@@ -21,7 +21,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   let matchArray;
   let parsedDate: Date;
   const now: Date = new Date();
-  const today: Date = set(now, { hours: 18, minutes: 0, seconds: 0 });  // fetch from config
+  const today: Date = set(now, { hours: 18, minutes: 0, seconds: 0, milliseconds: 0});  // fetch from config
   //parsedDate = datefns.set(parsedDate, { hours: 18, minutes: 0, seconds: 0 });
 
   // case 1: next <period>|<weekday>
