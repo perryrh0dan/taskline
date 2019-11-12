@@ -1,8 +1,6 @@
 import { set, setDay, isPast, addBusinessDays, format as fnsFormat, addDays, addWeeks, addMonths, addYears, startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
 import { Localization } from '../localization';
 
-const local = Localization.instance;
-
 const dateNames = {  // can depend on locale, can be fetched from CONFIG
   weekshort: ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
   weeklong: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
@@ -196,9 +194,9 @@ export const getRelativeHumanizedDate = function(dueDate: Date, now?: Date): str
 
   const absValue = Math.abs(value);
   debugger;
-  unit = local.get('date.units.' + unit, { type: absValue === 1 ? 0 : 1 });
+  unit = Localization.instance.get('date.units.' + unit, { type: absValue === 1 ? 0 : 1 });
   const humanizedDate = value >= 1 ? `${value} ${unit}` : `${absValue} ${unit}`;
   debugger;
-  const humanizedRelativeDate = value >= 1 ? local.getf('date.due_in', { params: [humanizedDate] }) : local.getf('date.due_ago', { params: [humanizedDate] });
+  const humanizedRelativeDate = value >= 1 ? Localization.instance.getf('date.due_in', { params: [humanizedDate] }) : Localization.instance.getf('date.due_ago', { params: [humanizedDate] });
   return humanizedRelativeDate;
 };

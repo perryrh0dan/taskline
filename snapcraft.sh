@@ -53,17 +53,17 @@ rm -r ./scripts
 rm ./gulpfile.js
 
 # Build Snap
-# echo 'Build snap'
-# sudo snapcraft cleanbuild
+echo 'Build snap'
+sudo snapcraft cleanbuild
 
-# # Copy snap to main directory
-# echo 'Copy snap to main directory'
-# find ./ -iname '*.snap' -exec cp {} ../ \;
-# # find ./ -iname '*.bz2' -exec cp {} ../ \;
-# # for /R ./ %%f in (*.snap) do copy %%f ../
+# Copy snap to main directory
+echo 'Copy snap to main directory'
+find ./ -iname '*.snap' -exec cp {} ../ \;
+# find ./ -iname '*.bz2' -exec cp {} ../ \;
+# for /R ./ %%f in (*.snap) do copy %%f ../
 
-# # Navigate out and delete temp directory
-# echo 'Delete temp directory'
-# cd ..
-# sudo rm -r ./temp
+# Navigate out and delete temp directory
+echo 'Delete temp directory'
+cd ..
+sudo rm -r ./temp
 

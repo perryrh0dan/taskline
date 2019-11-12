@@ -12,7 +12,6 @@ import { TaskPriority, Task } from './task';
 import { getRelativeHumanizedDate } from './libs/date';
 
 const { underline } = chalk;
-const local = Localization.instance;
 
 type Theme = {
   colors: {
@@ -223,7 +222,7 @@ export class Renderer {
 
   private buildTitle(key: string, items: Array<Item>): any {
     const title =
-      key === new Date().toDateString() ? `${underline(key)} ${this.printColor('pale', `[${local.get('date.today')}]`)}` : underline(key);
+      key === new Date().toDateString() ? `${underline(key)} ${this.printColor('pale', `[${Localization.instance.get('date.today')}]`)}` : underline(key);
     const correlation = this.getCorrelation(items);
     return {
       title,
@@ -397,17 +396,17 @@ export class Renderer {
     const percentText = percent >= 75 ? this.printColor('icons.success', `${percent}%`) : percent >= 50 ? this.printColor('task.priority.medium', `${percent}%`) : `${percent}%`;
 
     const status: Array<string> = [
-      `${this.printColor('icons.success', complete.toString())} ${this.printColor('pale', local.get('stats.done'))}`,
-      `${this.printColor('icons.canceled', canceled.toString())} ${this.printColor('pale', local.get('stats.canceled'))}`,
-      `${this.printColor('icons.progress', inProgress.toString())} ${this.printColor('pale', local.get('stats.progress'))}`,
-      `${this.printColor('icons.pending', pending.toString())} ${this.printColor('pale', local.get('stats.pending'))}`,
-      `${this.printColor('icons.note', notes.toString())} ${this.printColor('pale', local.get('stats.note', { type: notes === 1 ? 0 : 1 }))}`
+      `${this.printColor('icons.success', complete.toString())} ${this.printColor('pale', Localization.instance.get('stats.done'))}`,
+      `${this.printColor('icons.canceled', canceled.toString())} ${this.printColor('pale', Localization.instance.get('stats.canceled'))}`,
+      `${this.printColor('icons.progress', inProgress.toString())} ${this.printColor('pale', Localization.instance.get('stats.progress'))}`,
+      `${this.printColor('icons.pending', pending.toString())} ${this.printColor('pale', Localization.instance.get('stats.pending'))}`,
+      `${this.printColor('icons.note', notes.toString())} ${this.printColor('pale', Localization.instance.get('stats.note', { type: notes === 1 ? 0 : 1 }))}`
     ];
 
     if (complete !== 0 && inProgress === 0 && pending === 0 && notes === 0) {
       this.signale.log({
         prefix: '\n ',
-        message: local.get('stats.allDone'),
+        message: Localization.instance.get('stats.allDone'),
         suffix: this.printColor('icons.star', '★')
       });
     }
@@ -415,14 +414,14 @@ export class Renderer {
     if (pending + inProgress + complete + notes === 0) {
       this.signale.log({
         prefix: '\n ',
-        message: local.get('help'),
+        message: Localization.instance.get('help'),
         suffix: this.printColor('icons.star', '★')
       });
     }
 
     this.signale.log({
       prefix: '\n ',
-      message: this.printColor('pale', local.getf('stats.percentage', { params: [percentText] }))
+      message: this.printColor('pale', Localization.instance.getf('stats.percentage', { params: [percentText] }))
     });
 
     this.signale.log({
@@ -435,12 +434,12 @@ export class Renderer {
   public displayConfig(config: any, path: string): void {
     this.signale.log({
       prefix: ' ',
-      message: chalk.green(local.getf('config.path', { params: [path] }))
+      message: chalk.green(Localization.instance.getf('config.path', { params: [path] }))
     });
 
     this.signale.log({
       prefix: ' ',
-      message: `#### ${local.get('config.title')} ####`
+      message: `#### ${Localization.instance.get('config.title')} ####`
     });
 
     this.iterateObject(config, 0);
@@ -471,7 +470,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message: string = local.getf('success.check', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message: string = Localization.instance.getf('success.check', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -486,7 +485,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message: string = local.getf('success.uncheck', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message: string = Localization.instance.getf('success.uncheck', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -501,7 +500,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('success.start', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.start', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -516,7 +515,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('success.pause', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.pause', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -531,7 +530,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('success.cancel', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.cancel', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -546,7 +545,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('success.revive', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.revive', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -561,7 +560,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('success.star', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.star', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -576,7 +575,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('success.unstar', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.unstar', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -588,7 +587,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('warning.appDir', { params: [this.printColor('error', path)] });
+    const message = Localization.instance.getf('warning.appDir', { params: [this.printColor('error', path)] });
 
     this.signale.error({
       prefix,
@@ -600,7 +599,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.get('warning.firestoreConfig');
+    const message = Localization.instance.get('warning.firestoreConfig');
 
     this.signale.error({
       prefix,
@@ -612,7 +611,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.get('Unable to load language file');
+    const message = Localization.instance.get('Unable to load language file');
 
     this.signale.error({
       prefix,
@@ -624,7 +623,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('warning.id', { params: [this.printColor('pale', id.toString())] });
+    const message = Localization.instance.getf('warning.id', { params: [this.printColor('pale', id.toString())] });
 
     this.signale.error({
       prefix,
@@ -636,7 +635,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('warning.idRange', { params: [this.printColor('pale', range)] });
+    const message = Localization.instance.getf('warning.idRange', { params: [this.printColor('pale', range)] });
 
     this.signale.error({
       prefix,
@@ -648,7 +647,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.get('warning.priority');
+    const message = Localization.instance.get('warning.priority');
 
     this.signale.error({
       prefix,
@@ -660,7 +659,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('warning.dateFormat', { params: [this.printColor('pale', date)] });
+    const message = Localization.instance.getf('warning.dateFormat', { params: [this.printColor('pale', date)] });
 
     this.signale.error({
       prefix,
@@ -672,7 +671,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('success.create', { type: item.isTask ? 0 : 1, params: [this.printColor('pale', item.id.toString())] });
+    const message = Localization.instance.getf('success.create', { type: item.isTask ? 0 : 1, params: [this.printColor('pale', item.id.toString())] });
 
     this.signale.success({
       prefix,
@@ -684,7 +683,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('success.edit', { params: [this.printColor('pale', id.toString())] });
+    const message = Localization.instance.getf('success.edit', { params: [this.printColor('pale', id.toString())] });
 
     this.signale.success({
       prefix,
@@ -696,7 +695,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message: string = local.getf('success.delete', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message: string = Localization.instance.getf('success.delete', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -708,7 +707,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('success.move', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', ')), this.printColor('pale', boards.join(', '))] });
+    const message = Localization.instance.getf('success.move', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', ')), this.printColor('pale', boards.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -723,7 +722,7 @@ export class Renderer {
     }
 
     const prefix: string = '\n';
-    const text = local.get('success.priority', { type: ids.length > 1 ? 1 : 0 });
+    const text = Localization.instance.get('success.priority', { type: ids.length > 1 ? 1 : 0 });
     const prioText = priority === 3 ? this.printColor('task.priority.high', TaskPriority[priority]) : priority === 2 ? this.printColor('task.priority.medium', TaskPriority[priority]) : this.printColor('icons.success', TaskPriority[priority]);
     const message = format(text, [this.printColor('pale', ids.join(', ')), prioText]);
 
@@ -740,7 +739,7 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    const message = local.getf('success.duedate', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', ')), dueDate] });
+    const message = Localization.instance.getf('success.duedate', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', ')), dueDate] });
 
     this.signale.success({
       prefix,
@@ -752,7 +751,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('success.restore', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.restore', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -764,7 +763,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.getf('success.clipboard', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
+    const message = Localization.instance.getf('success.clipboard', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
       prefix,
@@ -776,7 +775,7 @@ export class Renderer {
     this.stopLoading();
 
     const prefix = '\n';
-    const message = local.get('success.rearrange');
+    const message = Localization.instance.get('success.rearrange');
 
     this.signale.success({
       prefix,
