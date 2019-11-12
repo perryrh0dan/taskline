@@ -5,7 +5,21 @@
     "title": "Konfiguration"
   },
   "date": {
-    "today": "Heute"
+    "due_ago": "Fällig vor {0}",
+    "due_in": "Fällig in {0}",
+    "today": "Heute",
+    "days": {
+
+    },
+    "units": {
+      "second": "Sekunde | Sekunden",
+      "minute": "Minute | Minuten",
+      "hour": "Stunde | Stunden",
+      "day": "Tag | Tage",
+      "week": "Woche | Wochen",
+      "month": "Monat | Monate",
+      "year": "Jahr | Jahre"
+    }
   },
   "errors": {
 

@@ -175,7 +175,7 @@ export class Renderer {
     const dueDate = toDate(dueTimestamp);
 
     const humanizedDate = getRelativeHumanizedDate(dueDate);
-    const text = `(Due ${humanizedDate})`;
+    const text = `(${humanizedDate})`;
 
     const isSoon = isBefore(dueDate, addWeeks(now, 1));
     const isUrgent = isBefore(dueDate, endOfDay(now));
@@ -531,7 +531,6 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    debugger;
     const message = local.getf('success.cancel', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
@@ -547,7 +546,6 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    debugger;
     const message = local.getf('success.revive', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
@@ -563,7 +561,6 @@ export class Renderer {
     }
 
     const prefix = '\n';
-    debugger;
     const message = local.getf('success.star', { type: ids.length > 1 ? 1 : 0, params: [this.printColor('pale', ids.join(', '))] });
 
     this.signale.success({
@@ -604,6 +601,18 @@ export class Renderer {
 
     const prefix = '\n';
     const message = local.get('warning.firestoreConfig');
+
+    this.signale.error({
+      prefix,
+      message
+    });
+  }
+
+  public invalidLanguageFile(): void {
+    this.stopLoading();
+
+    const prefix = '\n';
+    const message = local.get('Unable to load language file');
 
     this.signale.error({
       prefix,

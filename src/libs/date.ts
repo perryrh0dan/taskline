@@ -1,4 +1,7 @@
 import { set, setDay, isPast, addBusinessDays, format as fnsFormat, addDays, addWeeks, addMonths, addYears, startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
+import { Localization } from '../localization';
+
+const local = Localization.instance;
 
 const dateNames = {  // can depend on locale, can be fetched from CONFIG
   weekshort: ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
@@ -173,26 +176,29 @@ export const getRelativeHumanizedDate = function(dueDate: Date, now?: Date): str
 
   if (Math.abs(diffSeconds) < 60) {
     value = diffSeconds;
-    unit = 'seconds';
+    unit = 'second';
   } else if (Math.abs(diffSeconds) < 60 * 60) {
     value = Math.round(diffSeconds / 60);
-    unit = 'minutes';
+    unit = 'minute';
   } else if (Math.abs(diffSeconds) < 60 * 60 * 24) {
     value = Math.round(diffSeconds / (60 * 60));
-    unit = 'hours';
+    unit = 'hour';
   } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 7) {
     value = Math.round(diffSeconds / (60 * 60 * 24));
-    unit = 'days';
+    unit = 'day';
   } else if (Math.abs(diffSeconds) < 60 * 60 * 24 * 30) {
     value = Math.round(diffSeconds / (60 * 60 * 24 * 7));
-    unit = 'weeks';
+    unit = 'week';
   } else {
     value = Math.round(diffSeconds / (60 * 60 * 24 * 30));
-    unit = 'months';
+    unit = 'month';
   }
 
   const absValue = Math.abs(value);
-  unit = absValue === 1 ? unit.slice(0, unit.length - 1) : unit;
-  const humanizedDate = value >= 1 ? `in ${value} ${unit}` : `${absValue} ${unit} ago`;
-  return humanizedDate;
+  debugger;
+  unit = local.get('date.units.' + unit, { type: absValue === 1 ? 0 : 1 });
+  const humanizedDate = value >= 1 ? `${value} ${unit}` : `${absValue} ${unit}`;
+  debugger;
+  const humanizedRelativeDate = value >= 1 ? local.getf('date.due_in', { params: [humanizedDate] }) : local.getf('date.due_ago', { params: [humanizedDate] });
+  return humanizedRelativeDate;
 };

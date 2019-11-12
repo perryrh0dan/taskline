@@ -66,5 +66,5 @@ module.exports = {
 };
 
 gulp.task('watch', gulp.series(function() {
-  gulp.watch(['src/*.ts', 'cli.ts'], gulp.series(compileTest, moveLocals));
+  gulp.watch(['src/**/*.ts', 'cli.ts'], gulp.series(compileTest, moveLocals));
 }));

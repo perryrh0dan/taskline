@@ -1,6 +1,8 @@
 import { Config } from './config';
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
+import { Renderer } from './renderer';
+import { merge } from './utils/utils';
 
 export const format = function(source: string, params: Array<any>): string {
     params.forEach((value, index) => {
@@ -14,6 +16,7 @@ export const format = function(source: string, params: Array<any>): string {
 export class Localization {
   private static _instance: Localization
   private _locals: any;
+  private default: any;
 
   public static get instance(): Localization {
     if (!this._instance) {
@@ -27,14 +30,20 @@ export class Localization {
     const language = Config.instance.get().language;
 
     try {
-      this.load(language ? language : 'en');
+      // load language
+      if (language != 'en') {
+        this.locals = this.load(language);
+      }
+      this.default = this.load('en');
     } catch (error) {
+      debugger;
+      Renderer.instance.invalidLanguageFile();
       process.exit(1);
     }
   }
 
   private get locals(): any {
-    return this._locals;
+    return merge({}, this.default, this._locals);
   }
 
   private set locals(locals: any) {
@@ -45,10 +54,7 @@ export class Localization {
     const filePath = resolve(__dirname, '..', 'i18n', language + '.json');
     if (!existsSync(filePath)) throw new Error('unable to load language file');
     const content = readFileSync(filePath, 'utf8');
-    this.locals = JSON.parse(content);
-
-    // parse locals
-    this.parse(this.locals);
+    return this.parse(JSON.parse(content));
   }
 
   private parse(o: any): void {
@@ -66,6 +72,8 @@ export class Localization {
         }
       }
     });
+
+    return o;
   }
 
   public get(key: string, options?: {type: number}): string {
