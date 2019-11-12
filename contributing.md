@@ -31,6 +31,18 @@ You can use issue labels to discover issues you could help us out with!
 
 You may find an issue is assigned, or has the [`assigned` label](https://github.com/perryrh0dan/taskline/labels/assigned). Please double-check before starting on this issue because somebody else is likely already working on it
 
+### Translating Taskline
+
+#### Create a Translation
+
+- Check the [`i18n`](https://github.com/perryrh0dan/taskline/tree/master/i18n) directory to ensure that taskline is not already translated in your target language.
+- Add the name of the language as the filename, e.g: `de.json`
+- Place the translated json file inside the ['i18n'](https://github.com/perryrh0dan/taskline/tree/master/i18n) directory.
+- Create a Pull Request including the language in the title, e.g: `Taskline: Russian Translation`
+
+#### Improve a Translation
+- Create a Pull Request that delivers the improvements and include the language in the title, e.g: `Taskline: Improvements for the Russian Translation`
+
 ### Translating Documentation
 
 #### Create a Translation

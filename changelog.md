@@ -12,6 +12,7 @@ tl t "thats cool" -d next monday
 ```
 
 - Added localization feature. Default language is english. This can be changed in the configuration file under `language`.
+- Decreased app size from 55mb to 25mb.
 
 ## Version 1.1.3
 

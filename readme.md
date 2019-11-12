@@ -32,7 +32,7 @@
 
 By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you to effectively manage your tasks and notes across multiple boards from within your terminal. All data is written atomically to the storage in order to prevent corruptions. At the moment there are two storage modules. The Local storage module where your task and are never shared with anyone or anything, or the firestore module, where your tasks are saved in your firestore database and can be shared across all your devices. Deleted items are automatically archived and can be inspected or restored at any moment.
 
-Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
+Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate taskline or this document into more languages.
 
 Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [Twitter](https://twitter.com/perryrh0dan1) to share your thoughts on the project.
 
@@ -87,6 +87,7 @@ View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0
 * [Before Flight](#before-flight)
 * [Flight Manual](#flight-manual)
 * [Themes](#themes)
+* [Languages](#languages)
 * [Development](#development)
 * [Team](#team)
 * [License](#license)
@@ -560,6 +561,9 @@ Since Taskline 1.1.0 custom themes can be created. The colors of the individual 
   <img alt="Boards" width="70%" src="media/ocean-blue-theme.png"/>
 </div>
 
+## Languages
+
+Actual taskline supports english as default output language and german. Hopefully with you help we are able to translate taskline in much more languages. Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-taskline) to learn more on how to translate taskline into more languages.
 
 ## Development
 
