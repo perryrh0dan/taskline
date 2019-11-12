@@ -50,21 +50,25 @@ const compileTest = () => {
     .pipe(gulp.dest(dirs.dist));
 };
 
+const watch = () => {
+  gulp.watch(['src/**/*.ts', 'cli.ts', 'i18n/**/*.json'], buildTest);
+}
+
 const delDist = () => {
   return del(['dist/**/*']);
 }
 
 const build = gulp.series(delDist, compileProd, moveLocals);
 const buildMeta = gulp.parallel(movePackage, moveReadme);
-const snapcraft = gulp.series(compileProd, editPackageSnapcraft)
+const buildTest = gulp.series(compileTest, moveLocals);
+const dev = gulp.series(buildTest, watch);
+const snapcraft = gulp.series(compileProd, editPackageSnapcraft);
 
 module.exports = {
   build,
   buildMeta,
+  buildTest,
+  dev,
   snapcraft,
   default: build
 };
-
-gulp.task('watch', gulp.series(function() {
-  gulp.watch(['src/**/*.ts', 'cli.ts'], gulp.series(compileTest, moveLocals));
-}));

@@ -3,7 +3,7 @@
 'use strict';
 import * as program from 'commander';
 // START SNAPCRAFT IGNORE
-import * as updateNotifier from 'update-notifier';
+import { UpdateNotifier } from 'update-notifier';
 // END SNAPCRAFT IGNORE
 const pkg = require('./package.json');
 import { Taskline } from './src/taskline';
@@ -199,9 +199,9 @@ program.on('command:*', function() {
 });
 
 // START SNAPCRAFT IGNORE disable this for snap
-updateNotifier({
-  pkg
-}).notify();
+new UpdateNotifier({
+  pkg,
+}).notify({ isGlobal: true });
 // END SNAPCRAFT IGNORE
 
 program.parse(process.argv);

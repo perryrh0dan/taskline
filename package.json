@@ -1,7 +1,7 @@
 {
   "name": "@perryrh0dan/taskline",
   "productName": "Taskline",
-  "version": "1.2.0",
+  "version": "1.1.0",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
@@ -78,11 +78,11 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "gulp buildTest && gulp buildMeta",
     "build:prod": "bash scripts/build.sh",
     "build:prod:snapcraft": "gulp snapcraft",
     "start": "node dist/cli.js",
-    "dev": "gulp watch",
+    "dev": "gulp dev",
     "test": "npm run lint && npm run unit",
     "lint": "eslint ./src/**/*.ts",
     "unit": "jest --runInBand",
@@ -90,6 +90,7 @@
   },
   "dependencies": {
     "@perryrh0dan/signale": "^1.4.4",
+    "@types/update-notifier": "^2.5.0",
     "chalk": "^2.4.1",
     "clipboardy": "^2.1.0",
     "commander": "^4.0.0",
@@ -108,7 +109,6 @@
     "@types/chalk": "^2.2.0",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.11",
-    "@types/update-notifier": "^2.5.0",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
     "commitlint": "^8.2.0",
