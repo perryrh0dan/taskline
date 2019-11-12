@@ -36,7 +36,7 @@ You may find an issue is assigned, or has the [`assigned` label](https://github.
 #### Create a Translation
 
 - Check the [`i18n`](https://github.com/perryrh0dan/taskline/tree/master/i18n) directory to ensure that taskline is not already translated in your target language.
-- Add the name of the language as the filename, e.g: `de.json`
+- Add the name of the language as the filename, e.g: `de.json` according to [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
 - Place the translated json file inside the ['i18n'](https://github.com/perryrh0dan/taskline/tree/master/i18n) directory.
 - Create a Pull Request including the language in the title, e.g: `Taskline: Russian Translation`
 
