@@ -12,6 +12,7 @@ cp ../package.json ./
 cp ../package-lock.json ./
 cp ../snapcraft.yaml ./
 cp -r ../src ./src
+cp -r ../i18n ./i18n
 cp ../cli.ts ./
 cp ../license.md ./
 cp ../readme.md ./
@@ -32,7 +33,7 @@ npm install
 
 # Compile Typescript
 echo 'Compile typescript'
-npm run build:prod
+npm run build:prod:snapcraft
 
 # Delete source files and copy compiled code to snap main
 echo 'Delete source files and copy compiled code to snap main'
@@ -46,8 +47,6 @@ rm cli.ts
 echo 'Removing dev dependencies'
 rm -r ./node_modules
 rm -r package-lock.json
-npm install --production
-# npm prune --production
 
 # Delete seperate files
 rm -r ./scripts

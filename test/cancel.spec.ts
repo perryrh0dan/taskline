@@ -69,67 +69,54 @@ describe('Test check functionality', () => {
     done();
   });
 
-  it('should cancel one task', () => {
-    return taskline.cancelTasks('2').then(() => {
-      return helper.getData([2]).then(data => {
-        expect((data[0] as Task).inProgress).toBe(false);
-        expect((data[0] as Task).isCanceled).toBe(true);
-        expect((data[0] as Task).isComplete).toBe(false);
-      });
-    });
+  it('should cancel one task', async() => {
+    await taskline.cancelTasks('2');
+    const data = await helper.getData([2]);
+    expect((data[0] as Task).inProgress).toBe(false);
+    expect((data[0] as Task).isCanceled).toBe(true);
+    expect((data[0] as Task).isComplete).toBe(false);
   });
 
-  it('should cancel multiple tasks', () => {
-    return taskline.cancelTasks('3,4').then(() => {
-      return helper.getData([3,4]).then(data => {
-        expect((data[0] as Task).inProgress).toBe(false);
-        expect((data[0] as Task).isCanceled).toBe(true);
-        expect((data[0] as Task).isComplete).toBe(false);
-        expect((data[1] as Task).inProgress).toBe(false);
-        expect((data[1] as Task).isCanceled).toBe(true);
-        expect((data[1] as Task).isComplete).toBe(false);
-      });
-    });
+  it('should cancel multiple tasks', async() => {
+    await taskline.cancelTasks('3,4');
+    const data = await helper.getData([3, 4]);
+    expect((data[0] as Task).inProgress).toBe(false);
+    expect((data[0] as Task).isCanceled).toBe(true);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[1] as Task).inProgress).toBe(false);
+    expect((data[1] as Task).isCanceled).toBe(true);
+    expect((data[1] as Task).isComplete).toBe(false);
   });
 
-  it('should cancel multiple tasks by id range', () => {
-    return taskline.cancelTasks('2-4').then(() => {
-      return helper.getData([2,3,4]).then(data => {
-        expect((data[0] as Task).isCanceled).toBe(false);
-        expect((data[1] as Task).isCanceled).toBe(false);
-        expect((data[2] as Task).isCanceled).toBe(false);
-      });
-    });
+  it('should cancel multiple tasks by id range', async() => {
+    await taskline.cancelTasks('2-4');
+    const data = await helper.getData([2, 3, 4]);
+    expect((data[0] as Task).isCanceled).toBe(false);
+    expect((data[1] as Task).isCanceled).toBe(false);
+    expect((data[2] as Task).isCanceled).toBe(false);
   });
 
-  it('should cancel multiple tasks by id range and list', () => {
-    return taskline.cancelTasks('2,3-4').then(() => {
-      return helper.getData([2,3,4]).then(data => {
-        expect((data[0] as Task).isCanceled).toBe(true);
-        expect((data[1] as Task).isCanceled).toBe(true);
-        expect((data[2] as Task).isCanceled).toBe(true);
-      });
-    });
+  it('should cancel multiple tasks by id range and list', async() => {
+    await taskline.cancelTasks('2,3-4');
+    const data = await helper.getData([2, 3, 4]);
+    expect((data[0] as Task).isCanceled).toBe(true);
+    expect((data[1] as Task).isCanceled).toBe(true);
+    expect((data[2] as Task).isCanceled).toBe(true);
   });
 
-  it('should delete all canceled tasks', () => {
-    return helper.getData([2,3,4]).then(data => {
-      const oldData = JSON.parse(JSON.stringify(data));
-      
-      return taskline.clear().then(() => {
-        return helper.getData().then(data => {
-          return helper.getArchive().then(archive => {
-            expect(data.length).toBe(1);
-            oldData[0].id -= 1;
-            expect(JSON.parse(JSON.stringify(archive[0]))).toMatchObject(oldData[0]);
-            oldData[1].id -= 1;
-            expect(JSON.parse(JSON.stringify(archive[1]))).toMatchObject(oldData[1]);
-            oldData[2].id -= 1;
-            expect(JSON.parse(JSON.stringify(archive[2]))).toMatchObject(oldData[2]);
-          });
-        });
-      });
-    });
+  it('should delete all canceled tasks', async() => {
+    const data = await helper.getData([2, 3, 4]);
+    const oldData = JSON.parse(JSON.stringify(data));
+    await taskline.clear();
+    const data_1 = await helper.getData();
+    const archive = await helper.getArchive();
+    expect(data_1.length).toBe(1);
+    oldData[0].id -= 1;
+    expect(JSON.parse(JSON.stringify(archive[0]))).toMatchObject(oldData[0]);
+    oldData[1].id -= 1;
+    expect(JSON.parse(JSON.stringify(archive[1]))).toMatchObject(oldData[1]);
+    oldData[2].id -= 1;
+    expect(JSON.parse(JSON.stringify(archive[2]))).toMatchObject(oldData[2]);
   });
 
   it('should try to cancel a nonexisting item', () => {

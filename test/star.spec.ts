@@ -43,21 +43,17 @@ describe('Test Taskline module', () => {
     done();
   });
 
-  it('should star one item', () => {
-    return taskline.starItems('1').then(() => {
-      return helper.getData([1]).then(data => {
-        expect(data[0].isStarred).toBe(true);
-      });
-    });
+  it('should star one item', async() => {
+    await taskline.starItems('1');
+    const data = await helper.getData([1]);
+    expect(data[0].isStarred).toBe(true);
   });
 
-  it('should star multiple items', () => {
-    return taskline.starItems('1,2').then(() => {
-      return helper.getData([1,2]).then(data => {
-        expect(data[0].isStarred).toBe(false);
-        expect(data[1].isStarred).toBe(true);
-      });
-    });
+  it('should star multiple items', async() => {
+    await taskline.starItems('1,2');
+    const data = await helper.getData([1, 2]);
+    expect(data[0].isStarred).toBe(false);
+    expect(data[1].isStarred).toBe(true);
   });
 
   it('should try to star nonexisting item', () => {

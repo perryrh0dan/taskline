@@ -1,0 +1,69 @@
+{
+  "help": "Type `tl --help` to get started!",
+  "config": {
+    "path": "Config loaded from {0}",
+    "title": "Configuration"
+  },
+  "date": {
+    "due_ago": "due {0} ago",
+    "due_in": "due in {0}",
+    "today": "Today",
+    "days": {
+      "monday": "monday",
+      "thuesday": "thursday",
+      "wednesday": "wednesday",
+      "thursday": "thursday",
+      "friday": "friday",
+      "saturday": "saturday",
+      "sunday": "sunday"
+    },
+    "units": {
+      "second": "second | seconds",
+      "minute": "minute | minutes",
+      "hour": "hour | hours",
+      "day": "day | days",
+      "week": "week | weeks",
+      "month": "month | months",
+      "year": "year | years"
+    }
+  },
+  "errors": {
+
+  },
+  "stats": {
+    "allDone": "All done!",
+    "canceled": "canceled",
+    "done": "done",
+    "note": "note | notes",
+    "pending": "pending",
+    "percentage": "{0} of all tasks complete.",
+    "progress": "in-progress"
+  },
+  "success": {
+    "cancel": "Canceled task: {0} | Canceled tasks: {0}",
+    "check": "Checked task: {0} | Check tasks: {0}",
+    "clipboard": "Copied the description of item: {0} | Copied the descriptions of items: {0}",
+    "create": "Created task: {0} | Created note: {0}",
+    "delete": "Deleted item: {0} | Deleted items: {0}",
+    "duedate": "Updated duedate of task: {0} to {1} | Updated duedate of tasks: {0} to {1}",
+    "edit": "Updated description of item: {0}",
+    "move": "Moved item: {0} to {1}| Moved items: {0} to {1}",
+    "pause": "Paused task: {0} | Paused tasks: {0}",
+    "priority": "Updated priority of task: {0} to {1} | Updated priority of tasks: {0} to {1}",
+    "rearrange": "Rearranged ids of all items",
+    "restore": "Restored item: {0}| Restored items: {0}",
+    "revive": "Revived task: {0} | Revived tasks: {0}",
+    "star": "Starred item: {0} | Starred items: {0}",
+    "start": "Started task: {0} | Started tasks: {0}",
+    "uncheck": "Unchecked task: {0} | Unchecked tasks: {0}",
+    "unstar": "Unstarred item: {0} | Unstared items: {0}"
+  },
+  "warning": {
+    "appDir": "Custom app directory was not found on your system: {0}",
+    "dateFormat": "Unable to parse date: {0}",
+    "firestoreConfig": "Firestore config contains error",
+    "id": "Unable to find item with id: {0}",
+    "idRange": "Unable to resolve ID range: {0}",
+    "priority": "Priority can only be 1, 2 or 3"
+  }
+}

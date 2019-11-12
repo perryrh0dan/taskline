@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
+const jeditor = require("gulp-json-editor");
 const merge = require('merge-stream');
 var del = require('del');
 
@@ -10,16 +11,29 @@ const dirs = {
   dist: ['dist']
 };
 
-const buildPackage = () => {
+const editPackageSnapcraft = () => {
+  return gulp.src('package.json')
+    .pipe(jeditor(function(json) {
+      json.devDependencies = {}
+      return json
+    }))
+    .pipe(gulp.dest('./'))
+}
+
+const movePackage = () => {
   return gulp.src('package.json')
     .pipe(gulp.dest(dirs.dist));
 };
 
-const buildReadme = () => {
+const moveReadme = () => {
   return gulp.src('readme.md')
     .pipe(gulp.dest(dirs.dist));
 };
 
+const moveLocals = () => {
+  return gulp.src('i18n/**/*.json')
+    .pipe(gulp.dest(dirs.dist + '/i18n'))
+}
 
 const compileProd = () => {
   return tsProject.src()
@@ -40,15 +54,17 @@ const delDist = () => {
   return del(['dist/**/*']);
 }
 
-const build = gulp.series(delDist, compileProd);
-const buildMeta = gulp.parallel(buildPackage, buildReadme);
+const build = gulp.series(delDist, compileProd, moveLocals);
+const buildMeta = gulp.parallel(movePackage, moveReadme);
+const snapcraft = gulp.series(compileProd, editPackageSnapcraft)
 
 module.exports = {
   build,
   buildMeta,
+  snapcraft,
   default: build
 };
 
 gulp.task('watch', gulp.series(function() {
-  gulp.watch(['src/*.ts', 'cli.ts'], gulp.series(compileTest));
+  gulp.watch(['src/**/*.ts', 'cli.ts'], gulp.series(compileTest, moveLocals));
 }));

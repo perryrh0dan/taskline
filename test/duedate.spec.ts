@@ -1,3 +1,5 @@
+import { addDays, addWeeks, startOfWeek } from 'date-fns';
+
 import { Taskline } from '../src/taskline';
 import { Item } from '../src/item';
 import { Task } from '../src/task';
@@ -56,29 +58,35 @@ describe('Test duedate functionality', () => {
     done();
   });
 
-  it('should update duedate of a task', () => {
-    return taskline.updateDueDate('2', '02.09.2019').then(() => {
-      return helper.getData([2]).then(data => {
-        expect((data[0] as Task).dueDate).toBe(new Date('2019-09-02').setHours(0));
-      });
-    });
+  it('should update duedate of a task', async() => {
+    await taskline.updateDueDate('2', '02.09.2019');
+    const data = await helper.getData([2]);
+    expect((data[0] as Task).dueDate).toBe(new Date('2019-09-02').setHours(0));
   });
 
-  it('should update duedate of a task with hours and minutes', () => {
+  it('should update duedate of a task with hours and minutes', async() => {
     helper.changeConfig('dateformat', 'dd.mm.yyyy HH:MM');
-    return taskline.updateDueDate('2', '02.09.2019 12:30').then(() => {
-      return helper.getData([2]).then(data => {
-        expect((data[0] as Task).dueDate).toBe(new Date('2019-09-02').setHours(12, 30));
-      });
-    });
+    await taskline.updateDueDate('2', '02.09.2019 12:30');
+    const data = await helper.getData([2]);
+    expect((data[0] as Task).dueDate).toBe(new Date('2019-09-02').setHours(12, 30));
   });
 
-  it('should try to update duedate of a note', () => {
-    return taskline.updateDueDate('1', '02.09.2019').then(() => {
-      return helper.getData([1]).then(data => {
-        expect(data[0] instanceof Note).toBe(true);
-      });
-    });
+  it('should update duedate of a task to tommorrow', async() => {
+    await taskline.updateDueDate('2', 'tomorrow');
+    const data = await helper.getData([2]);
+    expect((data[0] as Task).dueDate).toBe(addDays(new Date(), 1).setHours(18, 0, 0, 0));
+  });
+
+  it('should update duedate of a task to next week', async() => {
+    await taskline.updateDueDate('2', 'next week');
+    const data = await helper.getData([2]);
+    expect((data[0] as Task).dueDate).toBe(addWeeks(addDays(startOfWeek(new Date()), 1), 1).setHours(0, 0, 0, 0));
+  });
+
+  it('should try to update duedate of a note', async() => {
+    await taskline.updateDueDate('1', '02.09.2019');
+    const data = await helper.getData([1]);
+    expect(data[0] instanceof Note).toBe(true);
   });
 
   it('should try to update duedate of nonexisting item', () => {

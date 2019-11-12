@@ -1,0 +1,63 @@
+{
+  "help": "Tippe `tl --help` um anzufangen!",
+  "config": {
+    "path": "Konfiguration geladen aus {0}",
+    "title": "Konfiguration"
+  },
+  "date": {
+    "due_ago": "Fällig vor {0}",
+    "due_in": "Fällig in {0}",
+    "today": "Heute",
+    "days": {
+
+    },
+    "units": {
+      "second": "Sekunde | Sekunden",
+      "minute": "Minute | Minuten",
+      "hour": "Stunde | Stunden",
+      "day": "Tag | Tage",
+      "week": "Woche | Wochen",
+      "month": "Monat | Monate",
+      "year": "Jahr | Jahre"
+    }
+  },
+  "errors": {
+
+  },
+  "stats": {
+    "allDone": "Alles erledigt!",
+    "canceled": "abgebrochen",
+    "done": "erledigt",
+    "note": "notiz | notizen",
+    "pending": "anstehend",
+    "percentage": "{0} aller Aufgaben erledigt",
+    "progress": "laufend"
+  },
+  "success": {
+    "cancel": "Aufgabe: {0} abgebrochen | Aufgaben: {0} abgebrochen",
+    "check": "Aufgabe: {0} erledigt | Aufgaben: {0} erledigt",
+    "clipboard": "Beschreibung des Items: {0} kopiert. | Beschreibung der Items: {0} kopiert",
+    "create": "Aufgabe: {0} erstellt | Notiz: {0} erstellt",
+    "delete": "Item: {0} gelöscht | Items: {0} gelöscht",
+    "duedate": "Frist von Aufgabe: {0} auf {1} geändert | Frist der Aufgaben: {0} auf {1} geändert",
+    "edit": "Beschreibung des items: {0} geändert",
+    "move": "Item: {0} nach {1} verschoben | Items: {0} nach {1} verschoben",
+    "pause": "Aufgabe: {0} pausiert | Aufgaben: {0} pausiert",
+    "priority": "Priorität von Aufgabe: {0} auf {1} geändert | Priorität von Aufgaben: {0} auf {1} geändert",
+    "rearrange": "IDs aller Items neu zurückgesetzt",
+    "restore": "Item: {0} wiederhergestellt | Items: {0} wiederhergestellt",
+    "revive": "Revived task: {0} | Revived tasks: {0}",
+    "star": "Starred item: {0} | Starred items: {0}",
+    "start": "Aufgabe: {0} gestartet | Aufgaben: {0} gestartet",
+    "uncheck": "Unchecked task: {0} | Unchecked tasks: {0}",
+    "unstar": "Unstarred item: {0} | Unstared items: {0}"
+  },
+  "warning": {
+    "appDir": "Custom app directory was not found on your system: {0}",
+    "dateFormat": "Unable to parse date: {0}",
+    "firestoreConfig": "Firestore config contains error",
+    "id": "Unable to find item with id: {0}",
+    "idRange": "Unable to resolve ID range: {0}",
+    "priority": "Priority can only be 1, 2 or 3"
+  }
+}

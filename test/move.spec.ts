@@ -37,42 +37,36 @@ describe('Test move functionality', () => {
       isComplete: false,
       inProgress: false,
       priority: 1
-    }))
+    }));
 
     await helper.setData(data);
     done();
   });
 
-  it('should move an item to one board', () => {
-    return taskline.moveBoards('1', 'test').then(() => {
-      return helper.getData([1]).then(data => {
-        expect(data[0].boards.toString()).toBe('test');
-      });
-    });
+  it('should move an item to one board', async() => {
+    await taskline.moveBoards('1', 'test');
+    const data = await helper.getData([1]);
+    expect(data[0].boards.toString()).toBe('test');
   });
 
-  it('should move an item to multiple boards', () => {
-    return taskline.moveBoards('1', 'test,test2').then(() => {
-      return helper.getData([1]).then(data => {
-        expect(data[0].boards.toString()).toBe('test,test2');
-      });
-    });
+  it('should move an item to multiple boards', async() => {
+    await taskline.moveBoards('1', 'test,test2');
+    const data = await helper.getData([1]);
+    expect(data[0].boards.toString()).toBe('test,test2');
   });
 
-  it('should move multiple items to multiple boards', () => {
-    return taskline.moveBoards('1,2', 'test,test2').then(() => {
-      return helper.getData([1,2]).then(data => {
-        expect(data[0].boards).toMatchObject(['test', 'test2']);
-        expect(data[1].boards).toMatchObject(['test', 'test2']);
-      });
-    });
+  it('should move multiple items to multiple boards', async() => {
+    await taskline.moveBoards('1,2', 'test,test2');
+    const data = await helper.getData([1, 2]);
+    expect(data[0].boards).toMatchObject(['test', 'test2']);
+    expect(data[1].boards).toMatchObject(['test', 'test2']);
   });
 
   it('should try to move nonexisting item', () => {
     expect(taskline.moveBoards('5', 'test')).rejects.toMatchObject({
-      message: 'Invalid InputIDs' 
+      message: 'Invalid InputIDs'
     });
-  })
+  });
 
   afterAll(done => {
     helper.resetConfig();

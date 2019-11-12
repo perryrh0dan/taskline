@@ -8,6 +8,7 @@ import { Task, TaskPriority } from './task';
 import { Renderer } from './renderer';
 import { Config } from './config';
 import { Note } from './note';
+import { parseDate } from './libs/date';
 
 export class Taskline {
   private storage: Storage;
@@ -194,54 +195,6 @@ export class Taskline {
 
   private parseOptions(options: string): Array<string> {
     return options.split(',');
-  }
-
-  private parseDate(input: string, format: string): Date {
-    format = format || 'yyyy-mm-dd HH:MM'; // Default format
-    let parts: Array<number>;
-    try {
-      parts = input.match(/(\d+)/g)!.map((item: string) => {
-        return parseInt(item, 10);
-      });
-    } catch (error) {
-      Renderer.instance.invalidDateFormat(input);
-      throw new Error('Cant parse to date');
-    }
-
-    const fmt: any = {};
-    let i = 0;
-    let date;
-
-    // Extract date-part indexes from the format
-    format.replace(/(yyyy|dd|mm|HH|MM|SS)/g, (part: string) => {
-      fmt[part] = i++;
-      return part;
-    });
-
-    // Some simple date checks
-    if (parts[fmt.dd] < 1 || parts[fmt.dd] > 31 || parts[fmt.yyyy] < 0 || parts[fmt.mm] < 1 || parts[fmt.mm] > 12 ) {
-      Renderer.instance.invalidDateFormat(input);
-      throw new Error('Cant parse to date');
-    }
-
-    try {
-      date = new Date(parts[fmt.yyyy], parts[fmt.mm] - 1, parts[fmt.dd]);
-    } catch (error) {
-      Renderer.instance.invalidDateFormat(input);
-      throw new Error('Cant parse to date');
-    }
-
-    if (parts[fmt.HH]) {
-      date.setHours(parts[fmt.HH]);
-      if (parts[fmt.MM]) {
-        date.setMinutes(parts[fmt.MM]);
-        if (parts[fmt.SS]) {
-          date.setSeconds(parts[fmt.SS]);
-        }
-      }
-    }
-
-    return date;
   }
 
   private parseIDs(IDs: String): Array<number> {
@@ -532,8 +485,9 @@ export class Taskline {
     let dueTime: number | undefined;
     if (dueDate) {
       try {
-        dueTime = this.parseDate(dueDate, dateformat).getTime();
+        dueTime = parseDate(dueDate, dateformat).getTime();
       } catch (error) {
+        Renderer.instance.invalidDateFormat(dueDate);
         return Promise.reject(new Error('Invalid Date Format'));
       }
     }
@@ -758,9 +712,10 @@ export class Taskline {
     let dueTime: number, parsedDueDate: Date;
 
     try {
-      parsedDueDate = this.parseDate(dueDate, dateformat);
+      parsedDueDate = parseDate(dueDate, dateformat);
       dueTime = parsedDueDate.getTime();
     } catch (error) {
+      Renderer.instance.invalidDateFormat(dueDate);
       return Promise.reject(new Error('Invalid Date Format'));
     }
 

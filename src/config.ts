@@ -1,9 +1,49 @@
 import { join } from 'path';
-import * as os from 'os';
-import * as fs from 'fs';
+import { homedir } from 'os';
+import { existsSync, writeFileSync, readFileSync } from 'fs';
+import { ServiceAccount } from 'firebase-admin';
+
 import pkg = require('../package.json');
 
 const defaultConfig = pkg.configuration.default;
+
+export interface ITheme {
+  colors: {
+    pale: string,
+    error: string,
+    task: {
+      priority: {
+        medium: string,
+        high: string
+      }
+    },
+    icons: {
+      note: string,
+      success: string,
+      star: string,
+      progress: string,
+      pending: string,
+      canceled: string
+    }
+  }
+}
+
+export interface IFirestoreConfig extends ServiceAccount {
+  storageName: string,
+  archiveName: string,
+  databaseURL: string
+}
+
+export interface IConfig {
+  language: string,
+  tasklineDirectory: string,
+  displayCompleteTasks: boolean,
+  displayProgressOverview: boolean,
+  storageModule: string,
+  firestoreConfig: IFirestoreConfig,
+  dateformat: string,
+  theme: ITheme
+}
 
 export class Config {
   private static _instance: Config
@@ -19,27 +59,27 @@ export class Config {
   }
 
   private constructor() {
-    this.configFile = join(os.homedir(), '.taskline.json');
+    this.configFile = join(homedir(), '.taskline.json');
 
     this.ensureConfigFile();
   }
 
   private ensureConfigFile(): void {
-    if (fs.existsSync(this.configFile)) {
+    if (existsSync(this.configFile)) {
       return;
     }
 
     const data = JSON.stringify(defaultConfig, null, 4);
-    fs.writeFileSync(this.configFile, data, 'utf8');
+    writeFileSync(this.configFile, data, 'utf8');
   }
 
   private formatTasklineDir(path: string): string {
-    return join(os.homedir(), path.replace(/^~/g, ''));
+    return join(homedir(), path.replace(/^~/g, ''));
   }
 
-  public get(): any {
+  public get(): IConfig {
     if (!this.config) {
-      const content = fs.readFileSync(this.configFile, 'utf8');
+      const content = readFileSync(this.configFile, 'utf8');
       this.config = JSON.parse(content);
 
       if (this.config.tasklineDirectory.startsWith('~')) {
@@ -54,7 +94,7 @@ export class Config {
 
   public set(config: any): void {
     const data = JSON.stringify(config, null, 4);
-    fs.writeFileSync(this.configFile, data, 'utf8');
+    writeFileSync(this.configFile, data, 'utf8');
     this.config = null;
   }
 
