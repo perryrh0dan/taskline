@@ -34,8 +34,7 @@ export class FirestoreStorage extends Storage {
     this._archiveName = firestoreConfig.archiveName;
 
     firebase.initializeApp({
-      credential: firebase.credential.cert(firestoreConfig),
-      databaseURL: firestoreConfig.databaseURL
+      credential: firebase.credential.cert(firestoreConfig)
     });
 
     this._db = firebase.firestore();

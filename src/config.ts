@@ -30,8 +30,7 @@ export interface ITheme {
 
 export interface IFirestoreConfig extends ServiceAccount {
   storageName: string,
-  archiveName: string,
-  databaseURL: string
+  archiveName: string
 }
 
 export interface IConfig {
