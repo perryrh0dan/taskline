@@ -410,7 +410,7 @@ To update the priority level of a specific task after its creation, use the `pri
 
 ### Set Duedate
 
-To set a duedate for a task while initializing it, use the `--due` / `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy HH:MM` . Note that all tasks by default have no duedate.
+To set a duedate for a task while initializing it, use the `--due` / `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat or use the defined humanized date structure described below. Default is `dd.mm.yyyy HH:MM`. Note that all tasks by default have no duedate.
 
 ``` 
 
@@ -427,6 +427,10 @@ To update the duedate of a specified task after its creation, use the `due` comm
 ```
 
 The time left before the duedate is displayed humanized instead of the age of an task right next to the description.
+
+#### Verbal date format
+
+Instead of using normal dates its also possible to use verbal dates like `today`, `tonight`, `tomorrow` or `next monday`.
 
 ### Move Item
 
