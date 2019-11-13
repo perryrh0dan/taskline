@@ -19,12 +19,12 @@ export abstract class Item {
   protected _boards: Array<string>;
 
   public constructor(kwArgs: ItemProperties) {
-    this._id = kwArgs.id;
-    this._date = kwArgs.date || now.toDateString();
-    this._timestamp = kwArgs.timestamp || now.getTime();
-    this._description = kwArgs.description || '';
-    this._isStarred = kwArgs.isStarred || false;
-    this._boards = kwArgs.boards || ['My Board'];
+    this.id = kwArgs.id;
+    this.date = kwArgs.date || now.toDateString();
+    this.timestamp = kwArgs.timestamp || now.getTime();
+    this.description = kwArgs.description || '';
+    this.isStarred = kwArgs.isStarred || false;
+    this.boards = kwArgs.boards || ['My Board'];
   }
 
   public get id(): number {

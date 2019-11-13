@@ -24,12 +24,12 @@ export class Task extends Item {
 
   public constructor(kwArgs: TaskProperties) {
     super(kwArgs);
-    this._isTask = true;
-    this._priority = kwArgs.priority || TaskPriority.Normal;
-    this._inProgress = kwArgs.inProgress || false;
-    this._isCanceled = kwArgs.isCanceled || false;
-    this._isComplete = kwArgs.isComplete || false;
-    this._dueDate = kwArgs.dueDate || 0;
+    this.isTask = true;
+    this.priority = kwArgs.priority || TaskPriority.Normal;
+    this.inProgress = kwArgs.inProgress || false;
+    this.isCanceled = kwArgs.isCanceled || false;
+    this.isComplete = kwArgs.isComplete || false;
+    this.dueDate = kwArgs.dueDate || 0;
   }
 
   public get priority(): TaskPriority {

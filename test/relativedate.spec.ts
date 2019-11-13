@@ -1,6 +1,10 @@
 import { getRelativeHumanizedDate } from '../src/libs/date';
+import { Helper } from './helper';
+
+const helper = new Helper();
 
 describe('Test hummanized date functionality', () => {
+
   it('should test in 1 day', () => {
     const now = new Date('2019-09-14 14:00:00');
     const humanizedDate = getRelativeHumanizedDate(
@@ -80,5 +84,10 @@ describe('Test hummanized date functionality', () => {
       now
     );
     expect(humanizedDate).toBe('due in 59 seconds');
+  });
+
+  afterAll(done => {
+    helper.resetConfig();
+    done();
   });
 });

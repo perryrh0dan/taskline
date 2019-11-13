@@ -5,6 +5,6 @@ export class Note extends Item {
 
   public constructor(kwArgs: ItemProperties) {
     super(kwArgs);
-    this._isTask = false;
+    this.isTask = false;
   }
 }
