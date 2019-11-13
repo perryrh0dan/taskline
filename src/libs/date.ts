@@ -1,4 +1,4 @@
-import { set, setDay, isPast, addBusinessDays, format as fnsFormat, addDays, addWeeks, addMonths, addYears, startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
+import { set, setDay, isPast, addBusinessDays, addDays, addWeeks, addMonths, addYears, startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
 import { Localization } from '../localization';
 
 const dateNames = {  // can depend on locale, can be fetched from CONFIG
@@ -29,7 +29,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   const case1a: RegExp = new RegExp(`next (${periods.join('|')})`, 'gi');
   if (matchArray = case1a.exec(input)) {
     // console.log(matchArray);
-    console.log('case 1a: next <period>');
+    // console.log('case 1a: next <period>');
     const periodIndex: number = periods.indexOf(matchArray[1]);
     parsedDate = startFuncs[periodIndex](now, options);
     parsedDate = addFuncs[periodIndex](parsedDate, 1);
@@ -42,7 +42,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   const case1b: RegExp = new RegExp(`next (${dateNames.weekday})`, 'gi');
   if (matchArray = case1b.exec(input)) {
     // console.log(matchArray);
-    console.log('case 1b: next <weekday>');
+    // console.log('case 1b: next <weekday>');
     const weekdayIndex = getWeekdayIndex(matchArray[1]);
     parsedDate = startOfWeek(today);
     //parsedDate = datefns.addWeeks(parsedDate, 1);
@@ -56,7 +56,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   parsedDate = new Date();  // get fresh date and time
   if (matchArray = case2.exec(input)) {
     // console.log(matchArray);
-    console.log('case 2: in <x> <period>');
+    // console.log('case 2: in <x> <period>');
     const num: number = parseInt(matchArray[1]);
     const periodIndex: number = periods.indexOf(matchArray[2]);
     parsedDate = addFuncs[periodIndex](parsedDate, num);
@@ -67,7 +67,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   // case 3: today/tonight/tomorrow/weekday
   // case 3a: today/tonight/tomorrow
   if (input == 'today' || input == 'tomorrow' || input == 'tonight') {
-    console.log('case 3a: today/tonight/tomorrow');
+    // console.log('case 3a: today/tonight/tomorrow');
     if (input == 'tomorrow') {
       parsedDate = addDays(today, 1);
     } else if (input == 'tonight') {
@@ -82,7 +82,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   const case3b: RegExp = new RegExp(`^\\s*${dateNames.weekday}\\s*$`, 'gi');
   if (matchArray = case3b.exec(input)) {
     // console.log(matchArray);
-    console.log('case3b: <weekday>');
+    // console.log('case3b: <weekday>');
     const weekdayIndex: number = getWeekdayIndex(matchArray[0]);
     parsedDate = setDay(today, weekdayIndex);
     // if past, get day in next week for same weekday
@@ -117,7 +117,7 @@ export const parseDate = function(input: string, format: string): Date {
   format = format || 'yyyy-mm-dd HH:MM'; // Default format
   let humanDate: Date | undefined = parseHumanDate(input);
   if (humanDate) {  // successfully parsed as human date
-    console.log('human date:', fnsFormat(humanDate, 'PPPPp'));
+    // console.log('human date:', fnsFormat(humanDate, 'PPPPp'));
     return humanDate;
   }
   let parts: Array<number>;

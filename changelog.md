@@ -2,6 +2,14 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.2.2
+
+- Removed debug commands
+
+## Version 1.2.1
+
+- Fixed package.json. Added i18n directory to release build.
+
 ## Version 1.2.0
 
 - Added possibility to use humanized dates (big thanks to [Aditya Sriram](https://github.com/aditya95sriram) for contributing this feature). Complete list of all commands can be found in the readme.
