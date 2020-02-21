@@ -5,8 +5,12 @@ node_js:
 before_install:
   - npm install --global npm@6.4.0
   - npm --version
+install:
+  - npm install -g codecov
 jobs:
   include:
+    - stage: test
+      script: bash ./scripts/test.sh
     - stage: deploy
       if: branch = master
       script: bash ./scripts/deploy.sh
