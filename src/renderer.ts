@@ -10,6 +10,7 @@ import { Localization, format } from './localization';
 import { Item } from './item';
 import { TaskPriority, Task } from './task';
 import { getRelativeHumanizedDate } from './libs/date';
+import { Note } from './note';
 
 const { underline } = chalk;
 
@@ -248,20 +249,36 @@ export class Renderer {
   }
 
   private buildMessage(item: Item): string {
-    const message: Array<string> = [];
+    let message: string = '';
 
     if (item instanceof Task) {
-      if (!item.isComplete && item.priority > 1) {
-        message.push(this.getTaskColorMethod(item).underline(item.description));
-      } else {
-        message.push(item.isComplete ? this.printColor('pale', item.description) : item.isCanceled ? this.printColor('pale', item.description) : item.description);
-      }
+      message = this.buildTaskMessage(item);
+    } else if (item instanceof Note) {
+      message = this.buildNoteMessage(item);
+    }
 
-      if (!item.isComplete && item.priority > 1) {
-        message.push(item.priority === 2 ? this.printColor('task.priority.medium', '(!)') : this.printColor('task.priority.high', '(!!)'));
-      }
+    return message;
+  }
+
+  private buildNoteMessage(item: Note): string {
+    return item.description;
+  }
+
+  private buildTaskMessage(item: Task): string {
+    const message: Array<string> = [];
+
+    if (!item.isComplete && !item.isCanceled && item.priority > 1) {
+      message.push(this.getTaskColorMethod(item).underline(item.description));
+    } else if (item.isComplete || item.isCanceled) {
+      message.push(this.printColor('pale', item.description));
     } else {
       message.push(item.description);
+    }
+
+    if (!item.isComplete && !item.isCanceled && item.priority == 2) {
+      message.push(this.printColor('task.priority.medium', '(!)'));
+    } else if (!item.isComplete && !item.isCanceled && item.priority == 3) {
+      message.push(this.printColor('task.priority.high', '(!!)'));
     }
 
     return message.join(' ');

@@ -3,6 +3,7 @@ import { Item } from '../src/item';
 import { Task } from '../src/task';
 import { Helper } from './helper';
 import { Note } from '../src/note';
+import isCI = require('is-ci');
 
 const helper = new Helper();
 const taskline = new Taskline();
@@ -94,7 +95,7 @@ describe('Test output functionality', () => {
 
   // Run only under linux
   // Turned of because this test is not working in travis ci if an environment variable is set
-  if (process.platform === 'linux' && false) {
+  if (process.platform === 'linux' && isCI === false) {
     it('should display by board', async() => {
       mockWrite.mockClear();
 
