@@ -1,11 +1,13 @@
 language: node_js
 node_js:
+  - 12
   - 10
   - 8
 before_install:
   - npm install --global npm@6.4.0
   - npm --version
 install:
+  - npm install
   - npm install -g codecov
 jobs:
   include:
