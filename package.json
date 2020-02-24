@@ -19,7 +19,8 @@
     "test": "npm run lint && npm run unit",
     "lint": "eslint ./src/**/*.ts",
     "unit": "jest --runInBand",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "postpublish": "cp -r dist/package.json ."
   },
   "bin": {
     "tl": "cli.js"
@@ -104,6 +105,7 @@
     "@babel/preset-env": "^7.6.0",
     "@commitlint/config-conventional": "^8.2.0",
     "@semantic-release/commit-analyzer": "^6.3.2",
+    "@semantic-release/npm": "^7.0.3",
     "@semantic-release/release-notes-generator": "^7.3.2",
     "@types/chalk": "^2.2.0",
     "@types/is-ci": "^2.0.0",
@@ -127,8 +129,8 @@
     "is-ci": "^2.0.0",
     "jest": "^25.1.0",
     "semantic-release": "^17.0.4",
-    "typescript": "^3.6.4",
     "ts-jest": "^25.2.1",
+    "typescript": "^3.6.4",
     "winston": "^3.2.1"
   },
   "jest": {
