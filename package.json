@@ -19,8 +19,7 @@
     "test": "npm run lint && npm run unit",
     "lint": "eslint ./src/**/*.ts",
     "unit": "jest --runInBand",
-    "semantic-release": "semantic-release",
-    "postpublish": "cp -r dist/package.json ."
+    "semantic-release": "semantic-release"
   },
   "bin": {
     "tl": "cli.js"
