@@ -10,6 +10,17 @@
     "email": "thomaspoehlmann96@googlemail.com",
     "url": "https://github.com/perryrh0dan"
   },
+  "scripts": {
+    "build": "gulp buildTest && gulp buildMeta",
+    "build:prod": "bash scripts/build.sh",
+    "build:prod:snapcraft": "gulp snapcraft",
+    "start": "node dist/cli.js",
+    "dev": "gulp dev",
+    "test": "npm run lint && npm run unit",
+    "lint": "eslint ./src/**/*.ts",
+    "unit": "jest --runInBand",
+    "semantic-release": "semantic-release"
+  },
   "bin": {
     "tl": "cli.js"
   },
@@ -76,17 +87,6 @@
         }
       }
     }
-  },
-  "scripts": {
-    "build": "gulp buildTest && gulp buildMeta",
-    "build:prod": "bash scripts/build.sh",
-    "build:prod:snapcraft": "gulp snapcraft",
-    "start": "node dist/cli.js",
-    "dev": "gulp dev",
-    "test": "npm run lint && npm run unit",
-    "lint": "eslint ./src/**/*.ts",
-    "unit": "jest --runInBand",
-    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@perryrh0dan/signale": "^1.4.4",

@@ -1,7 +1,7 @@
 import { set, setDay, isPast, addBusinessDays, addDays, addWeeks, addMonths, addYears, startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns';
 import { Localization } from '../localization';
 
-import logger = require('winston');
+import logger from '../utils/logger';
 
 const dateNames = {  // can depend on locale, can be fetched from CONFIG
   weekshort: ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
@@ -30,7 +30,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   // case 1a: next <period>
   const case1a: RegExp = new RegExp(`next (${periods.join('|')})`, 'gi');
   if (matchArray = case1a.exec(input)) {
-    // console.log(matchArray);
+    logger.debug(matchArray);
     logger.debug('case 1a: next <period>');
     const periodIndex: number = periods.indexOf(matchArray[1]);
     parsedDate = startFuncs[periodIndex](now, options);
@@ -43,7 +43,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   // case 1b: next <weekday>
   const case1b: RegExp = new RegExp(`next (${dateNames.weekday})`, 'gi');
   if (matchArray = case1b.exec(input)) {
-    // console.log(matchArray);
+    logger.debug(matchArray);
     logger.debug('case 1b: next <weekday>');
     const weekdayIndex = getWeekdayIndex(matchArray[1]);
     parsedDate = startOfWeek(today);
@@ -57,7 +57,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   const case2: RegExp = new RegExp(`in (\\d+) (${periods.join('|')})s?`, 'gi');
   parsedDate = new Date();  // get fresh date and time
   if (matchArray = case2.exec(input)) {
-    // console.log(matchArray);
+    logger.debug(matchArray);
     logger.debug('case 2: in <x> <period>');
     const num: number = parseInt(matchArray[1]);
     const periodIndex: number = periods.indexOf(matchArray[2]);
@@ -83,7 +83,7 @@ const parseHumanDate = function(input: string): Date | undefined {
   // case 1b: <weekday>
   const case3b: RegExp = new RegExp(`^\\s*${dateNames.weekday}\\s*$`, 'gi');
   if (matchArray = case3b.exec(input)) {
-    // console.log(matchArray);
+    logger.debug(matchArray);
     logger.debug('case3b: <weekday>');
     const weekdayIndex: number = getWeekdayIndex(matchArray[0]);
     parsedDate = setDay(today, weekdayIndex);

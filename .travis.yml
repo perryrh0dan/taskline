@@ -13,6 +13,6 @@ jobs:
   include:
     - stage: test
       script: bash ./scripts/test.sh
-    - stage: deploy
-      if: branch = master
-      script: bash ./scripts/deploy.sh
+    # - stage: deploy
+    #   if: branch = master
+    #   script: bash ./scripts/deploy.sh
