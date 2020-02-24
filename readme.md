@@ -58,7 +58,7 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 - Simple & minimal usage syntax
 - Update notifications
 - Configurable through `~/.taskline.json`
-- Data stored in JSON file at `~/.taskline/storage`
+- Data is stored in JSON file at `~/.taskline/storage`
 
 ### New
 
