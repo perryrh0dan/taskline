@@ -91,7 +91,6 @@
   },
   "dependencies": {
     "@perryrh0dan/signale": "^1.4.4",
-    "@types/update-notifier": "^2.5.0",
     "chalk": "^3.0.0",
     "clipboardy": "^2.2.0",
     "commander": "^4.1.1",
@@ -99,7 +98,8 @@
     "figures": "^3.2.0",
     "firebase-admin": "^8.9.2",
     "ora": "^3.4.0",
-    "update-notifier": "^4.1.0"
+    "update-notifier": "^4.1.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.6.0",
@@ -110,8 +110,9 @@
     "@semantic-release/release-notes-generator": "^7.3.2",
     "@types/chalk": "^2.2.0",
     "@types/is-ci": "^2.0.0",
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^25.1.0",
     "@types/node": "^12.7.11",
+    "@types/update-notifier": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
     "commitlint": "^8.2.0",
@@ -131,8 +132,7 @@
     "jest": "^25.1.0",
     "semantic-release": "^17.0.4",
     "ts-jest": "^25.2.1",
-    "typescript": "^3.6.4",
-    "winston": "^3.2.1"
+    "typescript": "^3.6.4"
   },
   "jest": {
     "verbose": true
