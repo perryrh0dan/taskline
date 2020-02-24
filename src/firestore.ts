@@ -6,7 +6,7 @@ import { Note } from './note';
 import { Renderer } from './renderer';
 import * as firebase from 'firebase-admin';
 
-export class FirestoreStorage extends Storage {
+export class FirestoreStorage implements Storage {
   private static _instance: FirestoreStorage;
   private _db: FirebaseFirestore.Firestore;
   private _storageName: string = '';
@@ -21,10 +21,6 @@ export class FirestoreStorage extends Storage {
     }
 
     return this._instance;
-  }
-
-  private constructor() {
-    super();
   }
 
   private init(): void {
@@ -183,5 +179,12 @@ export class FirestoreStorage extends Storage {
     }
 
     return this._archive;
+  }
+
+  private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
+    if (ids) {
+      return data.filter(item => { return ids.indexOf(item.id) != -1; });
+    }
+    return data;
   }
 }

@@ -12,17 +12,13 @@ import { Renderer } from './renderer';
 
 // const render = require('./render')
 
-export class LocalStorage extends Storage {
+export class LocalStorage implements Storage {
   private static _instance: LocalStorage;
   private storageDir: string = '';
   private archiveDir: string = '';
   private tempDir: string = '';
   private archiveFile: string = '';
   private mainStorageFile: string = '';
-
-  private constructor() {
-    super();
-  };
 
   public static get instance(): LocalStorage {
     if (!this._instance) {
@@ -215,5 +211,12 @@ export class LocalStorage extends Storage {
     } catch (error) {
       Promise.reject(error);
     }
+  }
+
+  private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
+    if (ids) {
+      return data.filter(item => { return ids.indexOf(item.id) != -1; });
+    }
+    return data;
   }
 }
