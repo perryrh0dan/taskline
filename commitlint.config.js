@@ -13,7 +13,9 @@ module.exports = {
                 'refactor',
                 'perf',
                 'test',
-                'revert'
+                'revert',
+                'ci',
+                'chore'
             ]
         ]
     }

@@ -1,16 +1,19 @@
 #!/usr/bin/env node
-
-'use strict';
 import * as program from 'commander';
+
 // START SNAPCRAFT IGNORE
 import { UpdateNotifier } from 'update-notifier';
 // END SNAPCRAFT IGNORE
-const pkg = require('./package.json');
+
 import { Taskline } from './src/taskline';
+import logger from './src/utils/logger';
+import pkg = require('./package.json');
 const taskline = new Taskline();
 
 program.version(pkg.version);
 program.description(pkg.description);
+
+logger.info('Starting in Debug Mode');
 
 program.name('tl').usage('[command] [options]');
 

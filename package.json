@@ -1,7 +1,7 @@
 {
   "name": "@perryrh0dan/taskline",
   "productName": "Taskline",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Tasks, boards & notes for the command-line habitat",
   "repository": "https://github.com/perryrh0dan/taskline",
   "license": "MIT",
@@ -9,6 +9,17 @@
     "name": "Thomas Pöhlmann",
     "email": "thomaspoehlmann96@googlemail.com",
     "url": "https://github.com/perryrh0dan"
+  },
+  "scripts": {
+    "build": "gulp buildTest && gulp buildMeta",
+    "build:prod": "bash scripts/build.sh",
+    "build:prod:snapcraft": "gulp snapcraft",
+    "start": "node dist/cli.js",
+    "dev": "gulp dev",
+    "test": "npm run lint && npm run unit",
+    "lint": "eslint ./src/**/*.ts",
+    "unit": "jest --runInBand",
+    "semantic-release": "semantic-release"
   },
   "bin": {
     "tl": "cli.js"
@@ -77,20 +88,8 @@
       }
     }
   },
-  "scripts": {
-    "build": "gulp buildTest && gulp buildMeta",
-    "build:prod": "bash scripts/build.sh",
-    "build:prod:snapcraft": "gulp snapcraft",
-    "start": "node dist/cli.js",
-    "dev": "gulp dev",
-    "test": "npm run lint && npm run unit",
-    "lint": "eslint ./src/**/*.ts",
-    "unit": "jest --runInBand",
-    "semantic-release": "semantic-release"
-  },
   "dependencies": {
     "@perryrh0dan/signale": "^1.4.4",
-    "@types/update-notifier": "^2.5.0",
     "chalk": "^3.0.0",
     "clipboardy": "^2.2.0",
     "commander": "^4.1.1",
@@ -98,17 +97,21 @@
     "figures": "^3.2.0",
     "firebase-admin": "^8.9.2",
     "ora": "^3.4.0",
-    "update-notifier": "^4.1.0"
+    "update-notifier": "^4.1.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.6.0",
     "@commitlint/config-conventional": "^8.2.0",
     "@semantic-release/commit-analyzer": "^6.3.2",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/npm": "^7.0.3",
     "@semantic-release/release-notes-generator": "^7.3.2",
     "@types/chalk": "^2.2.0",
     "@types/is-ci": "^2.0.0",
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^25.1.0",
     "@types/node": "^12.7.11",
+    "@types/update-notifier": "^4.1.0",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
     "commitlint": "^8.2.0",

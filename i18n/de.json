@@ -9,7 +9,13 @@
     "due_in": "Fällig in {0}",
     "today": "Heute",
     "days": {
-
+      "monday": "Montag",
+      "thuesday": "Dienstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sunday": "Sonntag"
     },
     "units": {
       "second": "Sekunde | Sekunden",

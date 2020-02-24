@@ -572,9 +572,7 @@ Since Taskline 1.1.0 custom themes can be created. The colors of the individual 
 
 ## Languages
 
-Change the language in the configuration file under language. Actual only english(en) and german(de) is supported.
-
-Actual taskline supports english as default output language and german. Hopefully with your help we are able to translate taskline in much more languages. Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-taskline) to learn more on how to translate taskline into more languages.
+Change the language in the configuration file under language. Actual only english(en) and german(de) is supported. Hopefully with your help we are able to translate taskline in much more languages. Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-taskline) to learn more on how to translate taskline into more languages.
 
 ## Development
 
@@ -582,11 +580,20 @@ For more info on how to contribute to the project, please read the [contributing
 
 - Fork the repository and clone it to your machine
 - Navigate to your local fork: `cd taskline`
-- Install the project dependencies: `npm install` or `yarn install`
+- Install the project dependencies: `npm install`
+- Run `npm run dev` to start the gulp build job. A watcher is initialized to build automatically during development.
 
 ### Test
 
-Currently there are three automated test. ESLint, JSHint and unit tests written with jest. To Run all tests at the same time use `npm test` . To run unit tests for other storage modules than the local storage module you have to edit the `test/config.json` file and insert your db credentials.
+Currently there are three automated test. ESLint, JSHint and unit tests written with jest. To Run all tests at the same time use `npm test`. To run unit tests for other storage modules than the local storage module you have to edit the `test/config.json` file and insert your db credentials.
+
+### Build
+
+Run the build script from '/scripts/build.sh'
+
+### Publish
+
+After 
 
 ## Team
 

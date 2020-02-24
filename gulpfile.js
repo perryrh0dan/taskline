@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
-const jeditor = require("gulp-json-editor");
+const jeditor = require('gulp-json-editor');
 const merge = require('merge-stream');
 var del = require('del');
 
@@ -14,11 +14,11 @@ const dirs = {
 const editPackageSnapcraft = () => {
   return gulp.src('package.json')
     .pipe(jeditor(function(json) {
-      json.devDependencies = {}
-      return json
+      json.devDependencies = {};
+      return json;
     }))
-    .pipe(gulp.dest('./'))
-}
+    .pipe(gulp.dest('./'));
+};
 
 const movePackage = () => {
   return gulp.src('package.json')
@@ -32,8 +32,8 @@ const moveReadme = () => {
 
 const moveLocals = () => {
   return gulp.src('i18n/**/*.json')
-    .pipe(gulp.dest(dirs.dist + '/i18n'))
-}
+    .pipe(gulp.dest(dirs.dist + '/i18n'));
+};
 
 const compileProd = () => {
   return tsProject.src()
@@ -52,11 +52,11 @@ const compileTest = () => {
 
 const watch = () => {
   gulp.watch(['src/**/*.ts', 'cli.ts', 'i18n/**/*.json'], buildTest);
-}
+};
 
 const delDist = () => {
   return del(['dist/**/*']);
-}
+};
 
 const build = gulp.series(delDist, compileProd, moveLocals);
 const buildMeta = gulp.parallel(movePackage, moveReadme);

@@ -2,6 +2,11 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.3.0
+
+- Dependency updates
+- Add new logger module for better debugging
+
 ## Version 1.2.2
 
 - Removed debug commands
