@@ -1,5 +1,5 @@
 name: taskline
-version: '1.2.2'
+version: '1.3.4'
 summary: Tasks, boards & notes for the command-line habitat
 description: |
   By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you
@@ -35,12 +35,12 @@ description: |
   More informations under https://github.com/perryrh0dan/taskline.
 
 grade: stable
+base: core18
 confinement: strict
 
 architectures:
   - amd64
   - i386
-  - armhf
 
 apps:
   taskline:
@@ -54,6 +54,6 @@ apps:
 parts:
   taskline:
     plugin: nodejs
-    node-engine: 10.15.0
-    node-package-manager: yarn
+    node-engine: 12.16.1
+    node-package-manager: npm
     source: .

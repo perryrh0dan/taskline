@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e #stop on error
 
+# Check if temp already exists if yes delete
+bash -c '[ -d temp ] && rm -r temp'
+
 # Creating a temp directory for the build and navigate in
 echo 'Creating temp directory'
 mkdir temp
