@@ -172,7 +172,9 @@ program
   .command('timeline')
   .alias('i')
   .description('Display timeline view')
-  .action(() => {
+  .option('-d, --due')
+  .action((opts) => {
+    console.log(opts.due)
     taskline.displayByDate().then(grouped => {
       taskline.displayStats(grouped);
     });

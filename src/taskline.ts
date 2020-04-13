@@ -9,6 +9,7 @@ import { Renderer } from './renderer';
 import { Config } from './config';
 import { Note } from './note';
 import { parseDate } from './libs/date';
+import { on } from 'cluster';
 
 export class Taskline {
   private storage: Storage;
@@ -57,14 +58,22 @@ export class Taskline {
     return boards;
   }
 
-  private async getDates(data?: Array<Item>): Promise<Array<string>> {
+  private async getDates(data?: Array<Item>, due: boolean = false): Promise<Array<string>> {
     if (!data) {
       data = await this.getData();
     }
 
     const dates: Array<string> = new Array<string>();
 
-    data.sort((one, two) => (one.timestamp > two.timestamp ? 1 : -1));
+    if(due) {
+      data.sort((one, two) => {
+        if(!(one instanceof Task)) return -1;
+        if(!(two instanceof Task)) return 1;
+        return one.dueDate > two.dueDate ? 1 : -1;
+      });
+    } else {
+      data.sort((one, two) => (one.timestamp > two.timestamp ? 1 : -1));
+    }
 
     data.forEach(item => {
       if (dates.indexOf(item.date) === -1) {
