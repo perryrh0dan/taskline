@@ -1,0 +1,69 @@
+{
+  "help": "Escriba `tl --help` para comenzar.",
+  "config": {
+    "path": "Configuracion cargada de {0}",
+    "title": "Configuracion"
+  },
+  "date": {
+    "due_ago": "vencimiento hace {0}",
+    "due_in": "vencimiento en {0}",
+    "today": "hoy",
+    "days": {
+      "monday": "lunes",
+      "thuesday": "martes",
+      "wednesday": "miercoles",
+      "thursday": "jueves",
+      "friday": "viernes",
+      "saturday": "sabado",
+      "sunday": "domingo"
+    },
+    "units": {
+      "second": "segundo | segundos",
+      "minute": "minuto | minutos",
+      "hour": "hora | horas",
+      "day": "dia | dias",
+      "week": "semana | semanas",
+      "month": "mes | meses",
+      "year": "año | años"
+    }
+  },
+  "errors": {
+
+  },
+  "stats": {
+    "allDone": "¡Todo hecho!",
+    "canceled": "cancelado",
+    "done": "hecho",
+    "note": "nota | notas",
+    "pending": "pendiente",
+    "percentage": "{0} de tareas completo.",
+    "progress": "en progreso"
+  },
+  "success": {
+    "cancel": "Tarea cancelada: {0} | Tareas canceladas: {0}",
+    "check": "Tarea realizada: {0} | Tareas realizadas: {0}",
+    "clipboard": "Descripción del ítem copiada: {0} | Descripciones de los ítems copiadas: {0}",
+    "create": "Tarea creada: {0} | Nota creada: {0}",
+    "delete": "Ítem borrado: {0} | Ítems borrados: {0}",
+    "duedate": "Vencimiento de tarea actualizado de: {0} a {1} | Vencimientos de tareas actualizados de: {0} a {1}",
+    "edit": "Descripción del ítem actualizada: {0}",
+    "move": "Ítem movido: {0} a {1}| Ítems movidos: {0} a {1}",
+    "pause": "Tarea pausada: {0} | Tareas pausadas: {0}",
+    "priority": "Prioridad de la tarea actualizada de: {0} a {1} | Prioridades de las tareas actualizadas de: {0} a {1}",
+    "rearrange": "Identificadores reorganizados para todos los ítems",
+    "restore": "Ítem restaurado: {0}| Ítems restaurados: {0}",
+    "revive": "Tarea revivida: {0} | Tareas revividas: {0}",
+    "star": "Ítem destacado: {0} | Ítems destacados: {0}",
+    "start": "Tarea comenzada: {0} | Tareas comenzadas: {0}",
+    "uncheck": "Tarea no realizada: {0} | Tarea no realizada: {0}",
+    "unstar": "Ítem no destacado: {0} | Ítems no destacados: {0}"
+  },
+  "warning": {
+    "appDir": "Directorio de la aplicacion no fue encontrado en su sistema: {0}",
+    "dateFormat": "No se entiende la fecha: {0}",
+    "firestoreConfig": "Configuración Firestore tiene un error",
+    "id": "Ítem con identificador: {0} no encontrado",
+    "idRange": "Rango de identificadores erroneo: {0}",
+    "priority": "La proridad puede ser solamente 1, 2 o 3"
+  }
+}
