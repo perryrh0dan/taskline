@@ -572,7 +572,12 @@ Since Taskline 1.1.0 custom themes can be created. The colors of the individual 
 
 ## Languages
 
-Change the language in the configuration file under language. Actual only english(en) and german(de) is supported. Hopefully with your help we are able to translate taskline in much more languages. Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-taskline) to learn more on how to translate taskline into more languages.
+Change the language in the configuration file under language. Following languages are supported:
+- english(en)
+- german(de)
+- spanish(es) (thanks a lot to [camilohh](https://github.com/camilohh) <3)
+
+Hopefully with your help we are able to translate taskline in much more languages. Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-taskline) to learn more on how to translate taskline into more languages.
 
 ## Development
 
