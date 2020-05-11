@@ -76,7 +76,7 @@ describe('Test output functionality', () => {
       id: 5,
       date: yesterday.toDateString(),
       timestamp: yesterday.getTime(),
-      description: 'Fourth Test Task',
+      description: 'Fives Test Task',
       isStarred: false,
       boards: ['My Board'],
       dueDate: undefined,
@@ -113,13 +113,14 @@ describe('Test output functionality', () => {
       mockWrite.mockClear();
 
       await taskline.displayByBoard();
-      expect(mockWrite.mock.calls.length).toBe(6);
-      expect(mockWrite.mock.calls[0][0]).toBe('\n  [4mMy Board[24m [90m[1/2][39m\n');
+      expect(mockWrite.mock.calls.length).toBe(7);
+      expect(mockWrite.mock.calls[0][0]).toBe('\n  [4mMy Board[24m [90m[1/3][39m\n');
       expect(mockWrite.mock.calls[1][0]).toBe('    [90m1.[39m [34m● [39m Test Note\n');
       expect(mockWrite.mock.calls[2][0]).toBe('    [90m2.[39m [32m✔ [39m [90mTest Task[39m\n');
       expect(mockWrite.mock.calls[3][0]).toBe('    [90m3.[39m [35m☐ [39m Second Test Task [33m★[39m\n');
-      expect(mockWrite.mock.calls[4][0]).toBe('\n  [4mOther Board[24m [90m[0/1][39m\n');
-      expect(mockWrite.mock.calls[5][0]).toBe('    [90m4.[39m [35m☐ [39m [31m[4mThird Test Task[24m[39m [31m(!!)[39m [90m1d[39m [33m★[39m\n');
+      expect(mockWrite.mock.calls[4][0]).toBe('    [90m5.[39m [34m… [39m Fives Test Task [90m1d[39m \n');
+      expect(mockWrite.mock.calls[5][0]).toBe('\n  [4mOther Board[24m [90m[0/1][39m\n');
+      expect(mockWrite.mock.calls[6][0]).toBe('    [90m4.[39m [35m☐ [39m [31m[4mThird Test Task[24m[39m [31m(!!)[39m [90m1d[39m [33m★[39m\n');
     });
 
     it('should display by date', async() => {
@@ -130,7 +131,7 @@ describe('Test output functionality', () => {
       expect(mockWrite.mock.calls[1][0]).toBe('    [90m1.[39m [34m● [39m Test Note  \n');
       expect(mockWrite.mock.calls[2][0]).toBe('    [90m2.[39m [32m✔ [39m [90mTest Task[39m  \n');
       expect(mockWrite.mock.calls[3][0]).toBe('    [90m3.[39m [35m☐ [39m Second Test Task  [33m★[39m\n');
-      expect(mockWrite.mock.calls[4][0]).toBe('\n  [4m' + yesterday.toDateString() + '[24m [90m[0/1][39m\n');
+      expect(mockWrite.mock.calls[4][0]).toBe('\n  [4m' + yesterday.toDateString() + '[24m [90m[0/2][39m\n');
       expect(mockWrite.mock.calls[5][0]).toBe('    [90m4.[39m [35m☐ [39m [31m[4mThird Test Task[24m[39m [31m(!!)[39m [90mOther Board[39m [33m★[39m\n');
     });
 
@@ -138,8 +139,8 @@ describe('Test output functionality', () => {
       const grouped = await taskline.displayByBoard();
       mockWrite.mockClear();
       taskline.displayStats(grouped);
-      expect(mockWrite.mock.calls[0][0]).toBe('\n  [90m33% of all tasks complete.[39m\n');
-      expect(mockWrite.mock.calls[1][0]).toBe('  [32m1[39m [90mdone[39m[90m · [39m[31m0[39m [90mcanceled[39m[90m · [39m[34m0[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[34m1[39m [90mnote[39m \n\n');
+      expect(mockWrite.mock.calls[0][0]).toBe('\n  [90m25% of all tasks complete.[39m\n');
+      expect(mockWrite.mock.calls[1][0]).toBe('  [32m1[39m [90mdone[39m[90m · [39m[31m0[39m [90mcanceled[39m[90m · [39m[34m1[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[34m1[39m [90mnote[39m \n\n');
     });
 
     it('should display archive', async() => {
@@ -199,7 +200,7 @@ describe('Test output functionality', () => {
     process.stdout.write = jest.fn();
 
     const grouped = await taskline.listByAttributes('pending');
-    expect(grouped['My Board'].length).toBe(1);
+    expect(grouped['My Board'].length).toBe(2);
     expect(grouped['Other Board'].length).toBe(1);
   });
 
