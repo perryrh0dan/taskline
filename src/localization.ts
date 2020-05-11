@@ -36,7 +36,6 @@ export class Localization {
       }
       this.default = this.load('en');
     } catch (error) {
-      debugger;
       Renderer.instance.invalidLanguageFile();
       process.exit(1);
     }

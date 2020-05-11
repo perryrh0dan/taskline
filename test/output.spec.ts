@@ -72,6 +72,19 @@ describe('Test output functionality', () => {
       priority: 3
     }));
 
+    data.push(new Task({
+      id: 5,
+      date: yesterday.toDateString(),
+      timestamp: yesterday.getTime(),
+      description: 'Fourth Test Task',
+      isStarred: false,
+      boards: ['My Board'],
+      dueDate: undefined,
+      isComplete: false,
+      inProgress: true,
+      priority: 1
+    }));
+
     promises.push(helper.setData(data));
     const archive: Array<Item> = new Array<Item>();
 
@@ -142,7 +155,7 @@ describe('Test output functionality', () => {
     process.stdout.write = jest.fn();
 
     const grouped = await taskline.listByAttributes('tasks');
-    expect(grouped['My Board'].length).toBe(2);
+    expect(grouped['My Board'].length).toBe(3);
   });
 
   it('should display only notes', async() => {
@@ -164,6 +177,13 @@ describe('Test output functionality', () => {
     process.stdout.write = jest.fn();
 
     const grouped = await taskline.listByAttributes('done');
+    expect(grouped['My Board'].length).toBe(1);
+  });
+
+  it('should display on active tasks', async() => {
+    process.stdout.write = jest.fn();
+
+    const grouped = await taskline.listByAttributes('progress');
     expect(grouped['My Board'].length).toBe(1);
   });
 

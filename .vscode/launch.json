@@ -10,7 +10,7 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/dist/cli.js",
-            "args": ["g"]
+            "args": ["l", "canceled"]
         },
         {
           "type": "node",

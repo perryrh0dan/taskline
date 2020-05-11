@@ -194,10 +194,8 @@ export const getRelativeHumanizedDate = function(dueDate: Date, now?: Date): str
   }
 
   const absValue = Math.abs(value);
-  debugger;
   unit = Localization.instance.get('date.units.' + unit, { type: absValue === 1 ? 0 : 1 });
   const humanizedDate = value >= 1 ? `${value} ${unit}` : `${absValue} ${unit}`;
-  debugger;
   const humanizedRelativeDate = value >= 1 ? Localization.instance.getf('date.due_in', { params: [humanizedDate] }) : Localization.instance.getf('date.due_ago', { params: [humanizedDate] });
   return humanizedRelativeDate;
 };

@@ -289,7 +289,6 @@ export class Renderer {
       message.push(this.printColor('task.priority.high', '(!!)'));
     }
 
-    debugger;
     return message.join(' ');
   }
 
@@ -446,12 +445,8 @@ export class Renderer {
       });
     }
 
-    if (pending + inProgress + complete + notes === 0) {
-      this.signale.log({
-        prefix: '\n ',
-        message: Localization.instance.get('help'),
-        suffix: this.printColor('icons.star', '★')
-      });
+    if (pending + inProgress + canceled + complete + notes === 0) {
+      return console.log(Localization.instance.get('help.default'));
     }
 
     this.signale.log({

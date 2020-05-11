@@ -1,5 +1,6 @@
 {
   "help": {
+    "default": "Type `tl --help` to get started!",
     "archive": "Display archived items",
     "begin": "Start/pause task",
     "cancel": "Cancel/revive task",

@@ -1,5 +1,6 @@
 {
   "help": {
+    "default": "Benutze `--help` um anzufangen.",
     "archive": "Archivierte Items anzeigen",
     "begin": "Aufgabe starten/pausieren",
     "cancel": "Aufgabe abbrechen/wiederaufnehmen",
