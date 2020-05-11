@@ -284,24 +284,26 @@ $ tl c 1,3
 ```
 
 ### Task anfangen
-
-To mark a task as started/paused, use the `begin` / `b` command followed by the ids of the target tasks. The functionality of this option is the same as the one of the above described `check` command.
+Um eine Aufgabe zu starten oder zu pausieren, benutz das `begin` / `b` Kommando, gefolgt von den ids. 
+Die Funktion dieser Option ist die gleiche wie beim abhaken ( `check` ).
 
 ``` 
 $ tl b 2,3
 ```
 
-### Item favorisieren
+### Eintrag favorisieren
 
-To mark one or more items as favorite, use the `star` / `s` command followed by the ids of the target items. The functionality of this option is the same as the one of the above described `check` command.
+Um einen Eintrag als Favorit zu markieren, benutze das `star` / `s` Kommando, gefolgt von den Nummern der Einträge. 
+Die Funktion dieser Option ist die gleiche wie beim abhaken ( `check` ).
 
 ``` 
 $ tl s 1,2,3
 ```
 
-### Item beschreibung kopieren
+### Eintrag-Beschreibung kopieren
 
-To copy to your system's clipboard the description of one or more items, use the `copy` / `y` option followed by the ids of the target items. Note that the option will also include the newline character as a separator to each pair of adjacent copied descriptions, thus resulting in a clear and readable stack of sentences on paste.
+Um eine Beschreibung eines Eintrages in die Zwischenablage zu kopieren, benutze die `copy` / `y`  Option, gefolgt von den Nummern der Einträge. 
+Beachte, dass die Option einen Zeilenumbruch nach jedem Eintrag hinzufügt.
 
 ``` 
 $ tl y 1,2,3
@@ -315,7 +317,7 @@ Invoking taskline without any commands and options will display all of saved ite
 $ tl
 ```
 
-### Zeitachse anzeigen
+### Zeitleiste anzeigen
 
 In order to display all items in a timeline view, based on their creation date, the `timeline` / `i` command can be used.
 
