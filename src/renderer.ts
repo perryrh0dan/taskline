@@ -191,6 +191,14 @@ export class Renderer {
     return this.printColor('pale', text);
   }
 
+  private getPassedTime(passedTime: number): string {
+    const seconds = passedTime / 1000;
+    const minutes = Math.floor((seconds / 60) % 60);
+    const hours = Math.floor(seconds / 3600);
+
+    return `${hours + Math.round(minutes/60 * 100) / 100} hours`;
+  }
+
   private getCorrelation(items: Array<Item>): string {
     const { tasks, complete } = this.getItemStats(items);
     return this.printColor('pale', `[${complete}/${tasks}]`);
@@ -281,6 +289,7 @@ export class Renderer {
       message.push(this.printColor('task.priority.high', '(!!)'));
     }
 
+    debugger;
     return message.join(' ');
   }
 
@@ -305,6 +314,11 @@ export class Renderer {
       dueDate = this.getDueDate(item.dueDate);
     }
 
+    let passedTime;
+    if (item instanceof Task && item.passedTime > 0) {
+      passedTime = this.getPassedTime(item.passedTime);
+    }
+
     const star = this.getStar(item);
 
     const prefix = this.buildPrefix(item);
@@ -314,6 +328,10 @@ export class Renderer {
       suffix = `${dueDate} ${star}`;
     } else {
       suffix = age.length === 0 ? star : `${age} ${star}`;
+    }
+
+    if (passedTime) {
+      suffix += suffix == '' ? `(${passedTime})` : ` (${passedTime})`;
     }
 
     const msgObj = {

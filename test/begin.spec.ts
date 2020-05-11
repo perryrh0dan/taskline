@@ -57,16 +57,38 @@ describe('Test begin functionality', () => {
   });
 
   it('should begin one task', async() => {
+    const now = new Date();
     await taskline.beginTasks('2');
     const data: Array<Item> = await helper.getData([2]);
     expect((data[0] as Task).inProgress).toBe(true);
     expect((data[0] as Task).isCanceled).toBe(false);
     expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).lastStartTime).toBeGreaterThan(now.getTime());
+  });
+
+  it('should pause one task', async() => {
+    await taskline.beginTasks('2');
+    const data: Array<Item> = await helper.getData([2]);
+    expect((data[0] as Task).inProgress).toBe(false);
+    expect((data[0] as Task).isCanceled).toBe(false);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
+  });
+
+  it('should continue one task', async() => {
+    const now = new Date();
+    await taskline.beginTasks('2');
+    const data: Array<Item> = await helper.getData([2]);
+    expect((data[0] as Task).inProgress).toBe(true);
+    expect((data[0] as Task).isCanceled).toBe(false);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
+    expect((data[0] as Task).lastStartTime).toBeGreaterThan(now.getTime());
   });
 
   it('should begin multiple tasks', () => {
     return taskline.beginTasks('2,3').then(() => {
-      return helper.getData([2,3]).then((data: any) => {
+      return helper.getData([2, 3]).then((data: any) => {
         expect((data[0] as Task).inProgress).toBe(false);
         expect((data[0] as Task).isCanceled).toBe(false);
         expect((data[0] as Task).isComplete).toBe(false);
@@ -79,7 +101,7 @@ describe('Test begin functionality', () => {
 
   it('should begin multiple tasks by id range', () => {
     return taskline.beginTasks('2-3').then(() => {
-      return helper.getData([2,3]).then((data: any) => {
+      return helper.getData([2, 3]).then((data: any) => {
         expect((data[0] as Task).inProgress).toBe(true);
         expect((data[0] as Task).isComplete).toBe(false);
         expect((data[1] as Task).inProgress).toBe(false);

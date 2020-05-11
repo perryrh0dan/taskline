@@ -6,6 +6,7 @@ import { UpdateNotifier } from 'update-notifier';
 // END SNAPCRAFT IGNORE
 
 import { Taskline } from './src/taskline';
+import { Localization } from './src/localization';
 import logger from './src/utils/logger';
 import pkg = require('./package.json');
 const taskline = new Taskline();

@@ -12,6 +12,8 @@ export interface TaskProperties extends ItemProperties {
   isCanceled?: boolean;
   isComplete?: boolean;
   dueDate?: number;
+  passedTime?: number;
+  lastStartTime?: number;
 }
 
 export class Task extends Item {
@@ -21,6 +23,8 @@ export class Task extends Item {
   private _isCanceled: boolean;
   private _isComplete: boolean;
   private _dueDate: number;
+  private _passedTime: number; //milliseconds
+  private _lastStartTime: number;
 
   public constructor(kwArgs: TaskProperties) {
     super(kwArgs);
@@ -30,6 +34,8 @@ export class Task extends Item {
     this.isCanceled = kwArgs.isCanceled || false;
     this.isComplete = kwArgs.isComplete || false;
     this.dueDate = kwArgs.dueDate || 0;
+    this._passedTime = kwArgs.passedTime || 0;
+    this._lastStartTime = kwArgs.lastStartTime || 0;
   }
 
   public get priority(): TaskPriority {
@@ -72,21 +78,56 @@ export class Task extends Item {
     this._dueDate = dueDate;
   }
 
+  public get passedTime(): number {
+    if(this._lastStartTime != 0) {
+      return this._passedTime + (new Date().getTime() - this._lastStartTime);
+    }
+    return this._passedTime;
+  }
+
+  public get lastStartTime(): number {
+    return this._lastStartTime;
+  }
+
   public begin(): void {
-    this._inProgress = !this._inProgress;
-    this._isComplete = false;
-    this._isCanceled = false;
+    const now: Date = new Date();
+
+    // check if task is started or paused
+    if(this.inProgress == true) {
+      this._passedTime += now.getTime() - this._lastStartTime;
+      this._lastStartTime = 0;
+    } else {
+      this._lastStartTime = now.getTime();
+    }
+
+    this.inProgress = !this._inProgress;
+    this.isComplete = false;
+    this.isCanceled = false;
   }
 
   public check(): void {
-    this._isComplete = !this._isComplete;
-    this._inProgress = false;
-    this._isCanceled = false;
+    const now: Date = new Date();
+
+    if(this.inProgress == true) {
+      this._passedTime += now.getTime() - this._lastStartTime;
+      this._lastStartTime = 0;
+    }
+
+    this.isComplete = !this._isComplete;
+    this.inProgress = false;
+    this.isCanceled = false;
   }
 
   public cancel(): void {
-    this._isCanceled = !this._isCanceled;
-    this._inProgress = false;
-    this._isComplete = false;
+    const now: Date = new Date();
+
+    if(this.inProgress == true) {
+      this._passedTime += now.getTime() - this._lastStartTime;
+      this._lastStartTime = 0;
+    }
+
+    this.isCanceled = !this._isCanceled;
+    this.inProgress = false;
+    this.isComplete = false;
   }
 }
