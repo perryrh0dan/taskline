@@ -21,7 +21,7 @@ program.name('tl').usage('[command] [options]');
 program
   .command('archive')
   .alias('a')
-  .description('Display archived items')
+  .description(Localization.instance.get('help.archive'))
   .action(() => {
     taskline.displayArchive().catch(() => {});
   });
@@ -29,14 +29,14 @@ program
 program
   .command('begin <ids>')
   .alias('b')
-  .description('Start/pause task')
+  .description(Localization.instance.get('help.begin'))
   .action(ids => {
     taskline.beginTasks(ids).catch(() => {});
   });
 
 program
   .command('cancel <ids>')
-  .description('Cancel/revive task')
+  .description(Localization.instance.get('help.cancel'))
   .action(ids => {
     taskline.cancelTasks(ids).catch(() => {});
   });
@@ -44,21 +44,21 @@ program
 program
   .command('check <ids>')
   .alias('c')
-  .description('Check/uncheck task')
+  .description(Localization.instance.get('help.check'))
   .action(ids => {
     taskline.checkTasks(ids).catch(() => {});
   });
 
 program
   .command('clear')
-  .description('Delete all checked items')
+  .description(Localization.instance.get('help.clear'))
   .action(() => {
     taskline.clear().catch(() => {});
   });
 
 program
   .command('config')
-  .description('Display active config')
+  .description(Localization.instance.get('help.config'))
   .action(() => {
     taskline.displayConfig();
   });
@@ -66,7 +66,7 @@ program
 program
   .command('copy <ids>')
   .alias('y')
-  .description('Copy description to clipboard')
+  .description(Localization.instance.get('help.copy'))
   .action(ids => {
     taskline.copyToClipboard(ids).catch(() => {});
   });
@@ -74,14 +74,14 @@ program
 program
   .command('delete <ids>')
   .alias('d')
-  .description('Delete item')
+  .description(Localization.instance.get('help.delete'))
   .action(ids => {
     taskline.deleteItems(ids).catch(() => {});
   });
 
 program
   .command('due <ids> <dueDate>')
-  .description('Update duedateof task')
+  .description(Localization.instance.get('help.due'))
   .action((ids, dueDate) => {
     taskline.updateDueDate(ids, dueDate).catch(() => {});
   });
@@ -89,7 +89,7 @@ program
 program
   .command('edit <id> <description>')
   .alias('e')
-  .description('Edit item description')
+  .description(Localization.instance.get('help.edit'))
   .action((id, description) => {
     taskline.editDescription(id, description).catch(() => {});
   });
@@ -97,7 +97,7 @@ program
 program
   .command('find <terms>')
   .alias('f')
-  .description('Search for items')
+  .description(Localization.instance.get('help.find'))
   .action(query => {
     taskline.findItems(query).catch(() => {});
   });
@@ -105,7 +105,7 @@ program
 program
   .command('list <terms>')
   .alias('l')
-  .description('List items by attributes')
+  .description(Localization.instance.get('help.list'))
   .action(terms => {
     taskline.listByAttributes(terms).then(grouped => {
       taskline.displayStats(grouped);
@@ -115,7 +115,7 @@ program
 program
   .command('move <ids> <boards')
   .alias('m')
-  .description('Move item between boards')
+  .description(Localization.instance.get('help.move'))
   .action((ids, boards) => {
     taskline.moveBoards(ids, boards).catch(() => {});
   });
@@ -123,7 +123,7 @@ program
 program
   .command('note <description>')
   .alias('n')
-  .description('Create note')
+  .description(Localization.instance.get('help.note'))
   .option('-b, --board <board>', 'Board')
   .action((description, opts) => {
     taskline.createNote(description, opts.board).catch(() => {});
@@ -132,7 +132,7 @@ program
 program
   .command('priority <id> <priority>')
   .alias('p')
-  .description('Update priority of task')
+  .description(Localization.instance.get('help.priority'))
   .action((id, priority) => {
     taskline.updatePriority(id, priority).catch(() => {});
   });
@@ -141,7 +141,7 @@ program
   .command('restore <ids>')
 
   .alias('r')
-  .description('Restore items from archive')
+  .description(Localization.instance.get('help.restore'))
   .action(ids => {
     taskline.restoreItems(ids).catch(() => {});
   });
@@ -149,7 +149,7 @@ program
 program
   .command('star <ids>')
   .alias('s')
-  .description('Star/unstar item')
+  .description(Localization.instance.get('help.star'))
   .action(ids => {
     taskline.starItems(ids).catch(() => {});
   });
@@ -157,7 +157,7 @@ program
 program
   .command('task <description>') // Sub-command name
   .alias('t') // Alternative sub-command is `al`
-  .description('Create task') // Command description
+  .description(Localization.instance.get('help.task')) // Command description
   .option('-b, --board <board>', 'Board')
   .option('-p, --priority <priority>', 'Priority')
   .option('-d, --due <date>', 'Due date')
@@ -172,7 +172,7 @@ program
 program
   .command('timeline')
   .alias('i')
-  .description('Display timeline view')
+  .description(Localization.instance.get('help.timeline'))
   .action(() => {
     taskline.displayByDate().then(grouped => {
       taskline.displayStats(grouped);
@@ -181,7 +181,7 @@ program
 
 program
   .command('refactor')
-  .description('Rearrange the IDs of all items')
+  .description(Localization.instance.get('help.refactor'))
   .action(() => {
     taskline.refactorIDs().catch(() => {});
   });
@@ -198,7 +198,7 @@ if (process.argv.length === 2) {
 }
 
 program.on('command:*', function() {
-  console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
+  console.error(Localization.instance.getf('errors.invalidCommand', { params: program.args }));
   process.exit(1);
 });
 

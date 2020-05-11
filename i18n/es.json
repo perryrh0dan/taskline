@@ -1,5 +1,7 @@
 {
-  "help": "Escriba `tl --help` para comenzar.",
+  "help": {
+
+  },
   "config": {
     "path": "Configuracion cargada de {0}",
     "title": "Configuracion"

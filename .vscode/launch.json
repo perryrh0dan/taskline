@@ -9,7 +9,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/dist/cli.js"
+            "program": "${workspaceFolder}/dist/cli.js",
+            "args": ["g"]
         },
         {
           "type": "node",
