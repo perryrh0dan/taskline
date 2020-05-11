@@ -330,8 +330,10 @@ export class Renderer {
     }
 
     if (passedTime) {
-      suffix += suffix == '' ? `(${passedTime})` : ` (${passedTime})`;
+      suffix += ` (${passedTime})`;
     }
+
+    suffix = suffix.replace('  ', ' ');
 
     const msgObj = {
       prefix,
