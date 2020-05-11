@@ -1,5 +1,28 @@
 {
-  "help": "Type `tl --help` to get started!",
+  "help": {
+    "default": "Type `tl --help` to get started!",
+    "archive": "Display archived items",
+    "begin": "Start/pause task",
+    "cancel": "Cancel/revive task",
+    "check": "Check/uncheck task",
+    "clear": "Delete all checked items",
+    "config": "Display active config",
+    "copy": "Copy description to clipboard",
+    "delete": "Delete item",
+    "due": "Update duedate of task",
+    "edit": "Edit item description",
+    "find": "Search for items",
+    "list": "List items by attributes",
+    "move": "Move item between boards",
+    "note": "Create note",
+    "priority": "Update priority of task",
+    "restore": "Restore items from archive",
+    "star": "Star/unstar item",
+    "task": "Create task",
+    "timeline": "Display timeline view",
+    "refactor": "Rearrange the IDs of all items",
+    "footer": "Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual"
+  },
   "config": {
     "path": "Config loaded from {0}",
     "title": "Configuration"
@@ -28,7 +51,7 @@
     }
   },
   "errors": {
-
+    "invalidCommand": "Invalid command: {0}\nSee --help for a list of available commands."
   },
   "stats": {
     "allDone": "All done!",

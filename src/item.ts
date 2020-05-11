@@ -1,5 +1,3 @@
-const now: Date = new Date();
-
 export interface ItemProperties {
   id: number;
   date?: string;
@@ -19,6 +17,8 @@ export abstract class Item {
   protected _boards: Array<string>;
 
   public constructor(kwArgs: ItemProperties) {
+    const now: Date = new Date();
+
     this.id = kwArgs.id;
     this.date = kwArgs.date || now.toDateString();
     this.timestamp = kwArgs.timestamp || now.getTime();

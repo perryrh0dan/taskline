@@ -347,6 +347,8 @@ export class Taskline {
       return data;
     }
 
+    debugger;
+
     attr.forEach((x: string) => {
       switch (x) {
         case 'star':

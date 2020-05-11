@@ -1,5 +1,28 @@
 {
-  "help": "Tippe `tl --help` um anzufangen!",
+  "help": {
+    "default": "Benutze `--help` um anzufangen.",
+    "archive": "Archivierte Items anzeigen",
+    "begin": "Aufgabe starten/pausieren",
+    "cancel": "Aufgabe abbrechen/wiederaufnehmen",
+    "check": "Aufgabe abhaken/unabhaken",
+    "clear": "Alle abgeschlossenen Aufgaben archivieren",
+    "config": "Konfiguration anzeigen",
+    "copy": "Item in die Zwischenablage kopieren",
+    "delete": "Item löschen",
+    "due": "Fälligkeitsdatum ändern",
+    "edit": "Itembeschreibung ändern",
+    "find": "Nach Items suchen",
+    "list": "List items by attributes",
+    "move": "Items zwischen Tafeln verschieben",
+    "note": "Notiz erstellen",
+    "priority": "Priorität von Aufgabe/n updaten",
+    "restore": "Items wiederherstellen",
+    "star": "Item mit Stern markieren/unmarkieren",
+    "task": "Aufgabe erstellen",
+    "timeline": "Zeitleistenansicht",
+    "refactor": "ID Bereich aller Items zurücksetzen",
+    "footer": "Detaillierte Beschreibung auf: https://github.com/perryrh0dan/taskline#flight-manual"
+  },
   "config": {
     "path": "Konfiguration geladen aus {0}",
     "title": "Konfiguration"
@@ -28,7 +51,7 @@
     }
   },
   "errors": {
-
+    "invalidCommand": "Ungültiger Befehl: {0}\nÖffne --help für eine detaillierte Liste aller Befehle."
   },
   "stats": {
     "allDone": "Alles erledigt!",

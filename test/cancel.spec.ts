@@ -65,6 +65,22 @@ describe('Test check functionality', () => {
       priority: 1
     }));
 
+    data.push(new Task({
+      id: 5,
+      date: 'Mon Sep 02 2019',
+      timestamp: 1567434272855,
+      description: 'Fourth Test Task',
+      isStarred: false,
+      boards: ['My Board'],
+      dueDate: 0,
+      isComplete: false,
+      inProgress: true,
+      isCanceled: false,
+      priority: 1,
+      passedTime: 100,
+      lastStartTime: new Date().getTime(),
+    }));
+
     await helper.setData(data);
     done();
   });
@@ -102,6 +118,16 @@ describe('Test check functionality', () => {
     expect((data[0] as Task).isCanceled).toBe(true);
     expect((data[1] as Task).isCanceled).toBe(true);
     expect((data[2] as Task).isCanceled).toBe(true);
+  });
+
+  it('should cancel an active task', async() => {
+    await taskline.cancelTasks('5');
+    const data = await helper.getData([5]);
+    expect((data[0] as Task).inProgress).toBe(false);
+    expect((data[0] as Task).isCanceled).toBe(true);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).lastStartTime).toBe(0);
+    expect((data[0] as Task).passedTime).toBeGreaterThan(100);
   });
 
   it('should delete all canceled tasks', async() => {

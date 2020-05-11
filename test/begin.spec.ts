@@ -17,75 +17,108 @@ describe('Test begin functionality', () => {
     await helper.clearStorage();
     const data: Array<Item> = new Array<Item>();
 
-    data.push(new Note({
-      id: 1,
-      date: 'Mon Sep 02 2019',
-      timestamp: 1567434272855,
-      description: 'Test Note',
-      isStarred: false,
-      boards: ['My Board']
-    }));
+    data.push(
+      new Note({
+        id: 1,
+        date: 'Mon Sep 02 2019',
+        timestamp: 1567434272855,
+        description: 'Test Note',
+        isStarred: false,
+        boards: ['My Board']
+      })
+    );
 
-    data.push(new Task({
-      id: 2,
-      date: 'Mon Sep 02 2019',
-      timestamp: 1567434272855,
-      description: 'Test Task',
-      isStarred: false,
-      boards: ['My Board'],
-      dueDate: 0,
-      isComplete: false,
-      inProgress: false,
-      priority: 1
-    }));
+    data.push(
+      new Task({
+        id: 2,
+        date: 'Mon Sep 02 2019',
+        timestamp: 1567434272855,
+        description: 'Test Task',
+        isStarred: false,
+        boards: ['My Board'],
+        dueDate: 0,
+        isComplete: false,
+        inProgress: false,
+        priority: 1
+      })
+    );
 
-    data.push(new Task({
-      id: 3,
-      date: 'Mon Sep 02 2019',
-      timestamp: 1567434272855,
-      description: 'Second Test Task',
-      isStarred: false,
-      boards: ['My Board'],
-      dueDate: 0,
-      isComplete: false,
-      inProgress: false,
-      priority: 1
-    }));
+    data.push(
+      new Task({
+        id: 3,
+        date: 'Mon Sep 02 2019',
+        timestamp: 1567434272855,
+        description: 'Second Test Task',
+        isStarred: false,
+        boards: ['My Board'],
+        dueDate: 0,
+        isComplete: false,
+        inProgress: false,
+        priority: 1
+      })
+    );
 
     await helper.setData(data);
     done();
   });
 
   it('should begin one task', async() => {
+    const now = new Date();
     await taskline.beginTasks('2');
     const data: Array<Item> = await helper.getData([2]);
     expect((data[0] as Task).inProgress).toBe(true);
     expect((data[0] as Task).isCanceled).toBe(false);
     expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).lastStartTime).toBeGreaterThan(now.getTime());
   });
 
-  it('should begin multiple tasks', () => {
-    return taskline.beginTasks('2,3').then(() => {
-      return helper.getData([2,3]).then((data: any) => {
-        expect((data[0] as Task).inProgress).toBe(false);
-        expect((data[0] as Task).isCanceled).toBe(false);
-        expect((data[0] as Task).isComplete).toBe(false);
-        expect((data[1] as Task).inProgress).toBe(true);
-        expect((data[1] as Task).isCanceled).toBe(false);
-        expect((data[1] as Task).isComplete).toBe(false);
-      });
-    });
+  it('should pause one task', async() => {
+    await taskline.beginTasks('2');
+    const data: Array<Item> = await helper.getData([2]);
+    expect((data[0] as Task).inProgress).toBe(false);
+    expect((data[0] as Task).isCanceled).toBe(false);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
+    expect((data[0] as Task).lastStartTime).toBe(0);
   });
 
-  it('should begin multiple tasks by id range', () => {
-    return taskline.beginTasks('2-3').then(() => {
-      return helper.getData([2,3]).then((data: any) => {
-        expect((data[0] as Task).inProgress).toBe(true);
-        expect((data[0] as Task).isComplete).toBe(false);
-        expect((data[1] as Task).inProgress).toBe(false);
-        expect((data[1] as Task).isComplete).toBe(false);
-      });
-    });
+  it('should continue one task', async() => {
+    const now = new Date();
+    await taskline.beginTasks('2');
+    const data: Array<Item> = await helper.getData([2]);
+    expect((data[0] as Task).inProgress).toBe(true);
+    expect((data[0] as Task).isCanceled).toBe(false);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
+    expect((data[0] as Task).lastStartTime).toBeGreaterThanOrEqual(
+      now.getTime()
+    );
+  });
+
+  it('should begin multiple tasks', async() => {
+    const now = new Date();
+    await taskline.beginTasks('2,3');
+    const data: Array<Item> = await helper.getData([2, 3]);
+    expect((data[0] as Task).inProgress).toBe(false);
+    expect((data[0] as Task).isCanceled).toBe(false);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
+    expect((data[0] as Task).lastStartTime).toBe(0);
+    expect((data[1] as Task).inProgress).toBe(true);
+    expect((data[1] as Task).isCanceled).toBe(false);
+    expect((data[1] as Task).isComplete).toBe(false);
+    expect((data[1] as Task).lastStartTime).toBeGreaterThanOrEqual(
+      now.getTime()
+    );
+  });
+
+  it('should begin multiple tasks by id range', async() => {
+    await taskline.beginTasks('2-3');
+    const data: Array<Item> = await helper.getData([2, 3]);
+    expect((data[0] as Task).inProgress).toBe(true);
+    expect((data[0] as Task).isComplete).toBe(false);
+    expect((data[1] as Task).inProgress).toBe(false);
+    expect((data[1] as Task).isComplete).toBe(false);
   });
 
   it('should try to begin nonexisting item', () => {
