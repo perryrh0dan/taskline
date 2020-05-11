@@ -99,7 +99,6 @@ snap install taskline
 snap alias taskline tl # set alias
 ```
 
-**Note:** Due to the snap's strictly confined nature, both the storage & configuration files will be saved under the 
 **Anmerkung:** Wegen der strikten Trennung in snap-Apps befinden sich die Konfigurationsdateien unter [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) Umgebungsvariable anstatt in `$HOME` .
 ## Nutzung
 
@@ -187,75 +186,76 @@ Das folgende Beispiel zeigt alle möglichen Optionen und deren Standardwerte.
 
 ##### `tasklineDirectory` 
 
-* Type: `String` 
-* Default: `~` 
+* Typ: `String` 
+* Standardwert: `~` 
 Pfad im Dateisystem, an der sich der Speicherplatz befindet, zum Beispiel `/home/username/the-cloud` oder `~/the-cloud` 
 
 Wird diese Option ausgelassen, ist der Speicherort `~` und die Einstellungen in `~/.taskline/` .
 
 ##### `displayCompleteTasks` 
 
-* Type: `Boolean` 
-* Default: `true` 
+* Typ: `Boolean` 
+* Standardwert: `true` 
 
 Als erledigt markierte Aufgaben anzeigen.
 
 ##### `displayProgressOverview` 
 
-* Type: `Boolean` 
-* Default: `true` 
+* Typ: `Boolean` 
+* Standardwert: `true` 
 
 Prozessübersicht unterhalb der Leistenansicht und der Tafelansicht anzeigen
 
 ##### `storageModule` 
 
-* Type: `Enum` 
-* Default: `local` 
-* Values: `local` , `firestore` 
+* Typ: `Enum` 
+* Standardwert: `local` 
+* mögliche Werte: `local` , `firestore` 
 
-Choose of storage module. Currently there are two modules `local` and `firestore` . For the firestore module the firestoreConfig is needed.
+Speicherort wählen. Derzeit gibt es zwei Module `local` und `firestore` . 
+Für das Modul firestore wird die firestoreConfig benötigt.
 
 ##### `firestoreConfig` 
 
-* Type: `Google Dienstkontoschlüssel` 
-* Default: `Empty` 
+* Typ: `Google Dienstkontoschlüssel` 
+* Standardwert: `Empty` 
 
-Configuration of the firestore module.
+Konfiguration des firestore-Moduls.
 
 ##### `dateformat` 
 
-* Type: `String` 
-* Default: `dd.mm.yyyy` 
+* Typ: `String` 
+* Standardwert: `dd.mm.yyyy` 
 
-Dateformat used for duedate.
+Format des Fälligkeitsdatums.
 
 ## Vor dem Flug
 
-When you want to use the local storage module there is no further configuration need. When you want to use the firestore module follow this steps:
+Wenn Du den lokalen Speicher zu nutzen, ist keine weitere Konfiguration notwendig. wenn du das firestore-Modul nutzen möchtest, folge diesen Schritten:
 
-### Setup Firestore
+### Firestore vorbereiten
 
-1. Create a new Project on the google cloud platform.
-2. Create a new service account for this project.
-3. Download the authorization.json file and insert all the lines to the corresponding lines in the taskline configuration.
+1. Erzeuge ein neues Projekt auf der google cloud Plattform.
+2. Erzeuge einen neuen Service Account für das Projekt.
+3. Lade die authorization.json-Datei herunter und übertrage die Zeilen in die entspreichenden Zeilen die taskline-Konfiguration.
 
-or follow this [instruction page](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
+oder folge diesem [Handbuch](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
 ## Flughandbuch
 
-The following is a minor walkthrough containing a set of examples on how to use taskline.
-In case you spotted an error or think that an example is not to clear enough and should be further improved, please feel free to open an [issue](https://github.com/perryrh0dan/taskline/issues/new/choose) or [pull request](https://github.com/perryrh0dan/taskline/compare).
+Im folgenden ist eine kurze Übersicht mit einem Beispielsatz zur Anwendung von taskline. 
+Im Falle, dass Du einen Fehler gefunden hast oder ein Beispiel nicht deutlich genug ist, oder weiter verbessert werden soll, eröffne ein Ticket [Ticket](https://github.com/perryrh0dan/taskline/issues/new/choose) oder [pull request](https://github.com/perryrh0dan/taskline/compare).
 
 ### Task erstellen
 
-To create a new task use the `task` / `t` command with your task's description following right after.
+Um eine neue Aufgabe zu erstellen, benutze das `task` / `t` Kommando mit der Beschreibung der Aufgabe direkt im Anschluss.
 
 ``` 
-$ tl t "Improve documentation"
+$ tl t "Verbesserte Beschreibung"
 ```
 
 ### Notiz erstellen
 
-To create a new note use the `note` / `n` command with your note's body following right after.
+Um eine neue Notiz zu erstellen benutze das `note` / `n` Kommando mit dem Notizentext direkt dahinter.
 
 ``` 
 $ tl n "Mergesort worse-case O(nlogn)"
@@ -263,10 +263,14 @@ $ tl n "Mergesort worse-case O(nlogn)"
 
 ### Tafel erstellen
 
-Boards are automatically initialized when creating a new task or note. To create one or more boards, use the `--board` / `-b` option, followed by a list of boardnames, after the description of the about-to-be created item. As a result the newly created item will belong to all of the given boards. By default, items that do not contain any board option are automatically added to the general purpose; `My Board` .
+Tafeln werden automatisch initialisert, wenn eine neue Aufgabe oder Notiz erstellt wird.
+Um eine neue Tafel zu erstellen, benutze die  `--board` / `-b` Option, gefolgt von der Liste der Tafeln, 
+nach der Beschriftung der zu erzeugenden Notiz oder der Aufgabe. 
+Als Folge wird ein neuer Eintrag in allen angegeben Tafeln erstellt.
+Als Standard werden alle Einträge ohne Tafel-Option der Tafel  `My Board` hinzugefügt.
 
 ``` 
-$ tl t "Update contributing guidelines" -b coding,docs
+$ tl t "Die Mitwirkendendokumentationen überarbeiten" -b coding,docs
 ```
 
 ### Task abhaken
