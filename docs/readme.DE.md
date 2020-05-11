@@ -29,39 +29,39 @@
 
 Durch die Verwendung einer einfachen und minimalen Syntax, die eine flache Lernkurve erfordert, können Sie mit Taskline Ihre Aufgaben und Notizen von Ihrem Terminal aus auf mehreren Tafeln effektiv verwalten. Alle Daten werden atomar in den Speicher geschrieben, um Verfälschungen zu vermeiden. Im Moment gibt es zwei Speichermodule. Das lokaler Speicher-Modul, in dem Ihre daten niemals für andere freigegeben werden, oder das Firestore-Modul, in dem Ihre Daten in Ihrer Firestore-Datenbank gespeichert werden und mit all Ihren Geräten synchronisiert werden können. Gelöschte Objekte werden automatisch archiviert und können jederzeit eingesehen oder wiederhergestellt werden.
 
-Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
+Besuche die [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) um mehr zu erfahren, wie du diese Anleitung in eine andere Sprache übersetzen kannst.
 
-Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [Twitter](https://twitter.com/perryrh0dan1) to share your thoughts on the project.
+Besuche mich auf [Gitter](https://gitter.im/taskline/community?source=orgpage) or [Twitter](https://twitter.com/perryrh0dan1) um Deine gedanken zu dem Projekt zu teilen.
 
 ## Highlights
 
 ### Original
 
-* Organize tasks & notes to boards
-* Board & timeline views
-* Priority & favorite mechanisms
-* Search & filter items
-* Archive & restore deleted items
-* Lightweight & fast
-* Data written atomically to storage
-* Custom storage location
-* Progress overview
-* Simple & minimal usage syntax
-* Update notifications
-* Configurable through `~/.taskline.json` 
-* Data stored in JSON file at `~/.taskline/storage` 
+* Aufgaben und Notizen zu Tafeln einordnen
+* Tafel- und Zeitleistenansicht
+* Prioritäten und Favoritenmechanismus
+* Einträge suchen und filtern
+* Einträge archivieren und wiederherstellen
+* schlank & schnell
+* Daten werden atomar an den Speicherort geschrieben
+* Speicherort konfigurierbar
+* Prozessübersicht
+* Einfache und minimalistische Nutzungssyntax
+* Aktualisierungsbenachrichtung
+* Konfigurierbar durch `~/.taskline.json` 
+* Daten sind als JSON gespeichert in `~/.taskline/storage` 
 
 ### Neu
 
-* Modular data storage.
-* Firestore module to save data in google firestore.
-* Sync tasks across all your devices with firestore.
-* Replaced Meow with commander.js
-* Duedate mechanism
-* Display loadingspinner while fetching network requests
-* New list filter attributes 
+* Modularer Datenspeicher
+* Firestore-Modul, um Daten in google firestore zu speichern 
+* Aufgaben über alle Geräte mit firestore synchronisieren.
+* Meow durch commander.js ausgetauscht
+* Fälligkeitsdatum
+* Loadingspinner wird angezeigt während Netzwerkanfragen
+* Neue Filterattribute für Listen
 
-View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
+Die herausragenden Eigenschaften als Tafelansicht: [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
 ## Inhalt
 
@@ -99,17 +99,18 @@ snap install taskline
 snap alias taskline tl # set alias
 ```
 
-**Note:** Due to the snap's strictly confined nature, both the storage & configuration files will be saved under the [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) environment variable instead of the generic `$HOME` one.
-
+**Note:** Due to the snap's strictly confined nature, both the storage & configuration files will be saved under the 
+**Anmerkung:** Wegen der strikten Trennung in snap-Apps befinden sich die Konfigurationsdateien unter [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) Umgebungsvariable anstatt in `$HOME` .
 ## Nutzung
 
 ``` 
 $ tl --help
-Usage: tl [options] [command]
+Anwendung: tl [options] [command]
 
-Tasks, boards & notes for the command-line habitat
 
-Options:
+Aufgaben, Tafeln & Notizen in der Kommandozeilenumgebung
+
+Optionen:
   -V, --version                   Versionsinformationen ausgeben
   -h, --help                      Informationen zur Verwendung anzeigen
 
@@ -137,25 +138,28 @@ Commands:
 
 ### Tafelansicht
 
-Invoking taskline without any options will display all saved items grouped into their respective boards.
-
+Der Aufruf von taskline ohne Parameter zeigt alle gespeicherten Elemente - gruppiert in den zugehörigen Tafeln.
+ 
 <div align="center">
   <img alt="Boards" width="70%" src="../media/header-boards.png"/>
 </div>
 
-### Zeitachsenansicht
+### Zeitleistenansicht
 
-In order to display all items in a timeline view, based on their creation date, the `--timeline` / `-i` option can be used.
+Um die Elemente in einer Zeitleistenansicht anzuzeigen kann der Parameter
+ `--timeline` / `-i` 
+verwendet werden. Die Elemente werden dann in der Reihenfolge der Erstellung angezeigt.
 
 <div align="center">
   <img alt="Timeline View" width="70%" src="../media/timeline.png"/>
 </div>
 
 ## Konfiguration
+Um Taskline zu konfigurieren, reicht es aus, die Datei  `~/.taskline.json` gemäß Deinen Vorstellungen anzupassen. 
+Um zu den Standardwerten zurückzukommen, lösche einfach die Konfigurationsdatei aus Deinem home-Verzeichnis.
 
-To configure taskline navigate to the `~/.taskline.json` file and modify any of the options to match your own preference. To reset back to the default values, simply delete the config file from your home directory.
+Das folgende Beispiel zeigt alle möglichen Optionen und deren Standardwerte.
 
-The following illustrates all the available options with their respective default values.
 
 ``` json
 {
@@ -185,24 +189,23 @@ The following illustrates all the available options with their respective defaul
 
 * Type: `String` 
 * Default: `~` 
+Pfad im Dateisystem, an der sich der Speicherplatz befindet, zum Beispiel `/home/username/the-cloud` oder `~/the-cloud` 
 
-Filesystem path where the storage will be initialized, i.e: `/home/username/the-cloud` or `~/the-cloud` 
-
-If left undefined the home directory `~` will be used and taskline will be set-up under `~/.taskline/` .
+Wird diese Option ausgelassen, ist der Speicherort `~` und die Einstellungen in `~/.taskline/` .
 
 ##### `displayCompleteTasks` 
 
 * Type: `Boolean` 
 * Default: `true` 
 
-Display tasks that are marked as complete.
+Als erledigt markierte Aufgaben anzeigen.
 
 ##### `displayProgressOverview` 
 
 * Type: `Boolean` 
 * Default: `true` 
 
-Display progress overview below the timeline and board views.
+Prozessübersicht unterhalb der Leistenansicht und der Tafelansicht anzeigen
 
 ##### `storageModule` 
 
