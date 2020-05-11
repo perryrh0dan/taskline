@@ -273,9 +273,11 @@ Als Standard werden alle Einträge ohne Tafel-Option der Tafel  `My Board` hinzu
 $ tl t "Die Mitwirkendendokumentationen überarbeiten" -b coding,docs
 ```
 
-### Task abhaken
+### Aufgabe abhaken
 
-To mark a task as complete/incomplete, use the `check` / `c` command followed by the ids of the target tasks. Note that the option will update to its opposite the `complete` status of the given tasks, thus checking a complete task will render it as pending and a pending task as complete. Duplicate ids are automatically filtered out.
+Um eine Aufgabe als fertig/unfertig zu markieren, kann das mit dem `check` / `c` Kommando, gefolgt von den Aufgaben-ids. 
+Beachte, dass die Option den `complete`-Status umkehren, ein abgeschlossener Status wird als "wartend" markiert, einer als "wartend" wird als abgeschlossen markiert.  
+Doppelte ids werden herausgefiltert.
 
 ``` 
 $ tl c 1,3
