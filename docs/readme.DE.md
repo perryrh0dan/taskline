@@ -110,27 +110,27 @@ Usage: tl [options] [command]
 Tasks, boards & notes for the command-line habitat
 
 Options:
-  -V, --version                   output the version number
-  -h, --help                      output usage information
+  -V, --version                   Versionsinformationen ausgeben
+  -h, --help                      Informationen zur Verwendung anzeigen
 
 Commands:
-  archive|a                       Display archived items
-  begin|b <ids>                   Start/pause task
-  check|c <ids>                   Check/uncheck task
-  clear                           Delete all checked items
-  copy|y <ids>                    Copy description to clipboard
-  delete|d <ids>                  Delete item
-  due <ids> <dueDate>             Set or update duedate of task
-  edit|e <id> <description>       Edit item description
-  find|f <terms>                  Search for items
-  list|l <terms>                  List items by attributes
-  move|m <ids> <board>            Move item between boards
-  note|n [options] <description>  Create note
-  priority|p <id> <priority>      Update priority of task
-  restore|r <ids>                 Restore items from archive
-  star|s <ids>                    Star/unstar item
-  task|t [options] <description>  Create task
-  timeline|i                      Display timeline view
+  archive|a                       Archivierte Elemente anzeigen
+  begin|b <ids>                   Aufgabe starten/pausieren
+  check|c <ids>                   Aufgabe als erledigt/ unerledigt markieren
+  clear                           Alle erledigten Aufgaben löschen
+  copy|y <ids>                    Beschreibung zur Zwischenablage hinzufügen
+  delete|d <ids>                  Eintrag löschen
+  due <ids> <dueDate>             Fälligkeitsdatum einer Aufgabe setzen/löschen
+  edit|e <id> <description>       Eintragsbeschreibung bearbeiten
+  find|f <terms>                  Eintrag suchen
+  list|l <terms>                  Eintrag nach Attributen suchen
+  move|m <ids> <board>            Zwischen Tafeln verschieben
+  note|n [options] <description>  Notiz erstellen
+  priority|p <id> <priority>      Aufgabenpriorität bearbeiten
+  restore|r <ids>                 Eintrag vom Archiv wiederherstellen
+  star|s <ids>                    Eintrag hervorheben/Hervorhebung entfernen
+  task|t [options] <description>  Aufgabe erstellen
+  timeline|i                      Als Timeline darstellen
 ```
 
 # Ansichten
