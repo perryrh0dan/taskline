@@ -73,6 +73,7 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 - Possibility to use id ranges
 - Possibility to cancel tasks
 - Possibility to rearrange item ids
+- Timetracking for tasks
 
 ### Coming
 
@@ -332,6 +333,16 @@ To mark a task as complete/incomplete, use the `check` / `c` command followed by
 
 ```
 
+### Begin Task
+
+To mark a task as started/paused, use the `begin` / `b` command followed by the ids of the target tasks. The functionality of this command is the same as the one of the above described `check` command. When a task is in progress the elapsed time is measured.
+
+```
+
+> tl b 2,3
+
+```
+
 ### Cancel Task
 
 To mark a task as canceled/revived, use the `cancel` command followed by the ids of the target tasks. The functionality of this command is the same as the one of the above described `check` command.
@@ -342,15 +353,6 @@ To mark a task as canceled/revived, use the `cancel` command followed by the ids
 
 ```
 
-### Begin Task
-
-To mark a task as started/paused, use the `begin` / `b` command followed by the ids of the target tasks. The functionality of this command is the same as the one of the above described `check` command.
-
-```
-
-> tl b 2,3
-
-```
 
 ### Star Item
 
@@ -506,6 +508,7 @@ The by default supported listing attributes, together with their respective alia
 - `pending` , `unchecked` , `incomplete` - Items that are pending tasks.
 - `progress` , `started` , `begun` - Items that are in-progress tasks.
 - `done` , `checked` , `complete` - Items that complete tasks.
+- `canceled` - Items that are canceled.
 - `star` , `starred` - Items that are starred.
 - `default` , `medium` , `high` - Tasks with the given priority.
 
