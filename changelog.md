@@ -2,6 +2,11 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.4.0
+- Add timeloggin feature for tasks
+- Add spanisch language support
+- Add localization to help menu
+
 ## Version 1.3.0
 
 - Dependency updates
