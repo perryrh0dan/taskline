@@ -24,12 +24,13 @@ description: |
   * Multiple storage modules.
   * Save date on your local machine at `~/.taskline/storage` or
   * Use the firestore module to sync your tasks across all your devices.
+  * Timetracking for tasks
+  * Multilanguage support
   * Lightweight & fast
-  * Data written atomically to storage
+  * Data written automically to storage
   * Custom storage location
   * Progress overview
   * Simple & minimal usage syntax
-  * Update notifications
   * Configurable through `~/.taskline.json`
 
   More informations under https://github.com/perryrh0dan/taskline.
