@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e #stop on error
+echo 'Build Snap Package...'
 
 # Check if temp already exists if yes delete
-bash -c '[ -d temp ] && rm -r temp'
+if [ -d temp ]; then rm -r temp; fi;
 
 # Creating a temp directory for the build and navigate in
 echo 'Creating temp directory'
@@ -57,7 +58,8 @@ rm ./gulpfile.js
 
 # Build Snap
 echo 'Build snap'
-sudo snapcraft cleanbuild
+sudo snapcraft clean
+sudo snapcraft
 
 # Copy snap to main directory
 echo 'Copy snap to main directory'
@@ -68,5 +70,5 @@ find ./ -iname '*.snap' -exec cp {} ../ \;
 # Navigate out and delete temp directory
 echo 'Delete temp directory'
 cd ..
-sudo rm -r ./temp
+# sudo rm -r ./temp
 

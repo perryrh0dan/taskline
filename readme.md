@@ -74,6 +74,7 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 - Possibility to cancel tasks
 - Possibility to rearrange item ids
 - Timetracking for tasks
+- Multilanguage support
 
 ### Coming
 
@@ -602,7 +603,18 @@ Run the build script from '/scripts/build.sh'
 
 ### Publish
 
-After 
+#### Npm
+
+100% automated;
+
+#### Snapcraft
+
+``` bash
+snapcraft login
+
+snapcraft push --release=stable taskline_1.3.4_multi.snap
+```
+
 
 ## Team
 
