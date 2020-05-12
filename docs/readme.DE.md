@@ -310,24 +310,24 @@ $ tl y 1,2,3
 ```
 
 ### Tafeln anzeigen
-
-Invoking taskline without any commands and options will display all of saved items grouped into their respective boards.
+Wird Taskline ohne Parameter aufgerufen, werden alle gespeicherten Einträge nach Tafeln sortiert angezeigt.
 
 ``` 
 $ tl
 ```
 
 ### Zeitleiste anzeigen
-
-In order to display all items in a timeline view, based on their creation date, the `timeline` / `i` command can be used.
+Um alle Einträge in einer Zeitleistenansicht darzustellen, also basierend auf ihren Erstellungsdatumkann das  `timeline` / `i` Kommando benutzt werden.
 
 ``` 
 $ tl i
 ```
 
 ### Priorität setzen
+Um die Priorität eines Eintrages während des Hinzufügens zu setzen, benutze die  `-p` -Option, gefolgt con der Priorität. 
+Die Priorität kann eine Integerzahl des Wertes  `1` , `2` oder `3` sein. 
+Bitte beachte, dass alle Aufgaben mit einer normalen Priorität von `1` erstellt werden.
 
-To set a priority level for a task while initializing it, use the `-p` option followed by the priority. Priority can be an integer of value `1` , `2` or `3` . Note that all tasks by default are created with a normal priority - `1` .
 
 * `1` - Normal priority
 * `2` - Medium priority
