@@ -79,10 +79,14 @@ export class Task extends Item {
   }
 
   public get passedTime(): number {
-    if(this._lastStartTime != 0) {
-      return this._passedTime + (new Date().getTime() - this._lastStartTime);
-    }
     return this._passedTime;
+  }
+
+  public getRealPassedTime(): number {
+    if(this.lastStartTime != 0) {
+      return this.passedTime + (new Date().getTime() - this.lastStartTime);
+    }
+    return this.passedTime;
   }
 
   public get lastStartTime(): number {
@@ -90,17 +94,21 @@ export class Task extends Item {
   }
 
   public begin(): void {
+    debugger;
     const now: Date = new Date();
 
     // check if task is started or paused
     if(this.inProgress == true) {
-      this._passedTime += now.getTime() - this._lastStartTime;
+      // just for backwards compatibility
+      if (this.lastStartTime != 0) {
+        this._passedTime += now.getTime() - this.lastStartTime;
+      }
       this._lastStartTime = 0;
     } else {
       this._lastStartTime = now.getTime();
     }
 
-    this.inProgress = !this._inProgress;
+    this.inProgress = !this.inProgress;
     this.isComplete = false;
     this.isCanceled = false;
   }
@@ -109,7 +117,10 @@ export class Task extends Item {
     const now: Date = new Date();
 
     if(this.inProgress == true) {
-      this._passedTime += now.getTime() - this._lastStartTime;
+      // just for backwards compatibility
+      if (this.lastStartTime != 0) {
+        this._passedTime += now.getTime() - this.lastStartTime;
+      }
       this._lastStartTime = 0;
     }
 
@@ -122,7 +133,10 @@ export class Task extends Item {
     const now: Date = new Date();
 
     if(this.inProgress == true) {
-      this._passedTime += now.getTime() - this._lastStartTime;
+      // just for backwards compatibility
+      if (this.lastStartTime != 0) {
+        this._passedTime += now.getTime() - this.lastStartTime;
+      }
       this._lastStartTime = 0;
     }
 

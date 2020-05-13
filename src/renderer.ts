@@ -315,7 +315,7 @@ export class Renderer {
 
     let passedTime;
     if (item instanceof Task && item.passedTime > 0) {
-      passedTime = this.getPassedTime(item.passedTime);
+      passedTime = this.getPassedTime(item.getRealPassedTime());
     }
 
     const star = this.getStar(item);

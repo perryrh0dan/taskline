@@ -615,7 +615,6 @@ snapcraft login
 snapcraft push --release=stable taskline_1.3.4_multi.snap
 ```
 
-
 ## Team
 
 - Thomas Pöhlmann [(@perryrh0dan)](https://github.com/perryrh0dan)
