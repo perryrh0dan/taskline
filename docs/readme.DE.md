@@ -326,50 +326,52 @@ $ tl i
 ### Priorität setzen
 Um die Priorität eines Eintrages während des Hinzufügens zu setzen, benutze die  `-p` -Option, gefolgt con der Priorität. 
 Die Priorität kann eine Integerzahl des Wertes  `1` , `2` oder `3` sein. 
-Bitte beachte, dass alle Aufgaben mit einer normalen Priorität von `1` erstellt werden.
+Bitte beachte, dass alle Aufgaben ohne gesetzte Prioriät mit `1` erstellt werden.
 
 
-* `1` - Normal priority
-* `2` - Medium priority
-* `3` - High priority
+* `1` - Normale Priorität
+* `2` - Mittlere Priorität
+* `3` - Hohe Priorität
 
 ``` 
-$ tl t "Fix issue `#42` " -b coding -p 3
+$ tl t "Erledige Ticket `#42` " -b coding -p 3
 ```
-
-To update the priority level of a specific task after its creation, use the `priority` / `p` command along with the id of the target tasks and an integer of value `1` , `2` or `3` .
+Um die Priorität einer Aufgabe nach der Erstellung zu erhöhen, benutze das `priority` / `p` Kommando mit der id des Zieleintrags und einem Integer des Wertes `1` , `2` oder `3` .
 
 ``` 
 $ tl p 1,2,23 2
 ```
 
 ### Frist setzen
-
-To set a duedate for a task while initializing it, use the `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy` . Note that all tasks by default have no duedate.
+Um eine Befristung während der Erstelllung zu setzen, benutze die `-d` Option, gefolgt von dem Fälligkeitsdatum. 
+Das Fälligkeitsdatum muss im Format angegeben werden, dass in der Konfigurationsdatei unter Datumsformat (dateformat) vorgegeben ist. Der Standardwert ist `dd.mm.yyyy` .
+Bitte beachte, dass Aufgaben ohne diese Option ohne Fälligkeitsdatum erstellt werden.
 
 ``` 
-$ tl t "Solve puzzle" -b coding -d 23.08.2019
+$ tl t "Rätsel lösen" -b coding -d 23.08.2019
 ```
-
-To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date. The `due` command has no available shorter alias.
+Um das Fälligkeitsdatum nach der Erstellung zu ändern, benutze das `due` Kommando mit der id des Eintrages und einem Datum.
+Das `due` Kommando hat keine kürzere Variante.
 
 ``` 
 $ tl due 1,2,23 15.09.2019
 ```
+Die Anzahl der Resttage vor dem Fälligkeitsdatum wird anstelle des Alters direkt rechts neben der Beschreibung angezeigt.
 
-The number of duedays (days left before duedate) of a task is displayed instead of the age of an task right next to the description.
+### Eintrag verschieben
 
-### item bewegen
-
-To move items to one or more boards, use the `move` / `m` command, followed by the target items ids and the name of the destination boards. The default `My board` can be accessed through the `myboard` keyword.
+Um einen Eintrag zu einem oder mehreren Tafeln zu verschieben, bentutze das `move` / `m` Kommando, gefolgt von den Nummern der Einträge und den Namen der Tafeln.
+Die Standardtafel `My board` wird durch den Namen `myboard` erreicht.
 
 ``` 
 $ tl m 1,2 myboard,reviews
 ```
 
-### item löschen
+### Eintrag löschen
 
-To delete one or more items, use the `delete` / `d` command followed by the ids of the target items. Note that deleted items are automatically archived, and can be inspected or restored at any moment. Duplicate ids are automatically filtered out.
+Um einen eintrag zu löschen, benutze das `delete` / `d` Kommando, gefolgt von der Nummer/den Nummern der Einträge. 
+Beachte, dass gelöschte Einträge automatisch archiviert werden, und sie jederzeit eingesehen oder wiederhergestellt werden können. Doppelte Nummern werden automatisch herausgefiltert.
+
 
 ``` 
 $ tl d 1,2
@@ -377,50 +379,52 @@ $ tl d 1,2
 
 ### Alle fertigen Aufgaben löschen
 
-To delete/clear all complete tasks at once across all boards, use the `clear` command. Note that all deleted tasks are automatically archived, and can be inspected or restored at any moment. In order to discourage any possible accidental usage, the `clear` command has no available shorter alias.
+Um alle fertigen Aufgaben auf einmal zu löschen, benutze das `clear` Kommando. 
+Beachte auch hier, dass gelöschte Einträge automatisch archiviert werden, und jederzeit eingesehen oder wiederhergestellt werden können.
+Um Fehler durch versehentliches Löschen zu vermeiden, gibt es keine kürzere Variante des `clear` Kommandos.
 
 ``` 
 $ tl clear
 ```
 
 ### Archiv anzeigen
-
-To display all archived items, use the `archive` / `a` command. Note that all archived items are displayed in timeline view, based on their creation date.
+Um alle Einträge im Archiv anzuzeigen, benutze das `archive` / `a` Kommando. 
+Beachte, dass alle archivierten Einträge in der Zeitlesitenansicht angezeigt werden -sortiert nach dem Erstellungsdatum.
 
 ``` 
 $ tl a
 ```
 
-### Items wiederherstellen
-
-To restore one or more items, use the `restore` / `r` command followed by the id of the target items. Note that the ids of all archived items can be seen when invoking the `archive` / `a` option. Duplicate ids are automatically filtered out.
+### Einträge wiederherstellen
+Um Einträge wiederherzustellen, benutze das `restore` / `r` Kommando, gefolgt von den Nummern der Zieleinträge. 
+Beachte, dass die Nummern aller archivierten Einträge gesehen werden können mit der `archive` / `a` Option. Doppelte Nummern werden herausgelesen.
 
 ``` 
 $ tl r 1,2
 ```
 
-### Items nach Attributen filtern
+### Einträge nach Attributen filtern
 
-To list a group of items where each item complies with a specific set of attributes, use the `list` / `l` command followed by the desired attributes. Board names along with item traits can be considered valid listing attributes. For example to list all items that belong to the default `myboard` and are pending tasks, the following could be used; 
+Um eine Liste von Einträgen nach einem speziellen Attribut zu filtern, benutze das `list` / `l` Kommando, gefolgt von den gewünschten Attributen. 
+Tafelnamen und Eintragseigenschaften können als gültige Attribute angesehen werden.
+Um zum Beispiel alle Listeneinträge anzuzeigen, die zur Standardtafel `myboard` gehören und unerledigt sind, kann folgender Befehl verwendet werden: 
 
 ``` 
 $ tl l myboard,pending
 ```
+Die im Standard unterstützten Listenattribute -zusammen mit deren Aliases sind die folgenden: 
 
-The by default supported listing attributes, together with their respective aliases, are the following; 
+* `myboard` - Einträge, die zu `My board` gehören 
+* `task` , `tasks` , `todo` - Einträge, die Aufgaben sind.
+* `note` , `notes` - Einträge, die Notizen sind.
+* `pending` , `unchecked` , `incomplete` - Unerledigte Aufgaben.
+* `progress` , `started` , `begun` - Aufgaben, die in Bearbeitung sind.
+* `done` , `checked` , `complete` - Erledigte Aufgaben.
+* `star` , `starred` - Hervorgeboene Einträge.
+* `default` , `medium` , `high` - Einträge mit der gewählten Wichtigkeit/Priorität.
 
-* `myboard` - Items that belong to `My board` 
-* `task` , `tasks` , `todo` - Items that are tasks.
-* `note` , `notes` - Items that are notes.
-* `pending` , `unchecked` , `incomplete` - Items that are pending tasks.
-* `progress` , `started` , `begun` - Items that are in-progress tasks.
-* `done` , `checked` , `complete` - Items that complete tasks.
-* `star` , `starred` - Items that are starred.
-* `default` , `medium` , `high` - Task that have the given priority.
-
-### Nach items suchen
-
-To search for one of more items, use the `find` / `f` command, followed by your search terms.
+### Nach Einträgen suchen
+Um einen oder mehrere Einträge zu suchen, benutze das `find` / `f` Kommando, gefolgt von der Suchabfrage.
 
 ``` 
 $ tl f documentation
@@ -428,16 +432,16 @@ $ tl f documentation
 
 ## Entwicklung
 
-For more info on how to contribute to the project, please read the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md).
+Um mehr zu erfahren, wie Du bei dem Projekt mithelfen kannst, lese bitte die [Anleitung zur Mithilfe (englisch)](https://github.com/perryrh0dan/taskline/blob/master/contributing.md).
 
-* Fork the repository and clone it to your machine
-* Navigate to your local fork: `cd taskline` 
-* Install the project dependencies: `npm install` or `yarn install` 
-* Lint the code for errors: `npm test` or `yarn test` 
+* Forke das Repository und klone es auf Deine Maschine
+* Gehe zum Projektordner des lokalen Forks: `cd taskline`
+* Installiere die Projektabhängigkeiten: `npm install` oder `yarn install` 
+* Lint den Code nach Fehlern: `npm test` oder `yarn test` 
 
-## Verwandt
+## Verwandte Themen
 
-* [signale](https://github.com/klaussinani/signale) - Highly configurable logging utility
+* [signale](https://github.com/klaussinani/signale) - Sehr gut anpassbares Datensammlungswerkzeug
 
 ## Team
 
