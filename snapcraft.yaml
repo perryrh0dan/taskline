@@ -1,5 +1,5 @@
 name: taskline
-version: '1.3.4'
+version: '1.4.0'
 summary: Tasks, boards & notes for the command-line habitat
 description: |
   By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you
@@ -24,12 +24,13 @@ description: |
   * Multiple storage modules.
   * Save date on your local machine at `~/.taskline/storage` or
   * Use the firestore module to sync your tasks across all your devices.
+  * Timetracking for tasks
+  * Multilanguage support
   * Lightweight & fast
-  * Data written atomically to storage
+  * Data written automically to storage
   * Custom storage location
   * Progress overview
   * Simple & minimal usage syntax
-  * Update notifications
   * Configurable through `~/.taskline.json`
 
   More informations under https://github.com/perryrh0dan/taskline.
@@ -42,6 +43,13 @@ architectures:
   - amd64
   - i386
 
+parts:
+  taskline:
+    plugin: nodejs
+    nodejs-version: 12.16.1
+    nodejs-package-manager: npm
+    source: .
+
 apps:
   taskline:
     command: tl
@@ -50,10 +58,3 @@ apps:
       - network
       - network-control
       - x11
-
-parts:
-  taskline:
-    plugin: nodejs
-    node-engine: 12.16.1
-    node-package-manager: npm
-    source: .

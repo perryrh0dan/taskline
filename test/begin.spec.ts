@@ -64,49 +64,74 @@ describe('Test begin functionality', () => {
 
   it('should begin one task', async() => {
     const now = new Date();
+    const oldData: Array<Item> = await helper.getData([2]);
+    const oldTask: Task = oldData[0] as Task;
+
     await taskline.beginTasks('2');
+
     const data: Array<Item> = await helper.getData([2]);
-    expect((data[0] as Task).inProgress).toBe(true);
-    expect((data[0] as Task).isCanceled).toBe(false);
-    expect((data[0] as Task).isComplete).toBe(false);
-    expect((data[0] as Task).lastStartTime).toBeGreaterThan(now.getTime());
+    const task: Task = data[0] as Task;
+
+    expect(task.inProgress).toBe(true);
+    expect(task.isCanceled).toBe(false);
+    expect(task.isComplete).toBe(false);
+    expect(task.lastStartTime).toBeGreaterThan(now.getTime());
+    expect(task.passedTime).toBe(oldTask.passedTime);
   });
 
   it('should pause one task', async() => {
+    const now = new Date();
+    const oldData: Array<Item> = await helper.getData([2]);
+    const oldTask: Task = oldData[0] as Task;
+
     await taskline.beginTasks('2');
+
     const data: Array<Item> = await helper.getData([2]);
-    expect((data[0] as Task).inProgress).toBe(false);
-    expect((data[0] as Task).isCanceled).toBe(false);
-    expect((data[0] as Task).isComplete).toBe(false);
-    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
-    expect((data[0] as Task).lastStartTime).toBe(0);
+    const task: Task = data[0] as Task;
+
+    expect(task.inProgress).toBe(false);
+    expect(task.isCanceled).toBe(false);
+    expect(task.isComplete).toBe(false);
+    expect(task.passedTime).toBeGreaterThanOrEqual(oldTask.passedTime + now.getTime() - oldTask.lastStartTime);
+    expect(task.lastStartTime).toBe(0);
   });
 
   it('should continue one task', async() => {
     const now = new Date();
+    const oldData: Array<Item> = await helper.getData([2]);
+    const oldTask: Task = oldData[0] as Task;
+
     await taskline.beginTasks('2');
+
     const data: Array<Item> = await helper.getData([2]);
-    expect((data[0] as Task).inProgress).toBe(true);
-    expect((data[0] as Task).isCanceled).toBe(false);
-    expect((data[0] as Task).isComplete).toBe(false);
-    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
-    expect((data[0] as Task).lastStartTime).toBeGreaterThanOrEqual(
+    const task: Task = data[0] as Task;
+
+    expect(task.inProgress).toBe(true);
+    expect(task.isCanceled).toBe(false);
+    expect(task.isComplete).toBe(false);
+    expect(task.passedTime).toBe(oldTask.passedTime);
+    expect(task.lastStartTime).toBeGreaterThanOrEqual(
       now.getTime()
     );
   });
 
   it('should begin multiple tasks', async() => {
     const now = new Date();
+    const oldData: Array<Item> = await helper.getData([2, 3]);
+
     await taskline.beginTasks('2,3');
+
     const data: Array<Item> = await helper.getData([2, 3]);
+
     expect((data[0] as Task).inProgress).toBe(false);
     expect((data[0] as Task).isCanceled).toBe(false);
     expect((data[0] as Task).isComplete).toBe(false);
-    expect((data[0] as Task).passedTime).toBeGreaterThan(0);
+    expect((data[0] as Task).passedTime).toBeGreaterThanOrEqual((oldData[0] as Task).passedTime + now.getTime() - (oldData[0] as Task).lastStartTime);
     expect((data[0] as Task).lastStartTime).toBe(0);
     expect((data[1] as Task).inProgress).toBe(true);
     expect((data[1] as Task).isCanceled).toBe(false);
     expect((data[1] as Task).isComplete).toBe(false);
+    expect((data[1] as Task).passedTime).toBe((oldData[1] as Task).passedTime);
     expect((data[1] as Task).lastStartTime).toBeGreaterThanOrEqual(
       now.getTime()
     );
