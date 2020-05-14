@@ -29,39 +29,39 @@
 
 Durch die Verwendung einer einfachen und minimalen Syntax, die eine flache Lernkurve erfordert, können Sie mit Taskline Ihre Aufgaben und Notizen von Ihrem Terminal aus auf mehreren Tafeln effektiv verwalten. Alle Daten werden atomar in den Speicher geschrieben, um Verfälschungen zu vermeiden. Im Moment gibt es zwei Speichermodule. Das lokaler Speicher-Modul, in dem Ihre daten niemals für andere freigegeben werden, oder das Firestore-Modul, in dem Ihre Daten in Ihrer Firestore-Datenbank gespeichert werden und mit all Ihren Geräten synchronisiert werden können. Gelöschte Objekte werden automatisch archiviert und können jederzeit eingesehen oder wiederhergestellt werden.
 
-Visit the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) to learn more on how to translate this document into more languages.
+Besuche die [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md#translating-documentation) um mehr zu erfahren, wie du diese Anleitung in eine andere Sprache übersetzen kannst.
 
-Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [Twitter](https://twitter.com/perryrh0dan1) to share your thoughts on the project.
+Besuche mich auf [Gitter](https://gitter.im/taskline/community?source=orgpage) or [Twitter](https://twitter.com/perryrh0dan1) um Deine gedanken zu dem Projekt zu teilen.
 
 ## Highlights
 
 ### Original
 
-* Organize tasks & notes to boards
-* Board & timeline views
-* Priority & favorite mechanisms
-* Search & filter items
-* Archive & restore deleted items
-* Lightweight & fast
-* Data written atomically to storage
-* Custom storage location
-* Progress overview
-* Simple & minimal usage syntax
-* Update notifications
-* Configurable through `~/.taskline.json` 
-* Data stored in JSON file at `~/.taskline/storage` 
+* Aufgaben und Notizen zu Tafeln einordnen
+* Tafel- und Zeitleistenansicht
+* Prioritäten und Favoritenmechanismus
+* Einträge suchen und filtern
+* Einträge archivieren und wiederherstellen
+* schlank & schnell
+* Daten werden atomar an den Speicherort geschrieben
+* Speicherort konfigurierbar
+* Prozessübersicht
+* Einfache und minimalistische Nutzungssyntax
+* Aktualisierungsbenachrichtung
+* Konfigurierbar durch `~/.taskline.json` 
+* Daten sind als JSON gespeichert in `~/.taskline/storage` 
 
 ### Neu
 
-* Modular data storage.
-* Firestore module to save data in google firestore.
-* Sync tasks across all your devices with firestore.
-* Replaced Meow with commander.js
-* Duedate mechanism
-* Display loadingspinner while fetching network requests
-* New list filter attributes 
+* Modularer Datenspeicher
+* Firestore-Modul, um Daten in google firestore zu speichern 
+* Aufgaben über alle Geräte mit firestore synchronisieren.
+* Meow durch commander.js ausgetauscht
+* Fälligkeitsdatum
+* Loadingspinner wird angezeigt während Netzwerkanfragen
+* Neue Filterattribute für Listen
 
-View highlights in a [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
+Die herausragenden Eigenschaften als Tafelansicht: [taskline board](https://raw.githubusercontent.com/perryrh0dan/taskline/master/media/highlights.png).
 
 ## Inhalt
 
@@ -99,63 +99,66 @@ snap install taskline
 snap alias taskline tl # set alias
 ```
 
-**Note:** Due to the snap's strictly confined nature, both the storage & configuration files will be saved under the [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) environment variable instead of the generic `$HOME` one.
-
+**Anmerkung:** Wegen der strikten Trennung in snap-Apps befinden sich die Konfigurationsdateien unter [`$SNAP_USER_DATA`](https://docs.snapcraft.io/reference/env) Umgebungsvariable anstatt in `$HOME` .
 ## Nutzung
 
 ``` 
 $ tl --help
-Usage: tl [options] [command]
+Anwendung: tl [options] [command]
 
-Tasks, boards & notes for the command-line habitat
 
-Options:
-  -V, --version                   output the version number
-  -h, --help                      output usage information
+Aufgaben, Tafeln & Notizen in der Kommandozeilenumgebung
+
+Optionen:
+  -V, --version                   Versionsinformationen ausgeben
+  -h, --help                      Informationen zur Verwendung anzeigen
 
 Commands:
-  archive|a                       Display archived items
-  begin|b <ids>                   Start/pause task
-  check|c <ids>                   Check/uncheck task
-  clear                           Delete all checked items
-  copy|y <ids>                    Copy description to clipboard
-  delete|d <ids>                  Delete item
-  due <ids> <dueDate>             Set or update duedate of task
-  edit|e <id> <description>       Edit item description
-  find|f <terms>                  Search for items
-  list|l <terms>                  List items by attributes
-  move|m <ids> <board>            Move item between boards
-  note|n [options] <description>  Create note
-  priority|p <id> <priority>      Update priority of task
-  restore|r <ids>                 Restore items from archive
-  star|s <ids>                    Star/unstar item
-  task|t [options] <description>  Create task
-  timeline|i                      Display timeline view
+  archive|a                       Archivierte Elemente anzeigen
+  begin|b <ids>                   Aufgabe starten/pausieren
+  check|c <ids>                   Aufgabe als erledigt/ unerledigt markieren
+  clear                           Alle erledigten Aufgaben löschen
+  copy|y <ids>                    Beschreibung zur Zwischenablage hinzufügen
+  delete|d <ids>                  Eintrag löschen
+  due <ids> <dueDate>             Fälligkeitsdatum einer Aufgabe setzen/löschen
+  edit|e <id> <description>       Eintragsbeschreibung bearbeiten
+  find|f <terms>                  Eintrag suchen
+  list|l <terms>                  Eintrag nach Attributen suchen
+  move|m <ids> <board>            Zwischen Tafeln verschieben
+  note|n [options] <description>  Notiz erstellen
+  priority|p <id> <priority>      Aufgabenpriorität bearbeiten
+  restore|r <ids>                 Eintrag vom Archiv wiederherstellen
+  star|s <ids>                    Eintrag hervorheben/Hervorhebung entfernen
+  task|t [options] <description>  Aufgabe erstellen
+  timeline|i                      Als Timeline darstellen
 ```
 
 # Ansichten
 
 ### Tafelansicht
 
-Invoking taskline without any options will display all saved items grouped into their respective boards.
-
+Der Aufruf von taskline ohne Parameter zeigt alle gespeicherten Elemente - gruppiert in den zugehörigen Tafeln.
+ 
 <div align="center">
   <img alt="Boards" width="70%" src="../media/header-boards.png"/>
 </div>
 
-### Zeitachsenansicht
+### Zeitleistenansicht
 
-In order to display all items in a timeline view, based on their creation date, the `--timeline` / `-i` option can be used.
+Um die Elemente in einer Zeitleistenansicht anzuzeigen kann der Parameter
+ `--timeline` / `-i` 
+verwendet werden. Die Elemente werden dann in der Reihenfolge der Erstellung angezeigt.
 
 <div align="center">
   <img alt="Timeline View" width="70%" src="../media/timeline.png"/>
 </div>
 
 ## Konfiguration
+Um Taskline zu konfigurieren, reicht es aus, die Datei  `~/.taskline.json` gemäß Deinen Vorstellungen anzupassen. 
+Um zu den Standardwerten zurückzukommen, lösche einfach die Konfigurationsdatei aus Deinem home-Verzeichnis.
 
-To configure taskline navigate to the `~/.taskline.json` file and modify any of the options to match your own preference. To reset back to the default values, simply delete the config file from your home directory.
+Das folgende Beispiel zeigt alle möglichen Optionen und deren Standardwerte.
 
-The following illustrates all the available options with their respective default values.
 
 ``` json
 {
@@ -183,76 +186,76 @@ The following illustrates all the available options with their respective defaul
 
 ##### `tasklineDirectory` 
 
-* Type: `String` 
-* Default: `~` 
+* Typ: `String` 
+* Standardwert: `~` 
+Pfad im Dateisystem, an der sich der Speicherplatz befindet, zum Beispiel `/home/username/the-cloud` oder `~/the-cloud` 
 
-Filesystem path where the storage will be initialized, i.e: `/home/username/the-cloud` or `~/the-cloud` 
-
-If left undefined the home directory `~` will be used and taskline will be set-up under `~/.taskline/` .
+Wird diese Option ausgelassen, ist der Speicherort `~` und die Einstellungen in `~/.taskline/` .
 
 ##### `displayCompleteTasks` 
 
-* Type: `Boolean` 
-* Default: `true` 
+* Typ: `Boolean` 
+* Standardwert: `true` 
 
-Display tasks that are marked as complete.
+Als erledigt markierte Aufgaben anzeigen.
 
 ##### `displayProgressOverview` 
 
-* Type: `Boolean` 
-* Default: `true` 
+* Typ: `Boolean` 
+* Standardwert: `true` 
 
-Display progress overview below the timeline and board views.
+Prozessübersicht unterhalb der Leistenansicht und der Tafelansicht anzeigen
 
 ##### `storageModule` 
 
-* Type: `Enum` 
-* Default: `local` 
-* Values: `local` , `firestore` 
+* Typ: `Enum` 
+* Standardwert: `local` 
+* mögliche Werte: `local` , `firestore` 
 
-Choose of storage module. Currently there are two modules `local` and `firestore` . For the firestore module the firestoreConfig is needed.
+Speicherort wählen. Derzeit gibt es zwei Module `local` und `firestore` . 
+Für das Modul firestore wird die firestoreConfig benötigt.
 
 ##### `firestoreConfig` 
 
-* Type: `Google Dienstkontoschlüssel` 
-* Default: `Empty` 
+* Typ: `Google Dienstkontoschlüssel` 
+* Standardwert: `Empty` 
 
-Configuration of the firestore module.
+Konfiguration des firestore-Moduls.
 
 ##### `dateformat` 
 
-* Type: `String` 
-* Default: `dd.mm.yyyy` 
+* Typ: `String` 
+* Standardwert: `dd.mm.yyyy` 
 
-Dateformat used for duedate.
+Format des Fälligkeitsdatums.
 
 ## Vor dem Flug
 
-When you want to use the local storage module there is no further configuration need. When you want to use the firestore module follow this steps:
+Wenn Du den lokalen Speicher zu nutzen, ist keine weitere Konfiguration notwendig. wenn du das firestore-Modul nutzen möchtest, folge diesen Schritten:
 
-### Setup Firestore
+### Firestore vorbereiten
 
-1. Create a new Project on the google cloud platform.
-2. Create a new service account for this project.
-3. Download the authorization.json file and insert all the lines to the corresponding lines in the taskline configuration.
+1. Erzeuge ein neues Projekt auf der google cloud Plattform.
+2. Erzeuge einen neuen Service Account für das Projekt.
+3. Lade die authorization.json-Datei herunter und übertrage die Zeilen in die entspreichenden Zeilen die taskline-Konfiguration.
 
-or follow this [instruction page](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
+oder folge diesem [Handbuch](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application).
 ## Flughandbuch
 
-The following is a minor walkthrough containing a set of examples on how to use taskline.
-In case you spotted an error or think that an example is not to clear enough and should be further improved, please feel free to open an [issue](https://github.com/perryrh0dan/taskline/issues/new/choose) or [pull request](https://github.com/perryrh0dan/taskline/compare).
+Im folgenden ist eine kurze Übersicht mit einem Beispielsatz zur Anwendung von taskline. 
+Im Falle, dass Du einen Fehler gefunden hast oder ein Beispiel nicht deutlich genug ist, oder weiter verbessert werden soll, eröffne ein Ticket [Ticket](https://github.com/perryrh0dan/taskline/issues/new/choose) oder [pull request](https://github.com/perryrh0dan/taskline/compare).
 
 ### Task erstellen
 
-To create a new task use the `task` / `t` command with your task's description following right after.
+Um eine neue Aufgabe zu erstellen, benutze das `task` / `t` Kommando mit der Beschreibung der Aufgabe direkt im Anschluss.
 
 ``` 
-$ tl t "Improve documentation"
+$ tl t "Verbesserte Beschreibung"
 ```
 
 ### Notiz erstellen
 
-To create a new note use the `note` / `n` command with your note's body following right after.
+Um eine neue Notiz zu erstellen benutze das `note` / `n` Kommando mit dem Notizentext direkt dahinter.
 
 ``` 
 $ tl n "Mergesort worse-case O(nlogn)"
@@ -260,105 +263,115 @@ $ tl n "Mergesort worse-case O(nlogn)"
 
 ### Tafel erstellen
 
-Boards are automatically initialized when creating a new task or note. To create one or more boards, use the `--board` / `-b` option, followed by a list of boardnames, after the description of the about-to-be created item. As a result the newly created item will belong to all of the given boards. By default, items that do not contain any board option are automatically added to the general purpose; `My Board` .
+Tafeln werden automatisch initialisert, wenn eine neue Aufgabe oder Notiz erstellt wird.
+Um eine neue Tafel zu erstellen, benutze die  `--board` / `-b` Option, gefolgt von der Liste der Tafeln, 
+nach der Beschriftung der zu erzeugenden Notiz oder der Aufgabe. 
+Als Folge wird ein neuer Eintrag in allen angegeben Tafeln erstellt.
+Als Standard werden alle Einträge ohne Tafel-Option der Tafel  `My Board` hinzugefügt.
 
 ``` 
-$ tl t "Update contributing guidelines" -b coding,docs
+$ tl t "Die Mitwirkendendokumentationen überarbeiten" -b coding,docs
 ```
 
-### Task abhaken
+### Aufgabe abhaken
 
-To mark a task as complete/incomplete, use the `check` / `c` command followed by the ids of the target tasks. Note that the option will update to its opposite the `complete` status of the given tasks, thus checking a complete task will render it as pending and a pending task as complete. Duplicate ids are automatically filtered out.
+Um eine Aufgabe als fertig/unfertig zu markieren, kann das mit dem `check` / `c` Kommando, gefolgt von den Aufgaben-ids. 
+Beachte, dass die Option den `complete`-Status umkehren, ein abgeschlossener Status wird als "wartend" markiert, einer als "wartend" wird als abgeschlossen markiert.  
+Doppelte ids werden herausgefiltert.
 
 ``` 
 $ tl c 1,3
 ```
 
 ### Task anfangen
-
-To mark a task as started/paused, use the `begin` / `b` command followed by the ids of the target tasks. The functionality of this option is the same as the one of the above described `check` command.
+Um eine Aufgabe zu starten oder zu pausieren, benutz das `begin` / `b` Kommando, gefolgt von den ids. 
+Die Funktion dieser Option ist die gleiche wie beim abhaken ( `check` ).
 
 ``` 
 $ tl b 2,3
 ```
 
-### Item favorisieren
+### Eintrag favorisieren
 
-To mark one or more items as favorite, use the `star` / `s` command followed by the ids of the target items. The functionality of this option is the same as the one of the above described `check` command.
+Um einen Eintrag als Favorit zu markieren, benutze das `star` / `s` Kommando, gefolgt von den Nummern der Einträge. 
+Die Funktion dieser Option ist die gleiche wie beim abhaken ( `check` ).
 
 ``` 
 $ tl s 1,2,3
 ```
 
-### Item beschreibung kopieren
+### Eintrag-Beschreibung kopieren
 
-To copy to your system's clipboard the description of one or more items, use the `copy` / `y` option followed by the ids of the target items. Note that the option will also include the newline character as a separator to each pair of adjacent copied descriptions, thus resulting in a clear and readable stack of sentences on paste.
+Um eine Beschreibung eines Eintrages in die Zwischenablage zu kopieren, benutze die `copy` / `y`  Option, gefolgt von den Nummern der Einträge. 
+Beachte, dass die Option einen Zeilenumbruch nach jedem Eintrag hinzufügt.
 
 ``` 
 $ tl y 1,2,3
 ```
 
 ### Tafeln anzeigen
-
-Invoking taskline without any commands and options will display all of saved items grouped into their respective boards.
+Wird Taskline ohne Parameter aufgerufen, werden alle gespeicherten Einträge nach Tafeln sortiert angezeigt.
 
 ``` 
 $ tl
 ```
 
-### Zeitachse anzeigen
-
-In order to display all items in a timeline view, based on their creation date, the `timeline` / `i` command can be used.
+### Zeitleiste anzeigen
+Um alle Einträge in einer Zeitleistenansicht darzustellen, also basierend auf ihren Erstellungsdatumkann das  `timeline` / `i` Kommando benutzt werden.
 
 ``` 
 $ tl i
 ```
 
 ### Priorität setzen
+Um die Priorität eines Eintrages während des Hinzufügens zu setzen, benutze die  `-p` -Option, gefolgt con der Priorität. 
+Die Priorität kann eine Integerzahl des Wertes  `1` , `2` oder `3` sein. 
+Bitte beachte, dass alle Aufgaben ohne gesetzte Prioriät mit `1` erstellt werden.
 
-To set a priority level for a task while initializing it, use the `-p` option followed by the priority. Priority can be an integer of value `1` , `2` or `3` . Note that all tasks by default are created with a normal priority - `1` .
 
-* `1` - Normal priority
-* `2` - Medium priority
-* `3` - High priority
+* `1` - Normale Priorität
+* `2` - Mittlere Priorität
+* `3` - Hohe Priorität
 
 ``` 
-$ tl t "Fix issue `#42` " -b coding -p 3
+$ tl t "Erledige Ticket `#42` " -b coding -p 3
 ```
-
-To update the priority level of a specific task after its creation, use the `priority` / `p` command along with the id of the target tasks and an integer of value `1` , `2` or `3` .
+Um die Priorität einer Aufgabe nach der Erstellung zu erhöhen, benutze das `priority` / `p` Kommando mit der id des Zieleintrags und einem Integer des Wertes `1` , `2` oder `3` .
 
 ``` 
 $ tl p 1,2,23 2
 ```
 
 ### Frist setzen
-
-To set a duedate for a task while initializing it, use the `-d` option followed by the duedate. Duedate must be a date of the format specified in the configuration file under dateformat. Default is `dd.mm.yyyy` . Note that all tasks by default have no duedate.
+Um eine Befristung während der Erstelllung zu setzen, benutze die `-d` Option, gefolgt von dem Fälligkeitsdatum. 
+Das Fälligkeitsdatum muss im Format angegeben werden, dass in der Konfigurationsdatei unter Datumsformat (dateformat) vorgegeben ist. Der Standardwert ist `dd.mm.yyyy` .
+Bitte beachte, dass Aufgaben ohne diese Option ohne Fälligkeitsdatum erstellt werden.
 
 ``` 
-$ tl t "Solve puzzle" -b coding -d 23.08.2019
+$ tl t "Rätsel lösen" -b coding -d 23.08.2019
 ```
-
-To update the duedate of a specified task after its creation, use the `due` command along with the id of the target tasks and an date. The `due` command has no available shorter alias.
+Um das Fälligkeitsdatum nach der Erstellung zu ändern, benutze das `due` Kommando mit der id des Eintrages und einem Datum.
+Das `due` Kommando hat keine kürzere Variante.
 
 ``` 
 $ tl due 1,2,23 15.09.2019
 ```
+Die Anzahl der Resttage vor dem Fälligkeitsdatum wird anstelle des Alters direkt rechts neben der Beschreibung angezeigt.
 
-The number of duedays (days left before duedate) of a task is displayed instead of the age of an task right next to the description.
+### Eintrag verschieben
 
-### item bewegen
-
-To move items to one or more boards, use the `move` / `m` command, followed by the target items ids and the name of the destination boards. The default `My board` can be accessed through the `myboard` keyword.
+Um einen Eintrag zu einem oder mehreren Tafeln zu verschieben, bentutze das `move` / `m` Kommando, gefolgt von den Nummern der Einträge und den Namen der Tafeln.
+Die Standardtafel `My board` wird durch den Namen `myboard` erreicht.
 
 ``` 
 $ tl m 1,2 myboard,reviews
 ```
 
-### item löschen
+### Eintrag löschen
 
-To delete one or more items, use the `delete` / `d` command followed by the ids of the target items. Note that deleted items are automatically archived, and can be inspected or restored at any moment. Duplicate ids are automatically filtered out.
+Um einen eintrag zu löschen, benutze das `delete` / `d` Kommando, gefolgt von der Nummer/den Nummern der Einträge. 
+Beachte, dass gelöschte Einträge automatisch archiviert werden, und sie jederzeit eingesehen oder wiederhergestellt werden können. Doppelte Nummern werden automatisch herausgefiltert.
+
 
 ``` 
 $ tl d 1,2
@@ -366,50 +379,52 @@ $ tl d 1,2
 
 ### Alle fertigen Aufgaben löschen
 
-To delete/clear all complete tasks at once across all boards, use the `clear` command. Note that all deleted tasks are automatically archived, and can be inspected or restored at any moment. In order to discourage any possible accidental usage, the `clear` command has no available shorter alias.
+Um alle fertigen Aufgaben auf einmal zu löschen, benutze das `clear` Kommando. 
+Beachte auch hier, dass gelöschte Einträge automatisch archiviert werden, und jederzeit eingesehen oder wiederhergestellt werden können.
+Um Fehler durch versehentliches Löschen zu vermeiden, gibt es keine kürzere Variante des `clear` Kommandos.
 
 ``` 
 $ tl clear
 ```
 
 ### Archiv anzeigen
-
-To display all archived items, use the `archive` / `a` command. Note that all archived items are displayed in timeline view, based on their creation date.
+Um alle Einträge im Archiv anzuzeigen, benutze das `archive` / `a` Kommando. 
+Beachte, dass alle archivierten Einträge in der Zeitlesitenansicht angezeigt werden -sortiert nach dem Erstellungsdatum.
 
 ``` 
 $ tl a
 ```
 
-### Items wiederherstellen
-
-To restore one or more items, use the `restore` / `r` command followed by the id of the target items. Note that the ids of all archived items can be seen when invoking the `archive` / `a` option. Duplicate ids are automatically filtered out.
+### Einträge wiederherstellen
+Um Einträge wiederherzustellen, benutze das `restore` / `r` Kommando, gefolgt von den Nummern der Zieleinträge. 
+Beachte, dass die Nummern aller archivierten Einträge gesehen werden können mit der `archive` / `a` Option. Doppelte Nummern werden herausgelesen.
 
 ``` 
 $ tl r 1,2
 ```
 
-### Items nach Attributen filtern
+### Einträge nach Attributen filtern
 
-To list a group of items where each item complies with a specific set of attributes, use the `list` / `l` command followed by the desired attributes. Board names along with item traits can be considered valid listing attributes. For example to list all items that belong to the default `myboard` and are pending tasks, the following could be used; 
+Um eine Liste von Einträgen nach einem speziellen Attribut zu filtern, benutze das `list` / `l` Kommando, gefolgt von den gewünschten Attributen. 
+Tafelnamen und Eintragseigenschaften können als gültige Attribute angesehen werden.
+Um zum Beispiel alle Listeneinträge anzuzeigen, die zur Standardtafel `myboard` gehören und unerledigt sind, kann folgender Befehl verwendet werden: 
 
 ``` 
 $ tl l myboard,pending
 ```
+Die im Standard unterstützten Listenattribute -zusammen mit deren Aliases sind die folgenden: 
 
-The by default supported listing attributes, together with their respective aliases, are the following; 
+* `myboard` - Einträge, die zu `My board` gehören 
+* `task` , `tasks` , `todo` - Einträge, die Aufgaben sind.
+* `note` , `notes` - Einträge, die Notizen sind.
+* `pending` , `unchecked` , `incomplete` - Unerledigte Aufgaben.
+* `progress` , `started` , `begun` - Aufgaben, die in Bearbeitung sind.
+* `done` , `checked` , `complete` - Erledigte Aufgaben.
+* `star` , `starred` - Hervorgeboene Einträge.
+* `default` , `medium` , `high` - Einträge mit der gewählten Wichtigkeit/Priorität.
 
-* `myboard` - Items that belong to `My board` 
-* `task` , `tasks` , `todo` - Items that are tasks.
-* `note` , `notes` - Items that are notes.
-* `pending` , `unchecked` , `incomplete` - Items that are pending tasks.
-* `progress` , `started` , `begun` - Items that are in-progress tasks.
-* `done` , `checked` , `complete` - Items that complete tasks.
-* `star` , `starred` - Items that are starred.
-* `default` , `medium` , `high` - Task that have the given priority.
-
-### Nach items suchen
-
-To search for one of more items, use the `find` / `f` command, followed by your search terms.
+### Nach Einträgen suchen
+Um einen oder mehrere Einträge zu suchen, benutze das `find` / `f` Kommando, gefolgt von der Suchabfrage.
 
 ``` 
 $ tl f documentation
@@ -417,16 +432,16 @@ $ tl f documentation
 
 ## Entwicklung
 
-For more info on how to contribute to the project, please read the [contributing guidelines](https://github.com/perryrh0dan/taskline/blob/master/contributing.md).
+Um mehr zu erfahren, wie Du bei dem Projekt mithelfen kannst, lese bitte die [Anleitung zur Mithilfe (englisch)](https://github.com/perryrh0dan/taskline/blob/master/contributing.md).
 
-* Fork the repository and clone it to your machine
-* Navigate to your local fork: `cd taskline` 
-* Install the project dependencies: `npm install` or `yarn install` 
-* Lint the code for errors: `npm test` or `yarn test` 
+* Forke das Repository und klone es auf Deine Maschine
+* Gehe zum Projektordner des lokalen Forks: `cd taskline`
+* Installiere die Projektabhängigkeiten: `npm install` oder `yarn install` 
+* Lint den Code nach Fehlern: `npm test` oder `yarn test` 
 
-## Verwandt
+## Verwandte Themen
 
-* [signale](https://github.com/klaussinani/signale) - Highly configurable logging utility
+* [signale](https://github.com/klaussinani/signale) - Sehr gut anpassbares Datensammlungswerkzeug
 
 ## Team
 
