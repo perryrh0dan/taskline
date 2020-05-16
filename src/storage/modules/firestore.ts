@@ -1,36 +1,35 @@
-import { Storage } from './storage';
-import { Config } from './config';
-import { Item } from './item';
-import { Task } from './task';
-import { Note } from './note';
-import { Renderer } from './renderer';
+import { Storage } from '../storage';
+import { Item } from '../../item';
+import { Task } from '../../task';
+import { Note } from '../../note';
+import { Renderer } from '../../renderer';
 import * as firebase from 'firebase-admin';
+import { ServiceAccount } from 'firebase-admin';
+
+export interface IFirestoreConfig extends ServiceAccount {
+  storageName: string,
+  archiveName: string
+}
+
+export const create = (name: string, config: IFirestoreConfig): FirestoreStorage => {
+  return new FirestoreStorage(name, config);
+};
 
 export class FirestoreStorage implements Storage {
-  private static _instance: FirestoreStorage;
+  private _name: string;
   private _db: FirebaseFirestore.Firestore;
   private _storageName: string = '';
   private _archiveName: string = '';
   private _data: Array<Item> = new Array<Item>();
   private _archive: Array<Item> = new Array<Item>();
 
-  public static get instance(): FirestoreStorage {
-    if (!this._instance) {
-      this._instance = new FirestoreStorage();
-      this._instance.init();
-    }
-
-    return this._instance;
-  }
-
-  private init(): void {
-    const { firestoreConfig } = Config.instance.get();
-
-    this._storageName = firestoreConfig.storageName;
-    this._archiveName = firestoreConfig.archiveName;
+  public constructor(name: string, config: IFirestoreConfig) {
+    this._name = name;
+    this._storageName = config.storageName;
+    this._archiveName = config.archiveName;
 
     firebase.initializeApp({
-      credential: firebase.credential.cert(firestoreConfig)
+      credential: firebase.credential.cert(config)
     });
 
     this._db = firebase.firestore();
@@ -125,6 +124,10 @@ export class FirestoreStorage implements Storage {
     } catch (error) {
       throw new Error();
     }
+  }
+
+  public get name(): string {
+    return this._name;
   }
 
   public async set(data: Array<Item>): Promise<void> {

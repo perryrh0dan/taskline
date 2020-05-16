@@ -651,6 +651,18 @@ export class Renderer {
     });
   }
 
+  public invalidStorageModule(): void {
+    this.stopLoading();
+
+    const prefix = '\n';
+    const message = Localization.instance.get('Unable to load storage module');
+
+    this.signale.error({
+      prefix,
+      message
+    });
+  }
+
   public invalidID(id: number): void {
     this.stopLoading();
 

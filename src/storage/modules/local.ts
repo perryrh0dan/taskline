@@ -3,33 +3,27 @@ import { randomBytes } from 'crypto';
 import * as os from 'os';
 import * as fs from 'fs';
 
-import { Storage } from './storage';
-import { Config } from './config';
-import { Item } from './item';
-import { Task } from './task';
-import { Note } from './note';
-import { Renderer } from './renderer';
+import { Storage } from '../storage';
+import { Config } from '../../config';
+import { Item } from '../../item';
+import { Task } from '../../task';
+import { Note } from '../../note';
+import { Renderer } from '../../renderer';
 
-// const render = require('./render')
+export const create = (name: string, config: any): LocalStorage => {
+  return new LocalStorage(name);
+};
 
 export class LocalStorage implements Storage {
-  private static _instance: LocalStorage;
+  private _name: string;
   private storageDir: string = '';
   private archiveDir: string = '';
   private tempDir: string = '';
   private archiveFile: string = '';
   private mainStorageFile: string = '';
 
-  public static get instance(): LocalStorage {
-    if (!this._instance) {
-      this._instance = new LocalStorage();
-      this._instance.init();
-    }
-
-    return this._instance;
-  }
-
-  private init(): void{
+  public constructor(name: string) {
+    this._name = name;
     this.storageDir = join(this.mainAppDir, 'storage');
     this.archiveDir = join(this.mainAppDir, 'archive');
     this.tempDir = join(this.mainAppDir, '.temp');
@@ -151,6 +145,10 @@ export class LocalStorage implements Storage {
     });
 
     return items;
+  }
+
+  public get name(): string {
+    return this._name;
   }
 
   public async get(ids?: Array<number>): Promise<Array<Item>> {

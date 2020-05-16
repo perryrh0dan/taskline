@@ -22,7 +22,8 @@ program
   .command('archive')
   .alias('a')
   .description(Localization.instance.get('help.archive'))
-  .action(() => {
+  .action(async() => {
+    await taskline.init();
     taskline.displayArchive().catch(() => {});
   });
 
@@ -30,14 +31,16 @@ program
   .command('begin <ids>')
   .alias('b')
   .description(Localization.instance.get('help.begin'))
-  .action(ids => {
+  .action(async ids => {
+    await taskline.init();
     taskline.beginTasks(ids).catch(() => {});
   });
 
 program
   .command('cancel <ids>')
   .description(Localization.instance.get('help.cancel'))
-  .action(ids => {
+  .action(async ids => {
+    await taskline.init();
     taskline.cancelTasks(ids).catch(() => {});
   });
 
@@ -45,21 +48,24 @@ program
   .command('check <ids>')
   .alias('c')
   .description(Localization.instance.get('help.check'))
-  .action(ids => {
+  .action(async ids => {
+    await taskline.init();
     taskline.checkTasks(ids).catch(() => {});
   });
 
 program
   .command('clear')
   .description(Localization.instance.get('help.clear'))
-  .action(() => {
+  .action(async() => {
+    await taskline.init();
     taskline.clear().catch(() => {});
   });
 
 program
   .command('config')
   .description(Localization.instance.get('help.config'))
-  .action(() => {
+  .action(async() => {
+    await taskline.init();
     taskline.displayConfig();
   });
 
@@ -67,7 +73,8 @@ program
   .command('copy <ids>')
   .alias('y')
   .description(Localization.instance.get('help.copy'))
-  .action(ids => {
+  .action(async ids => {
+    await taskline.init();
     taskline.copyToClipboard(ids).catch(() => {});
   });
 
@@ -75,14 +82,16 @@ program
   .command('delete <ids>')
   .alias('d')
   .description(Localization.instance.get('help.delete'))
-  .action(ids => {
+  .action(async ids => {
+    await taskline.init();
     taskline.deleteItems(ids).catch(() => {});
   });
 
 program
   .command('due <ids> <dueDate>')
   .description(Localization.instance.get('help.due'))
-  .action((ids, dueDate) => {
+  .action(async(ids, dueDate) => {
+    await taskline.init();
     taskline.updateDueDate(ids, dueDate).catch(() => {});
   });
 
@@ -90,7 +99,8 @@ program
   .command('edit <id> <description>')
   .alias('e')
   .description(Localization.instance.get('help.edit'))
-  .action((id, description) => {
+  .action(async(id, description) => {
+    await taskline.init();
     taskline.editDescription(id, description).catch(() => {});
   });
 
@@ -98,7 +108,8 @@ program
   .command('find <terms>')
   .alias('f')
   .description(Localization.instance.get('help.find'))
-  .action(query => {
+  .action(async query => {
+    await taskline.init();
     taskline.findItems(query).catch(() => {});
   });
 
@@ -106,7 +117,8 @@ program
   .command('list <terms>')
   .alias('l')
   .description(Localization.instance.get('help.list'))
-  .action(terms => {
+  .action(async terms => {
+    await taskline.init();
     taskline.listByAttributes(terms).then(grouped => {
       taskline.displayStats(grouped);
     });
@@ -116,7 +128,8 @@ program
   .command('move <ids> <boards')
   .alias('m')
   .description(Localization.instance.get('help.move'))
-  .action((ids, boards) => {
+  .action(async(ids, boards) => {
+    await taskline.init();
     taskline.moveBoards(ids, boards).catch(() => {});
   });
 
@@ -125,7 +138,8 @@ program
   .alias('n')
   .description(Localization.instance.get('help.note'))
   .option('-b, --board <board>', 'Board')
-  .action((description, opts) => {
+  .action(async(description, opts) => {
+    await taskline.init();
     taskline.createNote(description, opts.board).catch(() => {});
   });
 
@@ -133,7 +147,8 @@ program
   .command('priority <id> <priority>')
   .alias('p')
   .description(Localization.instance.get('help.priority'))
-  .action((id, priority) => {
+  .action(async(id, priority) => {
+    await taskline.init();
     taskline.updatePriority(id, priority).catch(() => {});
   });
 
@@ -142,7 +157,8 @@ program
 
   .alias('r')
   .description(Localization.instance.get('help.restore'))
-  .action(ids => {
+  .action(async ids => {
+    await taskline.init();
     taskline.restoreItems(ids).catch(() => {});
   });
 
@@ -150,8 +166,17 @@ program
   .command('star <ids>')
   .alias('s')
   .description(Localization.instance.get('help.star'))
-  .action(ids => {
+  .action(async ids => {
+    await taskline.init();
     taskline.starItems(ids).catch(() => {});
+  });
+
+program
+  .command('storage <name>')
+  .description(Localization.instance.get('help.storage'))
+  .action(async name => {
+    await taskline.init();
+    taskline.storage(name);
   });
 
 program
@@ -163,7 +188,8 @@ program
   .option('-d, --due <date>', 'Due date')
 
   // Function to execute when command is uses
-  .action((description, opts) => {
+  .action(async(description, opts) => {
+    await taskline.init();
     taskline
       .createTask(description, opts.board, opts.priority, opts.due)
       .catch(() => {});
@@ -173,7 +199,8 @@ program
   .command('timeline')
   .alias('i')
   .description(Localization.instance.get('help.timeline'))
-  .action(() => {
+  .action(async() => {
+    await taskline.init();
     taskline.displayByDate().then(grouped => {
       taskline.displayStats(grouped);
     });
@@ -182,7 +209,8 @@ program
 program
   .command('refactor')
   .description(Localization.instance.get('help.refactor'))
-  .action(() => {
+  .action(async() => {
+    await taskline.init();
     taskline.refactorIDs().catch(() => {});
   });
 
@@ -192,8 +220,10 @@ program.on('--help', function() {
 });
 
 if (process.argv.length === 2) {
-  taskline.displayByBoard().then(grouped => {
-    return taskline.displayStats(grouped);
+  taskline.init().then(() => {
+    taskline.displayByBoard().then(async grouped => {
+      return taskline.displayStats(grouped);
+    });
   });
 }
 

@@ -1,6 +1,8 @@
-import { Item } from './item';
+import { Item } from '../item';
 
 export interface Storage {
+  name: string
+
   get(ids?: Array<number>): Promise<Array<Item>>;
 
   getArchive(ids?: Array<number>): Promise<Array<Item>>;

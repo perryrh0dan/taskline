@@ -1,41 +1,38 @@
 import * as clipboardy from 'clipboardy';
 
-import { Storage } from './storage';
-import { LocalStorage } from './local';
-import { FirestoreStorage } from './firestore';
 import { Item } from './item';
 import { Task, TaskPriority } from './task';
 import { Renderer } from './renderer';
 import { Config } from './config';
 import { Note } from './note';
 import { parseDate } from './libs/date';
+import { StorageManager } from './storage/manager';
 
 export class Taskline {
-  private storage: Storage;
+  private storageManager: StorageManager;
 
   public constructor() {
-    const { storageModule } = Config.instance.get();
-    if (storageModule === 'firestore') {
-      this.storage = FirestoreStorage.instance;
-    } else if (storageModule === 'local') {
-      this.storage = LocalStorage.instance;
-    }
+    this.storageManager = new StorageManager();
+  }
+
+  public async init(): Promise<void> {
+    await this.storageManager.init();
   }
 
   private getData(): Promise<Array<Item>> {
-    return this.storage.get();
+    return this.storageManager.get().get();
   }
 
   private getArchive(): Promise<Array<Item>> {
-    return this.storage.getArchive();
+    return this.storageManager.get().getArchive();
   }
 
   private save(data: Array<Item>): Promise<void> {
-    return this.storage.set(data);
+    return this.storageManager.get().set(data);
   }
 
   private saveArchive(archive: Array<Item>): Promise<void> {
-    return this.storage.setArchive(archive);
+    return this.storageManager.get().setArchive(archive);
   }
 
   private arrayify(x: any): Array<any> {
@@ -976,5 +973,9 @@ export class Taskline {
     const path = Config.instance.getConfigPath();
 
     Renderer.instance.displayConfig(config, path);
+  }
+
+  public storage(name: string): void {
+    this.storageManager.set(name);
   }
 }

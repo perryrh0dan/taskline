@@ -1,7 +1,6 @@
 import { join } from 'path';
 import { homedir } from 'os';
 import { existsSync, writeFileSync, readFileSync } from 'fs';
-import { ServiceAccount } from 'firebase-admin';
 
 import pkg = require('../package.json');
 
@@ -9,43 +8,44 @@ const defaultConfig = pkg.configuration.default;
 
 export interface ITheme {
   colors: {
-    pale: string,
-    error: string,
+    pale: string;
+    error: string;
     task: {
       priority: {
-        medium: string,
-        high: string
-      }
-    },
+        medium: string;
+        high: string;
+      };
+    };
     icons: {
-      note: string,
-      success: string,
-      star: string,
-      progress: string,
-      pending: string,
-      canceled: string
-    }
-  }
+      note: string;
+      success: string;
+      star: string;
+      progress: string;
+      pending: string;
+      canceled: string;
+    };
+  };
 }
 
-export interface IFirestoreConfig extends ServiceAccount {
-  storageName: string,
-  archiveName: string
+export interface StorageModule {
+  name: string;
+  type: 'local' | 'firestore';
+  config: any;
 }
 
 export interface IConfig {
-  language: string,
-  tasklineDirectory: string,
-  displayCompleteTasks: boolean,
-  displayProgressOverview: boolean,
-  storageModule: string,
-  firestoreConfig: IFirestoreConfig,
-  dateformat: string,
-  theme: ITheme
+  language: string;
+  tasklineDirectory: string;
+  displayCompleteTasks: boolean;
+  displayProgressOverview: boolean;
+  activeStorageModule: string;
+  storageModules: StorageModule[];
+  dateformat: string;
+  theme: ITheme;
 }
 
 export class Config {
-  private static _instance: Config
+  private static _instance: Config;
   private config: any;
   private configFile: string;
 
@@ -95,6 +95,19 @@ export class Config {
     const data = JSON.stringify(config, null, 4);
     writeFileSync(this.configFile, data, 'utf8');
     this.config = null;
+  }
+
+  public setValue(key: string, value: any): void {
+    const keys = key.split('.');
+    const config = this.get();
+    let temp = config as any;
+    while (keys.length > 1) {
+      let n = keys.shift() as any;
+      if (!n) return;
+      temp = temp[n];
+    }
+    temp[keys[0]] = value;
+    this.set(config);
   }
 
   public getDefault(): any {
