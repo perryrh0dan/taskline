@@ -976,6 +976,6 @@ export class Taskline {
   }
 
   public storage(name: string): void {
-    this.storageManager.set(name);
+    this.storageManager.setStorage(name);
   }
 }
