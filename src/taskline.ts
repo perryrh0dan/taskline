@@ -6,7 +6,7 @@ import { Renderer } from './renderer';
 import { Config } from './config';
 import { Note } from './note';
 import { parseDate } from './libs/date';
-import { StorageManager } from './storage/manager';
+import { StorageManager } from './manager';
 
 export class Taskline {
   private storageManager: StorageManager;
@@ -20,19 +20,19 @@ export class Taskline {
   }
 
   private getData(): Promise<Array<Item>> {
-    return this.storageManager.get().get();
+    return this.storageManager.getData();
   }
 
   private getArchive(): Promise<Array<Item>> {
-    return this.storageManager.get().getArchive();
+    return this.storageManager.getArchive();
   }
 
   private save(data: Array<Item>): Promise<void> {
-    return this.storageManager.get().set(data);
+    return this.storageManager.set(data);
   }
 
   private saveArchive(archive: Array<Item>): Promise<void> {
-    return this.storageManager.get().setArchive(archive);
+    return this.storageManager.setArchive(archive);
   }
 
   private arrayify(x: any): Array<any> {

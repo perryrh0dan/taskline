@@ -1,8 +1,8 @@
-import { Storage } from '../storage';
-import { Item } from '../../item';
-import { Task } from '../../task';
-import { Note } from '../../note';
-import { Renderer } from '../../renderer';
+import { IStorage } from './storage';
+import { Item } from '../item';
+import { Task } from '../task';
+import { Note } from '../note';
+import { Renderer } from '../renderer';
 import * as firebase from 'firebase-admin';
 import { ServiceAccount } from 'firebase-admin';
 
@@ -11,11 +11,11 @@ export interface IFirestoreConfig extends ServiceAccount {
   archiveName: string
 }
 
-export const create = (name: string, config: IFirestoreConfig): FirestoreStorage => {
-  return new FirestoreStorage(name, config);
+export const create = (name: string, config: IFirestoreConfig): Storage => {
+  return new Storage(name, config);
 };
 
-export class FirestoreStorage implements Storage {
+export class Storage implements IStorage {
   private _name: string;
   private _db: FirebaseFirestore.Firestore;
   private _storageName: string = '';

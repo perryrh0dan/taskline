@@ -51,7 +51,9 @@
     }
   },
   "errors": {
-    "invalidCommand": "Invalid command: {0}\nSee --help for a list of available commands."
+    "invalidCommand": "Invalid command: {0}\nSee --help for a list of available commands.",
+    "localization": "Unable to load language file",
+    "storageNotFound": "Storage module: {0} not found"
   },
   "stats": {
     "allDone": "All done!",

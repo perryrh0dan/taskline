@@ -1,6 +1,6 @@
 import { Item } from '../item';
 
-export interface Storage {
+export interface IStorage {
   name: string
 
   get(ids?: Array<number>): Promise<Array<Item>>;

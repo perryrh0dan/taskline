@@ -3,18 +3,18 @@ import { randomBytes } from 'crypto';
 import * as os from 'os';
 import * as fs from 'fs';
 
-import { Storage } from '../storage';
-import { Config } from '../../config';
-import { Item } from '../../item';
-import { Task } from '../../task';
-import { Note } from '../../note';
-import { Renderer } from '../../renderer';
+import { IStorage } from './storage';
+import { Config } from '../config';
+import { Item } from '../item';
+import { Task } from '../task';
+import { Note } from '../note';
+import { Renderer } from '../renderer';
 
-export const create = (name: string, config: any): LocalStorage => {
-  return new LocalStorage(name);
+export const create = (name: string, config: any): Storage => {
+  return new Storage(name);
 };
 
-export class LocalStorage implements Storage {
+export class Storage implements IStorage {
   private _name: string;
   private storageDir: string = '';
   private archiveDir: string = '';
