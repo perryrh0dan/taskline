@@ -51,12 +51,14 @@ export class Storage implements IStorage {
 
   private ensureStorageDir(): void {
     if (!fs.existsSync(this.storageDir)) {
+      // break node 8 support
       fs.mkdirSync(this.storageDir, { recursive: true });
     }
   }
 
   private ensureTempDir(): void {
     if (!fs.existsSync(this.tempDir)) {
+      // break node 8 support
       fs.mkdirSync(this.tempDir, { recursive: true });
     }
   }

@@ -42,7 +42,11 @@ export class StorageManager {
   }
 
   public setStorage(name: string): void {
-    Config.instance.setValue('activeStorageModule', name);
+    if (this.storages.has(name)) {
+      Config.instance.setValue('activeStorageModule', name);
+    } else {
+      Renderer.instance.invalidStorageModule(name);
+    }
   }
 
   public getData(ids?: Array<number>): Promise<Array<Item>> {

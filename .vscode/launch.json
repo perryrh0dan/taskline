@@ -15,7 +15,8 @@
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
-            ]
+            ],
+            "args": ["storage", "local"]
         },
         {
           "type": "node",
