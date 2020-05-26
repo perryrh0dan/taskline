@@ -14,7 +14,10 @@ describe('Test check functionality', () => {
   //  process.stderr.write = jest.fn();
 
   beforeAll(async done => {
+    await helper.init();
     await helper.clearStorage();
+    await taskline.init();
+
     const data: Array<Item> = new Array<Item>();
 
     data.push(new Note({

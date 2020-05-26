@@ -2,26 +2,22 @@ import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 
 import { Config } from '../src/config';
-import { Storage } from '../src/storage';
-import { LocalStorage } from '../src/local';
+import { StorageManager } from '../src/manager';
 import { Item } from '../src/item';
-import { FirestoreStorage } from '../src/firestore';
-
 const contentPath = resolve(__dirname, './config.json');
 const sampleContentPath = resolve(__dirname, './sample.config.json');
 
 export class Helper {
-  private storage: Storage;
+  private storageManager: StorageManager;
   private originalConfig: any;
 
   public constructor() {
     this.setConfig();
-    const { storageModule } = Config.instance.get();
-    if (storageModule === 'firestore') {
-      this.storage = FirestoreStorage.instance;
-    } else if (storageModule === 'local') {
-      this.storage = LocalStorage.instance;
-    }
+    this.storageManager = new StorageManager();
+  }
+
+  public async init(): Promise<void> {
+    await this.storageManager.init();
   }
 
   private setConfig(): void {
@@ -44,24 +40,24 @@ export class Helper {
   }
 
   public getData(ids?: Array<number>): Promise<Array<Item>> {
-    return this.storage.get(ids);
+    return this.storageManager.getData(ids);
   }
 
   public getArchive(ids?: Array<number>): Promise<Array<Item>> {
-    return this.storage.getArchive(ids);
+    return this.storageManager.getArchive(ids);
   }
 
   public setData(data: Array<Item>): Promise<void> {
-    return this.storage.set(data);
+    return this.storageManager.setData(data);
   }
 
   public setArchive(data: Array<Item>): Promise<void> {
-    return this.storage.setArchive(data);
+    return this.storageManager.setArchive(data);
   }
 
   public async clearStorage(): Promise<void> {
-    await this.storage.set(new Array<Item>());
-    return this.storage.setArchive(new Array<Item>());
+    await this.storageManager.setData(new Array<Item>());
+    return this.storageManager.setArchive(new Array<Item>());
   }
 
   public changeConfig(key: string, value: any): void {

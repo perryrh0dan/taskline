@@ -25,7 +25,10 @@
     },
     {
       "name": "local",
-      "type": "local"
+      "type": "local",
+      "config": {
+        "directory": "~/.taskline"
+      }
     }
   ],
   "dateformat": "dd.mm.yyyy HH:MM",

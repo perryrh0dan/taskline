@@ -45,17 +45,17 @@ export class StorageManager {
     Config.instance.setValue('activeStorageModule', name);
   }
 
-  public getData(): Promise<Array<Item>> {
+  public getData(ids?: Array<number>): Promise<Array<Item>> {
     const storage = this.getStorage();
-    return storage.get();
+    return storage.get(ids);
   }
 
-  public getArchive(): Promise<Array<Item>> {
+  public getArchive(ids?: Array<number>): Promise<Array<Item>> {
     const storage = this.getStorage();
-    return storage.getArchive();
+    return storage.getArchive(ids);
   }
 
-  public set(data: Array<Item>): Promise<void> {
+  public setData(data: Array<Item>): Promise<void> {
     const storage = this.getStorage();
     return storage.set(data);
   }

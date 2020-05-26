@@ -13,7 +13,9 @@ describe('Test create functionality', () => {
   //  process.stderr.write = jest.fn();
 
   beforeAll(async done => {
+    await helper.init();
     await helper.clearStorage();
+    await taskline.init();
     done();
   });
 

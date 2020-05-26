@@ -28,7 +28,7 @@ export class Taskline {
   }
 
   private save(data: Array<Item>): Promise<void> {
-    return this.storageManager.set(data);
+    return this.storageManager.setData(data);
   }
 
   private saveArchive(archive: Array<Item>): Promise<void> {

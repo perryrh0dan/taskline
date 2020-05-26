@@ -20,7 +20,10 @@ describe('Test output functionality', () => {
   //  process.stderr.write = jest.fn();
 
   beforeAll(async done => {
+    await helper.init();
     await helper.clearStorage();
+    await taskline.init();
+
     const promises: Array<Promise<any>> = new Array<Promise<any>>();
     const data: Array<Item> = new Array<Item>();
 
