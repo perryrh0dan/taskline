@@ -1,71 +1,63 @@
 import { join, basename } from 'path';
+import { homedir } from 'os';
 import { randomBytes } from 'crypto';
-import * as os from 'os';
 import * as fs from 'fs';
 
 import { IStorage } from './storage';
-import { Config } from '../config';
 import { Item } from '../item';
 import { Task } from '../task';
 import { Note } from '../note';
-import { Renderer } from '../renderer';
 
-export const create = (name: string, config: any): Storage => {
-  return new Storage(name);
+export interface ILocalStorageConfig {
+  directory: string
+}
+
+export const create = (name: string, config: ILocalStorageConfig): Storage => {
+  return new Storage(name, config);
 };
 
 export class Storage implements IStorage {
   private _name: string;
+  private mainStorageDir: string = '';
   private storageDir: string = '';
   private archiveDir: string = '';
   private tempDir: string = '';
   private archiveFile: string = '';
   private mainStorageFile: string = '';
 
-  public constructor(name: string) {
+  public constructor(name: string, config: ILocalStorageConfig) {
     this._name = name;
-    this.storageDir = join(this.mainAppDir, 'storage');
-    this.archiveDir = join(this.mainAppDir, 'archive');
-    this.tempDir = join(this.mainAppDir, '.temp');
+    this.mainStorageDir = this.getDirecotry(config);
+    this.storageDir = join(this.mainStorageDir, 'storage');
+    this.archiveDir = join(this.mainStorageDir, 'archive');
+    this.tempDir = join(this.mainStorageDir, '.temp');
     this.archiveFile = join(this.archiveDir, 'archive.json');
     this.mainStorageFile = join(this.storageDir, 'storage.json');
 
     this.ensureDirectories();
   }
 
-  private get mainAppDir(): string {
-    const {
-      tasklineDirectory
-    } = Config.instance.get();
-    const defaultAppDirectory: string = join(os.homedir(), '.taskline');
-
-    if (!tasklineDirectory) {
-      return defaultAppDirectory;
+  private getDirecotry(config: ILocalStorageConfig): string {
+    if (config.directory.startsWith('~')) {
+      return this.formatDir(config.directory);}
+    else {
+      return config.directory;
     }
-
-    if (!fs.existsSync(tasklineDirectory)) {
-      Renderer.instance.invalidCustomAppDir(tasklineDirectory);
-      process.exit(1);
-    }
-
-    return join(tasklineDirectory, '.taskline');
   }
 
-  private ensureMainAppDir(): void {
-    if (!fs.existsSync(this.mainAppDir)) {
-      fs.mkdirSync(this.mainAppDir);
-    }
+  private formatDir(path: string): string {
+    return join(homedir(), path.replace(/^~/g, ''));
   }
 
   private ensureStorageDir(): void {
     if (!fs.existsSync(this.storageDir)) {
-      fs.mkdirSync(this.storageDir);
+      fs.mkdirSync(this.storageDir, { recursive: true });
     }
   }
 
   private ensureTempDir(): void {
     if (!fs.existsSync(this.tempDir)) {
-      fs.mkdirSync(this.tempDir);
+      fs.mkdirSync(this.tempDir, { recursive: true });
     }
   }
 
@@ -86,7 +78,6 @@ export class Storage implements IStorage {
   }
 
   private ensureDirectories(): void {
-    this.ensureMainAppDir();
     this.ensureStorageDir();
     this.ensureArchiveDir();
     this.ensureTempDir();

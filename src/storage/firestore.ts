@@ -6,12 +6,12 @@ import { Renderer } from '../renderer';
 import * as firebase from 'firebase-admin';
 import { ServiceAccount } from 'firebase-admin';
 
-export interface IFirestoreConfig extends ServiceAccount {
+export interface IFirestoreStorageConfig extends ServiceAccount {
   storageName: string,
   archiveName: string
 }
 
-export const create = (name: string, config: IFirestoreConfig): Storage => {
+export const create = (name: string, config: IFirestoreStorageConfig): Storage => {
   return new Storage(name, config);
 };
 
@@ -23,7 +23,7 @@ export class Storage implements IStorage {
   private _data: Array<Item> = new Array<Item>();
   private _archive: Array<Item> = new Array<Item>();
 
-  public constructor(name: string, config: IFirestoreConfig) {
+  public constructor(name: string, config: IFirestoreStorageConfig) {
     this._name = name;
     this._storageName = config.storageName;
     this._archiveName = config.archiveName;

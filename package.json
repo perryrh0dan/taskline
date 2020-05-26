@@ -50,8 +50,15 @@
       "tasklineDirectory": "~",
       "displayCompleteTasks": true,
       "displayProgressOverview": true,
-      "activeStorageModule": "local",
       "dateformat": "dd.mm.yyyy HH:MM",
+      "activeStorageModule": "default",
+      "storageModules": [
+        {
+          "name": "default",
+          "type": "local",
+          "directory": "~/.taskline"
+        }
+      ],
       "theme": {
         "colors": {
           "pale": "grey",
