@@ -5,6 +5,21 @@ import { StorageManager } from './src/manager';
 const storageManager = new StorageManager();
 
 program
+  .arguments('<name>')
+  .action(async(name: string) => {
+    await storageManager.init();
+    storageManager.setStorage(name);
+  });
+
+program
+  .command('list')
+  .description('List all storages')
+  .action(async() => {
+    await storageManager.init();
+    storageManager.listStorages();
+  });
+
+program
   .command('add <name> <type>')
   .description('Add new storage module')
   .action(async(name, type) => {

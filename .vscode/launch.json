@@ -11,12 +11,13 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/dist/cli.js",
+            "program": "${workspaceFolder}/dist/main.js",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ],
-            "args": ["storage", "add", "local", "local"]
+            // "args": ["storage", "add", "local", "local"]
+            "args": ["tfsafs1"]
         },
         {
           "type": "node",

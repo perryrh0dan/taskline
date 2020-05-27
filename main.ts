@@ -16,7 +16,22 @@ program.description(pkg.description);
 
 logger.info('Starting in Debug Mode');
 
-program.name('tl').usage('[command] [options]');
+program
+  .name('tl')
+  .usage('[command] [options]')
+  .action(async() => {
+    if (process.argv.length !== 2) {
+      console.error(
+        Localization.instance.getf('errors.invalidCommand', {
+          params: program.args
+        })
+      );
+      process.exit(1);
+    }
+    await taskline.init();
+    const grouped = await taskline.displayByBoard();
+    taskline.displayStats(grouped);
+  });
 
 program
   .command('archive')
@@ -154,7 +169,6 @@ program
 
 program
   .command('restore <ids>')
-
   .alias('r')
   .description(Localization.instance.get('help.restore'))
   .action(async ids => {
@@ -172,7 +186,8 @@ program
   });
 
 program
-  .command('storage', 'Storage manager').alias('store');
+  .command('storage', 'Storage manager', { executableFile: 'storage' })
+  .alias('store');
 
 program
   .command('task <description>') // Sub-command name
@@ -211,25 +226,23 @@ program
 
 program.on('--help', function() {
   console.log('');
-  console.log('Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual');
+  console.log(
+    'Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual'
+  );
 });
 
-if (process.argv.length === 2) {
-  taskline.init().then(() => {
-    taskline.displayByBoard().then(async grouped => {
-      return taskline.displayStats(grouped);
-    });
-  });
-}
-
 program.on('command:*', function() {
-  console.error(Localization.instance.getf('errors.invalidCommand', { params: program.args }));
+  console.error(
+    Localization.instance.getf('errors.invalidCommand', {
+      params: program.args
+    })
+  );
   process.exit(1);
 });
 
 // START SNAPCRAFT IGNORE disable this for snap
 new UpdateNotifier({
-  pkg,
+  pkg
 }).notify({ isGlobal: true });
 // END SNAPCRAFT IGNORE
 

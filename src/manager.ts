@@ -23,7 +23,10 @@ export class StorageManager {
       }
     });
 
-    const storages = await Promise.all(promises.map(p => p.catch(e => e)));
+    const storages = await Promise.all(promises.map(p => p.catch(e => {
+      console.log(e);
+      return e;
+    })));
     const validStorages = storages.filter(storage => !(storage instanceof Error));
     validStorages.forEach(storage => {
       this.storages.set(storage.name, storage);
@@ -91,5 +94,10 @@ export class StorageManager {
   public setArchive(archive: Array<Item>): Promise<void> {
     const storage = this.getStorage();
     return storage.setArchive(archive);
+  }
+
+  public listStorages(): Array<string> {
+    const names = Array.from(this.storages.keys());
+    Renderer.instance.displayStorages(names);
   }
 }

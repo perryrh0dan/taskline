@@ -545,6 +545,17 @@ export class Renderer {
     this.iterateObject(config, 0);
   }
 
+  public displayStorages(storages: Array<string>): void {
+    storages.forEach(storage => {
+      const prefix = figures.circleFilled;
+
+      this.signale.log({
+        prefix: chalk.green(prefix),
+        message: storage
+      });
+    });
+  }
+
   private iterateObject(obj: any, depth: number): void {
     Object.keys(obj).forEach(key => {
       if (typeof obj[key] !== 'object') {
