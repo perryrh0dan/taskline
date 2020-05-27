@@ -1,5 +1,5 @@
 import { IStorage } from './storage/storage';
-import { Config } from './config';
+import { Config, StorageModule } from './config';
 import { Renderer } from './renderer';
 import { Item } from './item';
 
@@ -46,6 +46,30 @@ export class StorageManager {
       Config.instance.setValue('activeStorageModule', name);
     } else {
       Renderer.instance.invalidStorageModule(name);
+    }
+  }
+
+  public async addStorage(name: string, type: string): Promise<void> {
+    const config = Config.instance.get();
+    if (config.storageModules.filter(s => s.name === name).length > 0) {
+      return;
+    }
+
+    try {
+      const storage = await import('./storage/' + type);
+      const storageConfig  = await storage.add();
+      const storageModule: StorageModule = {
+        name: name,
+        type: type,
+        config: storageConfig
+      };
+
+      config.storageModules.push(storageModule);
+      Config.instance.set(config);
+
+    } catch (error) {
+      console.log(error);
+      return;
     }
   }
 

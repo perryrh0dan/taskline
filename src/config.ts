@@ -29,7 +29,7 @@ export interface ITheme {
 
 export interface StorageModule {
   name: string;
-  type: 'local' | 'firestore';
+  type: string;
   config: any;
 }
 

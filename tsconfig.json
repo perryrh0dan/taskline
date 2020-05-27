@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "target": "es6",
     "module": "commonjs",
     "allowJs": true,
@@ -14,7 +15,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "cli.ts"
+    "cli.ts",
+    "cli-storage.ts"
   ],
   "exclude": [
     "node_modules",

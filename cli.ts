@@ -172,12 +172,7 @@ program
   });
 
 program
-  .command('storage <name>')
-  .description(Localization.instance.get('help.storage'))
-  .action(async name => {
-    await taskline.init();
-    taskline.storage(name);
-  });
+  .command('storage', 'Storage manager').alias('store');
 
 program
   .command('task <description>') // Sub-command name

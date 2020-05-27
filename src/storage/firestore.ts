@@ -191,3 +191,10 @@ export class Storage implements IStorage {
     return data;
   }
 }
+
+export async function add(): Promise<IFirestoreStorageConfig> {
+  return {
+    storageName: 'storage',
+    archiveName: 'archive'
+  };
+}
