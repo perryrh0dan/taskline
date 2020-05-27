@@ -50,15 +50,15 @@ export class StorageManager {
   public getModules(): Array<string> {
     const dir = resolve(__dirname, 'storage');
     let files = readdirSync(dir);
-    files = files.filter(value => {
+    let modules = files.filter(value => {
       if (value !== 'storage.js' && value !==  'storage.js.map') {
         return true;
       }
       return false;
     });
-    files = files.map(value => value.replace(/(\.js)/, ''));
-    files = files.map(value => value.replace(/(\.map)/, ''));
-    return [...new Set(files)];
+    modules = files.map(value => value.replace(/(\.js)/, ''));
+    modules = files.map(value => value.replace(/(\.map)/, ''));
+    return [...new Set(modules)];
   }
 
   public setStorage(name: string): void {
@@ -101,6 +101,19 @@ export class StorageManager {
       console.log(error);
       return;
     }
+  }
+
+  public async removeStorage(name: string): Promise<void> {
+    const config = Config.instance.get();
+
+    config.storageModules = config.storageModules.filter(storage => {
+      if (storage.name === name) {
+        return false;
+      }
+      return true;
+    });
+
+    Config.instance.set(config);
   }
 
   public getData(ids?: Array<number>): Promise<Array<Item>> {

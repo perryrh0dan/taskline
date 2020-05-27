@@ -29,8 +29,8 @@ program
 program
   .command('remove <name>')
   .description('Delete storage module')
-  .action(() => {
-    console.log('Called delete');
+  .action((name) => {
+    storageManager.removeStorage(name);
   });
 
 program.parse(process.argv);
