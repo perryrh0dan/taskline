@@ -11,6 +11,7 @@ import { Item } from './item';
 import { TaskPriority, Task } from './task';
 import { getRelativeHumanizedDate } from './libs/date';
 import { Note } from './note';
+import { StorageStatus } from './storage/storage';
 
 const { underline } = chalk;
 
@@ -545,13 +546,19 @@ export class Renderer {
     this.iterateObject(config, 0);
   }
 
-  public displayStorages(storages: Array<string>): void {
+  public displayStorages(storages: Array<{name: string, status: StorageStatus}>): void {
     storages.forEach(storage => {
-      const prefix = figures.circleFilled;
+      let prefix = figures.circleFilled;
+
+      if (storage.status === StorageStatus.Online) {
+        prefix = chalk.green(prefix);
+      } else {
+        prefix = chalk.red(prefix);
+      }
 
       this.signale.log({
-        prefix: chalk.green(prefix),
-        message: storage
+        prefix: prefix,
+        message: storage.name
       });
     });
   }

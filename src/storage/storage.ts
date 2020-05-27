@@ -1,5 +1,10 @@
 import { Item } from '../item';
 
+export enum StorageStatus {
+  Online = 1,
+  Ofline = 2
+}
+
 export interface IStorage {
   name: string
 
@@ -10,4 +15,6 @@ export interface IStorage {
   set(data: Array<Item>): Promise<void>;
 
   setArchive(archive: Array<Item>): Promise<void>;
+
+  getStatus(): StorageStatus
 }

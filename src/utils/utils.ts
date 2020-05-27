@@ -1,3 +1,5 @@
+import { Item } from '../item';
+
 export const merge = (target: any, ...objects: any): any => {
 	for (const object of objects) {
 		for (const key in object) {
@@ -17,4 +19,11 @@ export const merge = (target: any, ...objects: any): any => {
 		}
 	}
 	return target;
+};
+
+export const filterByID = (data: Array<Item>, ids: Array<number>): Array<Item> => {
+  if (ids) {
+    return data.filter(item => { return ids.indexOf(item.id) != -1; });
+  }
+  return data;
 };

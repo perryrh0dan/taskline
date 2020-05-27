@@ -1,4 +1,4 @@
-import { IStorage } from './storage/storage';
+import { IStorage, StorageStatus } from './storage/storage';
 import { Config, StorageModule } from './config';
 import { Renderer } from './renderer';
 import { Item } from './item';
@@ -96,8 +96,14 @@ export class StorageManager {
     return storage.setArchive(archive);
   }
 
-  public listStorages(): Array<string> {
-    const names = Array.from(this.storages.keys());
+  public listStorages(): void {
+    const names: Array<{name: string, status: StorageStatus}> = [];
+    this.storages.forEach((value, key) => {
+      names.push({
+        name: key,
+        status: value.getStatus(),
+      });
+    });
     Renderer.instance.displayStorages(names);
   }
 }

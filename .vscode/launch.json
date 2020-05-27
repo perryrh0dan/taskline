@@ -17,7 +17,7 @@
                 "${workspaceFolder}/dist/**/*.js"
             ],
             // "args": ["storage", "add", "local", "local"]
-            "args": ["tfsafs1"]
+            // "args": ["tfsafs1"]
         },
         {
           "type": "node",

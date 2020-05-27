@@ -1,10 +1,11 @@
-import { IStorage } from './storage';
+import { IStorage, StorageStatus } from './storage';
 import { Item } from '../item';
 import { Task } from '../task';
 import { Note } from '../note';
 import { Renderer } from '../renderer';
 import * as firebase from 'firebase-admin';
 import { ServiceAccount } from 'firebase-admin';
+import { filterByID } from '../utils/utils';
 
 export interface IFirestoreStorageConfig extends ServiceAccount {
   storageName: string,
@@ -22,17 +23,22 @@ export class Storage implements IStorage {
   private _archiveName: string = '';
   private _data: Array<Item> = new Array<Item>();
   private _archive: Array<Item> = new Array<Item>();
+  private _status: StorageStatus;
 
   public constructor(name: string, config: IFirestoreStorageConfig) {
     this._name = name;
     this._storageName = config.storageName;
     this._archiveName = config.archiveName;
 
-    firebase.initializeApp({
-      credential: firebase.credential.cert(config)
-    });
-
-    this._db = firebase.firestore();
+    try {
+      firebase.initializeApp({
+        credential: firebase.credential.cert(config)
+      });
+      this._db = firebase.firestore();
+      this._status = StorageStatus.Online;
+    } catch (error) {
+      this._status = StorageStatus.Ofline;
+    }
   }
 
   private async updateCollection(path: string, data: Array<Item>): Promise<void> {
@@ -161,7 +167,7 @@ export class Storage implements IStorage {
     }
 
     if (ids) {
-      return this.filterByID(this._data, ids);
+      return filterByID(this._data, ids);
     }
 
     return this._data;
@@ -178,17 +184,14 @@ export class Storage implements IStorage {
     }
 
     if (ids) {
-      return this.filterByID(this._archive, ids);
+      return filterByID(this._archive, ids);
     }
 
     return this._archive;
   }
 
-  private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
-    if (ids) {
-      return data.filter(item => { return ids.indexOf(item.id) != -1; });
-    }
-    return data;
+  public getStatus(): StorageStatus {
+    return this._status;
   }
 }
 

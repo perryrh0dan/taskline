@@ -3,10 +3,11 @@ import { homedir } from 'os';
 import { randomBytes } from 'crypto';
 import * as fs from 'fs';
 
-import { IStorage } from './storage';
+import { IStorage, StorageStatus } from './storage';
 import { Item } from '../item';
 import { Task } from '../task';
 import { Note } from '../note';
+import { filterByID } from '../utils/utils';
 
 export interface ILocalStorageConfig {
   directory: string
@@ -18,23 +19,25 @@ export const create = (name: string, config: ILocalStorageConfig): Storage => {
 
 export class Storage implements IStorage {
   private _name: string;
-  private mainStorageDir: string = '';
-  private storageDir: string = '';
-  private archiveDir: string = '';
-  private tempDir: string = '';
-  private archiveFile: string = '';
-  private mainStorageFile: string = '';
+  private _mainStorageDir: string = '';
+  private _storageDir: string = '';
+  private _archiveDir: string = '';
+  private _tempDir: string = '';
+  private _archiveFile: string = '';
+  private _mainStorageFile: string = '';
+  private _status: StorageStatus;
 
   public constructor(name: string, config: ILocalStorageConfig) {
     this._name = name;
-    this.mainStorageDir = this.getDirecotry(config);
-    this.storageDir = join(this.mainStorageDir, 'storage');
-    this.archiveDir = join(this.mainStorageDir, 'archive');
-    this.tempDir = join(this.mainStorageDir, '.temp');
-    this.archiveFile = join(this.archiveDir, 'archive.json');
-    this.mainStorageFile = join(this.storageDir, 'storage.json');
+    this._mainStorageDir = this.getDirecotry(config);
+    this._storageDir = join(this._mainStorageDir, 'storage');
+    this._archiveDir = join(this._mainStorageDir, 'archive');
+    this._tempDir = join(this._mainStorageDir, '.temp');
+    this._archiveFile = join(this._archiveDir, 'archive.json');
+    this._mainStorageFile = join(this._storageDir, 'storage.json');
 
     this.ensureDirectories();
+    this._status = StorageStatus.Online;
   }
 
   private getDirecotry(config: ILocalStorageConfig): string {
@@ -50,29 +53,29 @@ export class Storage implements IStorage {
   }
 
   private ensureStorageDir(): void {
-    if (!fs.existsSync(this.storageDir)) {
+    if (!fs.existsSync(this._storageDir)) {
       // break node 8 support
-      fs.mkdirSync(this.storageDir, { recursive: true });
+      fs.mkdirSync(this._storageDir, { recursive: true });
     }
   }
 
   private ensureTempDir(): void {
-    if (!fs.existsSync(this.tempDir)) {
+    if (!fs.existsSync(this._tempDir)) {
       // break node 8 support
-      fs.mkdirSync(this.tempDir, { recursive: true });
+      fs.mkdirSync(this._tempDir, { recursive: true });
     }
   }
 
   private ensureArchiveDir(): void {
-    if (!fs.existsSync(this.archiveDir)) {
-      fs.mkdirSync(this.archiveDir);
+    if (!fs.existsSync(this._archiveDir)) {
+      fs.mkdirSync(this._archiveDir);
     }
   }
 
   private cleanTempDir(): void {
     const tempFiles: Array<string> = fs
-      .readdirSync(this.tempDir)
-      .map((x: string) => join(this.tempDir, x));
+      .readdirSync(this._tempDir)
+      .map((x: string) => join(this._tempDir, x));
 
     if (tempFiles.length !== 0) {
       tempFiles.forEach((tempFile: string) => fs.unlinkSync(tempFile));
@@ -97,7 +100,7 @@ export class Storage implements IStorage {
     const tempFilename: string = basename(filePath)
       .split('.')
       .join(`.TEMP-${randomString}.`);
-    return join(this.tempDir, tempFilename);
+    return join(this._tempDir, tempFilename);
   }
 
   private parseJson(data: any): Array<Item> {
@@ -147,14 +150,14 @@ export class Storage implements IStorage {
   public async get(ids?: Array<number>): Promise<Array<Item>> {
     let data: Array<Item> = new Array<Item>();
 
-    if (fs.existsSync(this.mainStorageFile)) {
-      const content: string = fs.readFileSync(this.mainStorageFile, 'utf8');
+    if (fs.existsSync(this._mainStorageFile)) {
+      const content: string = fs.readFileSync(this._mainStorageFile, 'utf8');
       const jsonData: string = JSON.parse(content);
       data = this.parseJson(jsonData);
     }
 
     if (ids) {
-      return this.filterByID(data, ids);
+      return filterByID(data, ids);
     }
 
     return data;
@@ -163,14 +166,14 @@ export class Storage implements IStorage {
   public async getArchive(ids?: Array<number>): Promise<Array<Item>> {
     let archive: Array<Item> = new Array<Item>();
 
-    if (fs.existsSync(this.archiveFile)) {
-      const content: string = fs.readFileSync(this.archiveFile, 'utf8');
+    if (fs.existsSync(this._archiveFile)) {
+      const content: string = fs.readFileSync(this._archiveFile, 'utf8');
       const jsonArchive: string = JSON.parse(content);
       archive = this.parseJson(jsonArchive);
     }
 
     if (ids) {
-      return this.filterByID(archive, ids);
+      return filterByID(archive, ids);
     }
 
     return archive;
@@ -179,10 +182,10 @@ export class Storage implements IStorage {
   public async set(data: Array<Item>): Promise<void> {
     try {
       const jsonData: string = JSON.stringify(data.map((item: Item) => item.toJSON()), null, 4);
-      const tempStorageFile: string = this.getTempFile(this.mainStorageFile);
+      const tempStorageFile: string = this.getTempFile(this._mainStorageFile);
 
       fs.writeFileSync(tempStorageFile, jsonData, 'utf8');
-      fs.renameSync(tempStorageFile, this.mainStorageFile);
+      fs.renameSync(tempStorageFile, this._mainStorageFile);
 
       Promise.resolve();
     } catch (error) {
@@ -193,10 +196,10 @@ export class Storage implements IStorage {
   public async setArchive(archive: Array<Item>): Promise<void> {
     try {
       const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
-      const tempArchiveFile: string = this.getTempFile(this.archiveFile);
+      const tempArchiveFile: string = this.getTempFile(this._archiveFile);
 
       fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
-      fs.renameSync(tempArchiveFile, this.archiveFile);
+      fs.renameSync(tempArchiveFile, this._archiveFile);
 
       Promise.resolve();
     } catch (error) {
@@ -204,11 +207,8 @@ export class Storage implements IStorage {
     }
   }
 
-  private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
-    if (ids) {
-      return data.filter(item => { return ids.indexOf(item.id) != -1; });
-    }
-    return data;
+  public getStatus(): StorageStatus {
+    return this._status;
   }
 }
 
