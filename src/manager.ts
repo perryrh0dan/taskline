@@ -2,6 +2,9 @@ import { IStorage, StorageStatus } from './storage/storage';
 import { Config, StorageModule } from './config';
 import { Renderer } from './renderer';
 import { Item } from './item';
+import { createPromptModule } from 'inquirer';
+import { readdirSync } from 'fs';
+import { resolve } from 'path';
 
 export class StorageManager {
   private storages: Map<string, IStorage> = new Map<string, IStorage>();
@@ -44,6 +47,20 @@ export class StorageManager {
     return storage;
   }
 
+  public getModules(): Array<string> {
+    const dir = resolve(__dirname, 'storage');
+    let files = readdirSync(dir);
+    files = files.filter(value => {
+      if (value !== 'storage.js' && value !==  'storage.js.map') {
+        return true;
+      }
+      return false;
+    });
+    files = files.map(value => value.replace(/(\.js)/, ''));
+    files = files.map(value => value.replace(/(\.map)/, ''));
+    return [...new Set(files)];
+  }
+
   public setStorage(name: string): void {
     if (this.storages.has(name)) {
       Config.instance.setValue('activeStorageModule', name);
@@ -52,18 +69,28 @@ export class StorageManager {
     }
   }
 
-  public async addStorage(name: string, type: string): Promise<void> {
+  public async addStorage(name: string): Promise<void> {
     const config = Config.instance.get();
     if (config.storageModules.filter(s => s.name === name).length > 0) {
       return;
     }
 
+    const modules = this.getModules();
+
+    var prompt = createPromptModule();
+    const result = await prompt({
+      type: 'list',
+      name: 'type',
+      message: 'Which storage module would you like to use',
+      choices: modules
+    });
+
     try {
-      const storage = await import('./storage/' + type);
+      const storage = await import('./storage/' + result['type']);
       const storageConfig  = await storage.add();
       const storageModule: StorageModule = {
         name: name,
-        type: type,
+        type: result['type'],
         config: storageConfig
       };
 

@@ -17,7 +17,8 @@ cp ../package-lock.json ./
 cp ../snapcraft.yaml ./
 cp -r ../src ./src
 cp -r ../i18n ./i18n
-cp ../cli.ts ./
+cp ../main.ts ./
+cp ../storage.ts ./
 cp ../license.md ./
 cp ../readme.md ./
 cp ../tsconfig.json ./
@@ -28,8 +29,8 @@ cp ../gulpfile.js ./
 
 # Comment out update notifier for snap
 echo 'Comment out update notifier'
-sed -i "/START SNAPCRAFT IGNORE/,/END SNAPCRAFT IGNORE/"' s/^/\/\/ /' cli.ts
-# sed -i '2,4 s/^/#/' cli.js
+sed -i "/START SNAPCRAFT IGNORE/,/END SNAPCRAFT IGNORE/"' s/^/\/\/ /' main.ts
+# sed -i '2,4 s/^/#/' main.js
 
 # Install npm packages
 echo 'Run npm install'
@@ -45,7 +46,8 @@ rm -r ./src
 rm tsconfig.json
 cp -r dist/. .
 rm -r dist
-rm cli.ts
+rm main.ts
+rm storage.ts
 
 # Delete dev dependencies
 echo 'Removing dev dependencies'
@@ -70,5 +72,5 @@ find ./ -iname '*.snap' -exec cp {} ../ \;
 # Navigate out and delete temp directory
 echo 'Delete temp directory'
 cd ..
-# sudo rm -r ./temp
+sudo rm -r ./temp
 

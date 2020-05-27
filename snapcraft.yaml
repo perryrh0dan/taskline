@@ -1,5 +1,5 @@
 name: taskline
-version: '1.4.0'
+version: '2.0.0'
 summary: Tasks, boards & notes for the command-line habitat
 description: |
   By utilizing a simple and minimal usage syntax, that requires a flat learning curve, Taskline enables you
@@ -57,4 +57,3 @@ apps:
       - home
       - network
       - network-control
-      - x11

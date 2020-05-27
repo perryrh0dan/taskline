@@ -2,6 +2,7 @@ import { join, basename } from 'path';
 import { homedir } from 'os';
 import { randomBytes } from 'crypto';
 import * as fs from 'fs';
+import { createPromptModule } from 'inquirer';
 
 import { IStorage, StorageStatus } from './storage';
 import { Item } from '../item';
@@ -10,7 +11,7 @@ import { Note } from '../note';
 import { filterByID } from '../utils/utils';
 
 export interface ILocalStorageConfig {
-  directory: string
+  directory: string;
 }
 
 export const create = (name: string, config: ILocalStorageConfig): Storage => {
@@ -42,8 +43,8 @@ export class Storage implements IStorage {
 
   private getDirecotry(config: ILocalStorageConfig): string {
     if (config.directory.startsWith('~')) {
-      return this.formatDir(config.directory);}
-    else {
+      return this.formatDir(config.directory);
+    } else {
       return config.directory;
     }
   }
@@ -109,34 +110,38 @@ export class Storage implements IStorage {
     Object.keys(data).forEach((id: string) => {
       if (data[id].isTask) {
         items.push(new Task(data[id]));
-      } else if (data[id].isTask === false){
+      } else if (data[id].isTask === false) {
         items.push(new Note(data[id]));
       }
 
       // to support old storage format
       if (data[id]._isTask) {
-        items.push(new Task({
-          id: data[id]._id,
-          date: data[id]._date,
-          timestamp: data[id]._timestamp,
-          description: data[id].description,
-          isStarred: data[id].isStarred,
-          boards: data[id].boards,
-          priority: data[id].priority,
-          inProgress: data[id].inProgress,
-          isCanceled: data[id].isCanceled,
-          isComplete: data[id].isComplete,
-          dueDate: data[id].dueDate
-        }));
+        items.push(
+          new Task({
+            id: data[id]._id,
+            date: data[id]._date,
+            timestamp: data[id]._timestamp,
+            description: data[id].description,
+            isStarred: data[id].isStarred,
+            boards: data[id].boards,
+            priority: data[id].priority,
+            inProgress: data[id].inProgress,
+            isCanceled: data[id].isCanceled,
+            isComplete: data[id].isComplete,
+            dueDate: data[id].dueDate
+          })
+        );
       } else if (data[id]._isTask === false) {
-        items.push(new Note({
-          id: data[id]._id,
-          date: data[id]._date,
-          timestamp: data[id]._timestamp,
-          description: data[id].description,
-          isStarred: data[id].isStarred,
-          boards: data[id].boards
-        }));
+        items.push(
+          new Note({
+            id: data[id]._id,
+            date: data[id]._date,
+            timestamp: data[id]._timestamp,
+            description: data[id].description,
+            isStarred: data[id].isStarred,
+            boards: data[id].boards
+          })
+        );
       }
     });
 
@@ -181,7 +186,11 @@ export class Storage implements IStorage {
 
   public async set(data: Array<Item>): Promise<void> {
     try {
-      const jsonData: string = JSON.stringify(data.map((item: Item) => item.toJSON()), null, 4);
+      const jsonData: string = JSON.stringify(
+        data.map((item: Item) => item.toJSON()),
+        null,
+        4
+      );
       const tempStorageFile: string = this.getTempFile(this._mainStorageFile);
 
       fs.writeFileSync(tempStorageFile, jsonData, 'utf8');
@@ -195,7 +204,11 @@ export class Storage implements IStorage {
 
   public async setArchive(archive: Array<Item>): Promise<void> {
     try {
-      const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
+      const jsonArchive: string = JSON.stringify(
+        archive.map((item: Item) => item.toJSON()),
+        null,
+        4
+      );
       const tempArchiveFile: string = this.getTempFile(this._archiveFile);
 
       fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
@@ -213,7 +226,14 @@ export class Storage implements IStorage {
 }
 
 export async function add(): Promise<ILocalStorageConfig> {
+  var prompt = createPromptModule();
+  const result = await prompt({
+    type: 'input',
+    name: 'directory',
+    message: 'Enter storage directory'
+  });
+
   return {
-    directory: '~/test'
+    directory: result['directory']
   };
 }

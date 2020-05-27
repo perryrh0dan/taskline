@@ -591,7 +591,7 @@ For more info on how to contribute to the project, please read the [contributing
 - Navigate to your local fork: `cd taskline`
 - Install the project dependencies: `npm install`
 - Run `npm run dev` to start the gulp build job. A watcher is initialized to build automatically during development.
-- Run passline in a second terminal with `node dist\cli.js`
+- Run passline in a second terminal with `node dist\main.js`
 
 ### Test
 

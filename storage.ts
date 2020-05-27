@@ -20,10 +20,10 @@ program
   });
 
 program
-  .command('add <name> <type>')
+  .command('add <name>')
   .description('Add new storage module')
-  .action(async(name, type) => {
-    await storageManager.addStorage(name, type);
+  .action(async(name) => {
+    await storageManager.addStorage(name);
   });
 
 program

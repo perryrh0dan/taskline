@@ -2,7 +2,7 @@ import { Item } from '../item';
 
 export enum StorageStatus {
   Online = 1,
-  Ofline = 2
+  Offline = 2
 }
 
 export interface IStorage {

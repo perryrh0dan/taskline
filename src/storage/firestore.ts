@@ -37,7 +37,7 @@ export class Storage implements IStorage {
       this._db = firebase.firestore();
       this._status = StorageStatus.Online;
     } catch (error) {
-      this._status = StorageStatus.Ofline;
+      this._status = StorageStatus.Offline;
     }
   }
 
@@ -196,6 +196,8 @@ export class Storage implements IStorage {
 }
 
 export async function add(): Promise<IFirestoreStorageConfig> {
+  console.log('Open the taskline configuration file and insert your firestore service account credentials into the storage mdoule configuration');
+
   return {
     storageName: 'storage',
     archiveName: 'archive'

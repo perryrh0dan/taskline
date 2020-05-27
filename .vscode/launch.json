@@ -16,7 +16,7 @@
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ],
-            // "args": ["storage", "add", "local", "local"]
+            "args": ["storage", "add", "test"]
             // "args": ["tfsafs1"]
         },
         {
