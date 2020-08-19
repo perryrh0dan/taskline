@@ -9,43 +9,43 @@ const defaultConfig = pkg.configuration.default;
 
 export interface ITheme {
   colors: {
-    pale: string,
-    error: string,
+    pale: string;
+    error: string;
     task: {
       priority: {
-        medium: string,
-        high: string
-      }
-    },
+        medium: string;
+        high: string;
+      };
+    };
     icons: {
-      note: string,
-      success: string,
-      star: string,
-      progress: string,
-      pending: string,
-      canceled: string
-    }
-  }
+      note: string;
+      success: string;
+      star: string;
+      progress: string;
+      pending: string;
+      canceled: string;
+    };
+  };
 }
 
 export interface IFirestoreConfig extends ServiceAccount {
-  storageName: string,
-  archiveName: string
+  storageName: string;
+  archiveName: string;
 }
 
 export interface IConfig {
-  language: string,
-  tasklineDirectory: string,
-  displayCompleteTasks: boolean,
-  displayProgressOverview: boolean,
-  storageModule: string,
-  firestoreConfig: IFirestoreConfig,
-  dateformat: string,
-  theme: ITheme
+  language: string;
+  tasklineDirectory: string;
+  displayCompleteTasks: boolean;
+  displayProgressOverview: boolean;
+  storageModule: string;
+  firestoreConfig: IFirestoreConfig;
+  dateformat: string;
+  theme: ITheme;
 }
 
 export class Config {
-  private static _instance: Config
+  private static _instance: Config;
   private config: any;
   private configFile: string;
 
@@ -83,7 +83,7 @@ export class Config {
 
       if (this.config.tasklineDirectory.startsWith('~')) {
         this.config.tasklineDirectory = this.formatTasklineDir(
-          this.config.tasklineDirectory
+          this.config.tasklineDirectory,
         );
       }
     }
