@@ -1,9 +1,9 @@
 module.exports = {
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser
-  plugins: ["@typescript-eslint"],
-  // extends: [
-  //   'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
-  // ],
+  plugins: ["@typescript-eslint", "prettier"],
+  extends: [
+    "prettier"
+  ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
@@ -29,8 +29,8 @@ module.exports = {
     "no-inferrable-types": [0, "always"],
     "semi": [2, "always"],
     "quotes": ["error", "single"],
-    "space-before-function-paren": [2, "never"],
-    "comma-spacing": ["error", { "before": false, "after": true }]
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "prettier/prettier": ["error"]
   },
   overrides: [
     {
