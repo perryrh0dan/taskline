@@ -5,6 +5,7 @@ import { Task } from './task';
 import { Note } from './note';
 import { Renderer } from './renderer';
 import * as firebase from 'firebase-admin';
+import logger from './utils/logger';
 
 export class FirestoreStorage implements Storage {
   private static _instance: FirestoreStorage;
@@ -30,13 +31,16 @@ export class FirestoreStorage implements Storage {
     this._archiveName = firestoreConfig.archiveName;
 
     firebase.initializeApp({
-      credential: firebase.credential.cert(firestoreConfig)
+      credential: firebase.credential.cert(firestoreConfig),
     });
 
     this._db = firebase.firestore();
   }
 
-  private async updateCollection(path: string, data: Array<Item>): Promise<void> {
+  private async updateCollection(
+    path: string,
+    data: Array<Item>,
+  ): Promise<void> {
     const self = this;
     const batch = this._db.batch();
 
@@ -84,8 +88,8 @@ export class FirestoreStorage implements Storage {
               inProgress: item.inProgress,
               isCanceled: item.isCanceled,
               isComplete: item.isComplete,
-              dueDate: item.dueDate
-            })
+              dueDate: item.dueDate,
+            }),
           );
         } else if (item._isTask === false) {
           items.push(
@@ -95,8 +99,8 @@ export class FirestoreStorage implements Storage {
               timestamp: item._timestamp,
               description: item.description,
               isStarred: item.isStarred,
-              boards: item.boards
-            })
+              boards: item.boards,
+            }),
           );
         }
       });
@@ -112,12 +116,9 @@ export class FirestoreStorage implements Storage {
     try {
       const batch = this._db.batch();
 
-      const data = await firebase
-        .firestore()
-        .collection(path)
-        .listDocuments();
+      const data = await firebase.firestore().collection(path).listDocuments();
 
-      data.forEach(item => {
+      data.forEach((item) => {
         batch.delete(item);
       });
 
@@ -133,6 +134,7 @@ export class FirestoreStorage implements Storage {
       this._data = [];
     } catch (error) {
       Renderer.instance.invalidFirestoreConfig();
+      logger.debug(error);
       process.exit(1);
     }
   }
@@ -143,6 +145,7 @@ export class FirestoreStorage implements Storage {
       this._archive = [];
     } catch (error) {
       Renderer.instance.invalidFirestoreConfig();
+      logger.debug(error);
       process.exit(1);
     }
   }
@@ -153,6 +156,7 @@ export class FirestoreStorage implements Storage {
         this._data = await this.getCollection(this._storageName);
       } catch (error) {
         Renderer.instance.invalidFirestoreConfig();
+        logger.debug(error);
         process.exit(1);
       }
     }
@@ -170,6 +174,7 @@ export class FirestoreStorage implements Storage {
         this._archive = await this.getCollection(this._archiveName);
       } catch (error) {
         Renderer.instance.invalidFirestoreConfig();
+        logger.debug(error);
         process.exit(1);
       }
     }
@@ -183,7 +188,9 @@ export class FirestoreStorage implements Storage {
 
   private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
     if (ids) {
-      return data.filter(item => { return ids.indexOf(item.id) != -1; });
+      return data.filter((item) => {
+        return ids.indexOf(item.id) != -1;
+      });
     }
     return data;
   }
