@@ -30,14 +30,14 @@ program
   .command('begin <ids>')
   .alias('b')
   .description(Localization.instance.get('help.begin'))
-  .action(ids => {
+  .action((ids) => {
     taskline.beginTasks(ids).catch(() => {});
   });
 
 program
   .command('cancel <ids>')
   .description(Localization.instance.get('help.cancel'))
-  .action(ids => {
+  .action((ids) => {
     taskline.cancelTasks(ids).catch(() => {});
   });
 
@@ -45,7 +45,7 @@ program
   .command('check <ids>')
   .alias('c')
   .description(Localization.instance.get('help.check'))
-  .action(ids => {
+  .action((ids) => {
     taskline.checkTasks(ids).catch(() => {});
   });
 
@@ -67,7 +67,7 @@ program
   .command('copy <ids>')
   .alias('y')
   .description(Localization.instance.get('help.copy'))
-  .action(ids => {
+  .action((ids) => {
     taskline.copyToClipboard(ids).catch(() => {});
   });
 
@@ -75,7 +75,7 @@ program
   .command('delete <ids>')
   .alias('d')
   .description(Localization.instance.get('help.delete'))
-  .action(ids => {
+  .action((ids) => {
     taskline.deleteItems(ids).catch(() => {});
   });
 
@@ -98,7 +98,7 @@ program
   .command('find <terms>')
   .alias('f')
   .description(Localization.instance.get('help.find'))
-  .action(query => {
+  .action((query) => {
     taskline.findItems(query).catch(() => {});
   });
 
@@ -106,8 +106,8 @@ program
   .command('list <terms>')
   .alias('l')
   .description(Localization.instance.get('help.list'))
-  .action(terms => {
-    taskline.listByAttributes(terms).then(grouped => {
+  .action((terms) => {
+    taskline.listByAttributes(terms).then((grouped) => {
       taskline.displayStats(grouped);
     });
   });
@@ -142,7 +142,7 @@ program
 
   .alias('r')
   .description(Localization.instance.get('help.restore'))
-  .action(ids => {
+  .action((ids) => {
     taskline.restoreItems(ids).catch(() => {});
   });
 
@@ -150,7 +150,7 @@ program
   .command('star <ids>')
   .alias('s')
   .description(Localization.instance.get('help.star'))
-  .action(ids => {
+  .action((ids) => {
     taskline.starItems(ids).catch(() => {});
   });
 
@@ -174,7 +174,7 @@ program
   .alias('i')
   .description(Localization.instance.get('help.timeline'))
   .action(() => {
-    taskline.displayByDate().then(grouped => {
+    taskline.displayByDate().then((grouped) => {
       taskline.displayStats(grouped);
     });
   });
@@ -186,19 +186,25 @@ program
     taskline.refactorIDs().catch(() => {});
   });
 
-program.on('--help', function() {
+program.on('--help', function () {
   console.log('');
-  console.log('Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual');
+  console.log(
+    'Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual',
+  );
 });
 
 if (process.argv.length === 2) {
-  taskline.displayByBoard().then(grouped => {
+  taskline.displayByBoard().then((grouped) => {
     return taskline.displayStats(grouped);
   });
 }
 
-program.on('command:*', function() {
-  console.error(Localization.instance.getf('errors.invalidCommand', { params: program.args }));
+program.on('command:*', function () {
+  console.error(
+    Localization.instance.getf('errors.invalidCommand', {
+      params: program.args,
+    }),
+  );
   process.exit(1);
 });
 
