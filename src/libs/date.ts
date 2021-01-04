@@ -145,7 +145,7 @@ const getWeekdayIndex = function (weekday: string): number {
 
 const getNextBusinessDay = function (day: Date): Date {
   const businessDay: Date = addBusinessDays(day, 0);
-  if (businessDay != day) console.info('(adjusted for business day)');
+  if (businessDay != day) logger.debug('(adjusted for business day)');
   return businessDay;
 };
 
