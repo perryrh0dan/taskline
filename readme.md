@@ -44,7 +44,9 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 
 ## Highlights
 
-### Original
+This project was heavily inspired by [taskbook] (https://github.com/klaussinani/taskbook). Due to the lack of some critical features mentioned below, I decided to rewrite the complete app in a more modern approach.
+
+### Original 
 
 - Organize tasks & notes to boards
 - Board & timeline views
