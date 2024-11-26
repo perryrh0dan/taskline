@@ -95,7 +95,7 @@
     "commander": "^4.1.1",
     "date-fns": "^2.16.1",
     "figures": "^3.2.0",
-    "firebase-admin": "^9.4.1",
+    "firebase-admin": "^11.4.1",
     "ora": "^3.4.0",
     "update-notifier": "^5.0.1",
     "winston": "^3.3.3"
