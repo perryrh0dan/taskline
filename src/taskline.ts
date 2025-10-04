@@ -977,4 +977,10 @@ export class Taskline {
 
     Renderer.instance.displayConfig(config, path);
   }
+
+  public async displayBoards(): Promise<void> {
+    Renderer.instance.startLoading();
+    const boards = await this.getBoards();
+    Renderer.instance.displayBoards(boards);
+  }
 }

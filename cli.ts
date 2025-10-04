@@ -66,6 +66,13 @@ program
   });
 
 program
+  .command('boards')
+  .description(Localization.instance.get('help.boards'))
+  .action(() => {
+    taskline.displayBoards().catch(() => {});
+  });
+
+program
   .command('copy <ids>')
   .alias('y')
   .description(Localization.instance.get('help.copy'))

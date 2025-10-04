@@ -398,6 +398,21 @@ export class Renderer {
     });
   }
 
+  public displayBoards(boards: Array<string>): void {
+    this.stopLoading();
+
+    if (boards.length === 0) {
+      console.log('\n' + chalk.yellow('No boards found.') + '\n');
+      return;
+    }
+
+    console.log('\n' + chalk.blue.bold('Available Boards:') + '\n');
+    boards.forEach(board => {
+      console.log('  ' + this.printColor('icons.note', figures.bullet) + ' ' + board);
+    });
+    console.log('');
+  }
+
   public displayByDate(data: any): void {
     this.stopLoading();
     Object.keys(data).forEach((date: string) => {
