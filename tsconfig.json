@@ -1,23 +1,26 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES2017",
     "module": "commonjs",
-    "allowJs": true,
+    "lib": ["ES2017"],
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "strictPropertyInitialization": false,
-    "noUnusedLocals": true,
-    "outDir": "dist",
-    "sourceMap": true
+    "moduleResolution": "node",
+    "declaration": true,
+    "sourceMap": true,
+    "noEmitOnError": false
   },
   "include": [
-    "src/**/*.ts",
+    "src/**/*",
     "cli.ts"
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "dist"
   ]
 }

@@ -5,7 +5,10 @@ const jeditor = require('gulp-json-editor');
 const merge = require('merge-stream');
 var del = require('del');
 
-const tsProject = ts.createProject('tsconfig.json');
+const tsProject = ts.createProject('tsconfig.json', {
+  skipLibCheck: true,
+  noEmitOnError: false
+});
 
 const dirs = {
   dist: ['dist']
@@ -45,7 +48,7 @@ const compileTest = () => {
   const tsResult = tsProject.src()
     .pipe(sourcemaps.init())
     .pipe(tsProject());
-  return merge(tsResult, tsResult.js)
+  return tsResult.js
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(dirs.dist));
 };

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as program from 'commander';
+import { Command } from 'commander';
 
 // START SNAPCRAFT IGNORE
 import { UpdateNotifier } from 'update-notifier';
@@ -10,6 +10,8 @@ import { Localization } from './src/localization';
 import logger from './src/utils/logger';
 import pkg = require('./package.json');
 const taskline = new Taskline();
+
+const program = new Command();
 
 program.version(pkg.version);
 program.description(pkg.description);
