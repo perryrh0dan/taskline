@@ -13,7 +13,7 @@ describe('Test move functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await helper.clearStorage();
     const data: Array<Item> = new Array<Item>();
 
@@ -40,22 +40,21 @@ describe('Test move functionality', () => {
     }));
 
     await helper.setData(data);
-    done();
   });
 
-  it('should move an item to one board', async() => {
+  it('should move an item to one board', async () => {
     await taskline.moveBoards('1', 'test');
     const data = await helper.getData([1]);
     expect(data[0].boards.toString()).toBe('test');
   });
 
-  it('should move an item to multiple boards', async() => {
+  it('should move an item to multiple boards', async () => {
     await taskline.moveBoards('1', 'test,test2');
     const data = await helper.getData([1]);
     expect(data[0].boards.toString()).toBe('test,test2');
   });
 
-  it('should move multiple items to multiple boards', async() => {
+  it('should move multiple items to multiple boards', async () => {
     await taskline.moveBoards('1,2', 'test,test2');
     const data = await helper.getData([1, 2]);
     expect(data[0].boards).toMatchObject(['test', 'test2']);
@@ -64,12 +63,11 @@ describe('Test move functionality', () => {
 
   it('should try to move nonexisting item', () => {
     expect(taskline.moveBoards('5', 'test')).rejects.toMatchObject({
-      message: 'Invalid InputIDs'
+      message: 'Invalid InputIDs',
     });
   });
 
-  afterAll(done => {
+  afterAll(() => {
     helper.resetConfig();
-    done();
   });
 });

@@ -13,7 +13,7 @@ describe('Test begin functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await helper.clearStorage();
     const data: Array<Item> = new Array<Item>();
 
@@ -24,8 +24,8 @@ describe('Test begin functionality', () => {
         timestamp: 1567434272855,
         description: 'Test Note',
         isStarred: false,
-        boards: ['My Board']
-      })
+        boards: ['My Board'],
+      }),
     );
 
     data.push(
@@ -39,8 +39,8 @@ describe('Test begin functionality', () => {
         dueDate: 0,
         isComplete: false,
         inProgress: false,
-        priority: 1
-      })
+        priority: 1,
+      }),
     );
 
     data.push(
@@ -54,15 +54,14 @@ describe('Test begin functionality', () => {
         dueDate: 0,
         isComplete: false,
         inProgress: false,
-        priority: 1
-      })
+        priority: 1,
+      }),
     );
 
     await helper.setData(data);
-    done();
   });
 
-  it('should begin one task', async() => {
+  it('should begin one task', async () => {
     const now = new Date();
     const oldData: Array<Item> = await helper.getData([2]);
     const oldTask: Task = oldData[0] as Task;
@@ -79,7 +78,7 @@ describe('Test begin functionality', () => {
     expect(task.passedTime).toBe(oldTask.passedTime);
   });
 
-  it('should pause one task', async() => {
+  it('should pause one task', async () => {
     const now = new Date();
     const oldData: Array<Item> = await helper.getData([2]);
     const oldTask: Task = oldData[0] as Task;
@@ -92,11 +91,13 @@ describe('Test begin functionality', () => {
     expect(task.inProgress).toBe(false);
     expect(task.isCanceled).toBe(false);
     expect(task.isComplete).toBe(false);
-    expect(task.passedTime).toBeGreaterThanOrEqual(oldTask.passedTime + now.getTime() - oldTask.lastStartTime);
+    expect(task.passedTime).toBeGreaterThanOrEqual(
+      oldTask.passedTime + now.getTime() - oldTask.lastStartTime,
+    );
     expect(task.lastStartTime).toBe(0);
   });
 
-  it('should continue one task', async() => {
+  it('should continue one task', async () => {
     const now = new Date();
     const oldData: Array<Item> = await helper.getData([2]);
     const oldTask: Task = oldData[0] as Task;
@@ -110,12 +111,10 @@ describe('Test begin functionality', () => {
     expect(task.isCanceled).toBe(false);
     expect(task.isComplete).toBe(false);
     expect(task.passedTime).toBe(oldTask.passedTime);
-    expect(task.lastStartTime).toBeGreaterThanOrEqual(
-      now.getTime()
-    );
+    expect(task.lastStartTime).toBeGreaterThanOrEqual(now.getTime());
   });
 
-  it('should begin multiple tasks', async() => {
+  it('should begin multiple tasks', async () => {
     const now = new Date();
     const oldData: Array<Item> = await helper.getData([2, 3]);
 
@@ -126,18 +125,22 @@ describe('Test begin functionality', () => {
     expect((data[0] as Task).inProgress).toBe(false);
     expect((data[0] as Task).isCanceled).toBe(false);
     expect((data[0] as Task).isComplete).toBe(false);
-    expect((data[0] as Task).passedTime).toBeGreaterThanOrEqual((oldData[0] as Task).passedTime + now.getTime() - (oldData[0] as Task).lastStartTime);
+    expect((data[0] as Task).passedTime).toBeGreaterThanOrEqual(
+      (oldData[0] as Task).passedTime +
+        now.getTime() -
+        (oldData[0] as Task).lastStartTime,
+    );
     expect((data[0] as Task).lastStartTime).toBe(0);
     expect((data[1] as Task).inProgress).toBe(true);
     expect((data[1] as Task).isCanceled).toBe(false);
     expect((data[1] as Task).isComplete).toBe(false);
     expect((data[1] as Task).passedTime).toBe((oldData[1] as Task).passedTime);
     expect((data[1] as Task).lastStartTime).toBeGreaterThanOrEqual(
-      now.getTime()
+      now.getTime(),
     );
   });
 
-  it('should begin multiple tasks by id range', async() => {
+  it('should begin multiple tasks by id range', async () => {
     await taskline.beginTasks('2-3');
     const data: Array<Item> = await helper.getData([2, 3]);
     expect((data[0] as Task).inProgress).toBe(true);
@@ -148,23 +151,23 @@ describe('Test begin functionality', () => {
 
   it('should try to begin nonexisting item', () => {
     expect(taskline.beginTasks('4')).rejects.toMatchObject({
-      message: 'Invalid InputIDs'
+      message: 'Invalid InputIDs',
     });
   });
 
   it('should try to begin with invalid id range', () => {
     expect(taskline.checkTasks('1-b')).rejects.toMatchObject({
-      message: 'Invalid Input ID Range'
+      message: 'Invalid Input ID Range',
     });
   });
 
   it('should try to begin with invalid character as id', () => {
     expect(taskline.checkTasks('ö')).rejects.toMatchObject({
-      message: 'Invalid InputIDs'
+      message: 'Invalid InputIDs',
     });
   });
 
-  afterAll(done => {
+  afterAll((done) => {
     helper.resetConfig();
     done();
   });

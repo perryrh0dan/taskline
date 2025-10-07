@@ -13,7 +13,7 @@ describe('Test Taskline module', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await helper.clearStorage();
     const data: Array<Item> = new Array<Item>();
 
@@ -40,16 +40,15 @@ describe('Test Taskline module', () => {
     }));
 
     await helper.setData(data);
-    done();
   });
 
-  it('should star one item', async() => {
+  it('should star one item', async () => {
     await taskline.starItems('1');
     const data = await helper.getData([1]);
     expect(data[0].isStarred).toBe(true);
   });
 
-  it('should star multiple items', async() => {
+  it('should star multiple items', async () => {
     await taskline.starItems('1,2');
     const data = await helper.getData([1, 2]);
     expect(data[0].isStarred).toBe(false);
@@ -58,12 +57,11 @@ describe('Test Taskline module', () => {
 
   it('should try to star nonexisting item', () => {
     expect(taskline.starItems('3')).rejects.toMatchObject({
-      message: 'Invalid InputIDs'
+      message: 'Invalid InputIDs',
     });
   });
 
-  afterAll(done => {
+  afterAll(() => {
     helper.resetConfig();
-    done();
   });
 });
