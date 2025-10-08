@@ -7,6 +7,7 @@
     "check": "Check/uncheck task",
     "clear": "Delete all checked items",
     "config": "Display active config",
+    "boards": "List all boards",
     "copy": "Copy description to clipboard",
     "delete": "Delete item",
     "due": "Update duedate of task",
