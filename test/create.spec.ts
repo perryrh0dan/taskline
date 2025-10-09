@@ -12,12 +12,11 @@ describe('Test create functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await helper.clearStorage();
-    done();
   });
 
-  it('should create note', async() => {
+  it('should create note', async () => {
     await taskline.createNote('Test Note', undefined);
     const data = await helper.getData();
     expect(data[0] instanceof Note).toBe(true);
@@ -26,7 +25,7 @@ describe('Test create functionality', () => {
     expect(data[0].boards.toString()).toBe('My Board');
   });
 
-  it('should create simple task', async() => {
+  it('should create simple task', async () => {
     await taskline.createTask('Test Task', undefined, undefined, undefined);
     const data = await helper.getData();
     expect(data[1] instanceof Task).toBe(true);
@@ -40,8 +39,13 @@ describe('Test create functionality', () => {
     expect((data[1] as Task).priority).toBe(1);
   });
 
-  it('should create a task with boards', async() => {
-    await taskline.createTask('Second Test Task', 'test2,test3', undefined, undefined);
+  it('should create a task with boards', async () => {
+    await taskline.createTask(
+      'Second Test Task',
+      'test2,test3',
+      undefined,
+      undefined,
+    );
     const data = await helper.getData();
     expect(data[2].isTask).toBe(true);
     expect(data[2].description).toBe('Second Test Task');
@@ -53,7 +57,7 @@ describe('Test create functionality', () => {
     expect((data[2] as Task).priority).toBe(1);
   });
 
-  it('should create a task with priority', async() => {
+  it('should create a task with priority', async () => {
     await taskline.createTask('Third Test Task', undefined, '3', undefined);
     const data = await helper.getData();
     expect(data[3].isTask).toBe(true);
@@ -66,9 +70,13 @@ describe('Test create functionality', () => {
     expect((data[3] as Task).priority).toBe(3);
   });
 
-  it('should create a task with a duedate according to "dd:mm:yyyy"', async() => {
-    await taskline
-      .createTask('Fourth Test Task', undefined, undefined, '02.09.2019');
+  it('should create a task with a duedate according to "dd:mm:yyyy"', async () => {
+    await taskline.createTask(
+      'Fourth Test Task',
+      undefined,
+      undefined,
+      '02.09.2019',
+    );
     const data = await helper.getData();
     expect(data[4].isTask).toBe(true);
     expect(data[4].description).toBe('Fourth Test Task');
@@ -80,24 +88,34 @@ describe('Test create functionality', () => {
     expect((data[4] as Task).priority).toBe(1);
   });
 
-  it('should create a task with a duedate according to "dd.mm.yyyy HH:MM:SS"', async() => {
+  it('should create a task with a duedate according to "dd.mm.yyyy HH:MM:SS"', async () => {
     helper.changeConfig('dateformat', 'dd.mm.yyyy HH:MM:SS');
-    await taskline
-      .createTask('Fifth Test Task', undefined, undefined, '02.09.2019 7:13:45');
+    await taskline.createTask(
+      'Fifth Test Task',
+      undefined,
+      undefined,
+      '02.09.2019 7:13:45',
+    );
     const data = await helper.getData();
     expect(data[5].isTask).toBe(true);
     expect(data[5].description).toBe('Fifth Test Task');
     expect(data[5].boards).toMatchObject(['My Board']);
-    expect((data[5] as Task).dueDate).toBe(new Date('2019-09-02').setHours(7, 13, 45));
+    expect((data[5] as Task).dueDate).toBe(
+      new Date('2019-09-02').setHours(7, 13, 45),
+    );
     expect((data[5] as Task).isComplete).toBe(false);
     expect((data[5] as Task).inProgress).toBe(false);
     expect(data[5].isStarred).toBe(false);
     expect((data[5] as Task).priority).toBe(1);
   });
 
-  it('should create a task with duedate, priority and boards', async() => {
-    await taskline
-      .createTask('Sixth Test Task', 'test2,test3', '2', '03.09.2019');
+  it('should create a task with duedate, priority and boards', async () => {
+    await taskline.createTask(
+      'Sixth Test Task',
+      'test2,test3',
+      '2',
+      '03.09.2019',
+    );
     const data = await helper.getData();
     expect(data[6].isTask).toBe(true);
     expect(data[6].description).toBe('Sixth Test Task');
@@ -110,18 +128,27 @@ describe('Test create functionality', () => {
   });
 
   it('should try to create a task with wrong priority', () => {
-    expect(taskline.createTask('Seventh Test Task', undefined, '4', undefined)).rejects.toMatchObject({
-      message: 'Invalid Priority'
+    expect(
+      taskline.createTask('Seventh Test Task', undefined, '4', undefined),
+    ).rejects.toMatchObject({
+      message: 'Invalid Priority',
     });
   });
 
   it('should try to create a task with wrong duedate', () => {
-    expect(taskline.createTask('Eighth Test Task', undefined, undefined, '2019-30-3')).rejects.toMatchObject({
-      message: 'Invalid Date Format'
+    expect(
+      taskline.createTask(
+        'Eighth Test Task',
+        undefined,
+        undefined,
+        '2019-30-3',
+      ),
+    ).rejects.toMatchObject({
+      message: 'Invalid Date Format',
     });
   });
 
-  afterAll(done => {
+  afterAll((done) => {
     helper.resetConfig();
     done();
   });

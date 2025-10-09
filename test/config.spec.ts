@@ -19,7 +19,7 @@ describe('Test config functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await helper.clearStorage();
     const promises: Array<Promise<any>> = new Array<Promise<any>>();
     const data: Array<Item> = new Array<Item>();
@@ -31,8 +31,8 @@ describe('Test config functionality', () => {
         timestamp: now.getTime(),
         description: 'Test Note',
         isStarred: false,
-        boards: ['My Board']
-      })
+        boards: ['My Board'],
+      }),
     );
 
     data.push(
@@ -46,8 +46,8 @@ describe('Test config functionality', () => {
         dueDate: undefined,
         isComplete: true,
         inProgress: false,
-        priority: 1
-      })
+        priority: 1,
+      }),
     );
 
     data.push(
@@ -61,8 +61,8 @@ describe('Test config functionality', () => {
         dueDate: undefined,
         isComplete: false,
         inProgress: false,
-        priority: 1
-      })
+        priority: 1,
+      }),
     );
 
     data.push(
@@ -76,8 +76,8 @@ describe('Test config functionality', () => {
         dueDate: undefined,
         isComplete: false,
         inProgress: false,
-        priority: 3
-      })
+        priority: 3,
+      }),
     );
 
     promises.push(helper.setData(data));
@@ -94,19 +94,18 @@ describe('Test config functionality', () => {
         dueDate: undefined,
         isComplete: true,
         inProgress: false,
-        priority: 1
-      })
+        priority: 1,
+      }),
     );
 
     promises.push(helper.setArchive(archive));
     await Promise.all(promises);
-    done();
   });
 
   // Run only under linux
   // Turned of because this test is not working in travis ci if an environment variable is set
   if (process.platform === 'linux' && isCI === false) {
-    it('should display red note', async() => {
+    it('should display red note', async () => {
       mockWrite.mockClear();
       helper.changeConfig('theme.colors.icons.note', 'red');
 
@@ -118,33 +117,33 @@ describe('Test config functionality', () => {
       expect(mockWrite.mock.calls[3][0]).toBe('    [90m3.[39m [35m☐ [39m Second Test Task [33m★[39m\n');
       expect(mockWrite.mock.calls[4][0]).toBe('\n  [4mOther Board[24m [90m[0/1][39m\n');
       expect(mockWrite.mock.calls[5][0]).toBe(
-        '    [90m4.[39m [35m☐ [39m [31m[4mThird Test Task[24m[39m [31m(!!)[39m [90m1d[39m [33m★[39m\n'
+        '    [90m4.[39m [35m☐ [39m [31m[4mThird Test Task[24m[39m [31m(!!)[39m [90m1d[39m [33m★[39m\n',
       );
     });
 
-    it('should display by date', async() => {
+    it('should display by date', async () => {
       mockWrite.mockClear();
       helper.changeConfig('theme.colors.icons.star', 'green');
       helper.changeConfig('theme.colors.task.priority.high', 'grey');
 
       await taskline.displayByDate();
       expect(mockWrite.mock.calls[0][0]).toBe(
-        '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/2][39m\n'
+        '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/2][39m\n',
       );
       expect(mockWrite.mock.calls[1][0]).toBe('    [90m1.[39m [31m● [39m Test Note  \n');
       expect(mockWrite.mock.calls[2][0]).toBe('    [90m2.[39m [32m✔ [39m [90mTest Task[39m  \n');
       expect(mockWrite.mock.calls[3][0]).toBe(
-        '    [90m3.[39m [35m☐ [39m Second Test Task  [32m★[39m\n'
+        '    [90m3.[39m [35m☐ [39m Second Test Task  [32m★[39m\n',
       );
       expect(mockWrite.mock.calls[4][0]).toBe(
-        '\n  [4m' + yesterday.toDateString() + '[24m [90m[0/1][39m\n'
+        '\n  [4m' + yesterday.toDateString() + '[24m [90m[0/1][39m\n',
       );
       expect(mockWrite.mock.calls[5][0]).toBe(
-        '    [90m4.[39m [35m☐ [39m [31m[4mThird Test Task[24m[39m [31m(!!)[39m [90mOther Board[39m [32m★[39m\n'
+        '    [90m4.[39m [35m☐ [39m [31m[4mThird Test Task[24m[39m [31m(!!)[39m [90mOther Board[39m [32m★[39m\n',
       );
     });
 
-    it('should display stats', async() => {
+    it('should display stats', async () => {
       const grouped = await taskline.displayByBoard();
       mockWrite.mockClear();
       taskline.displayStats(grouped);
@@ -152,16 +151,16 @@ describe('Test config functionality', () => {
         '\n  [90m33% of all tasks complete.[39m\n'
       );
       expect(mockWrite.mock.calls[1][0]).toBe(
-        '  [32m1[39m [90mdone[39m[90m · [39m[31m0[39m [90mcanceled[39m[90m · [39m[34m0[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[31m1[39m [90mnote[39m \n\n'
+        '  [32m1[39m [90mdone[39m[90m · [39m[31m0[39m [90mcanceled[39m[90m · [39m[34m0[39m [90min-progress[39m[90m · [39m[35m2[39m [90mpending[39m[90m · [39m[31m1[39m [90mnote[39m \n\n',
       );
     });
 
-    it('should display archive', async() => {
+    it('should display archive', async () => {
       mockWrite.mockClear();
 
       await taskline.displayArchive();
       expect(mockWrite.mock.calls[0][0]).toBe(
-        '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/1][39m\n'
+        '\n  [4m' + now.toDateString() + '[24m [90m[Today][39m [90m[1/1][39m\n',
       );
       expect(mockWrite.mock.calls[1][0]).toBe('    [90m1.[39m [32m✔ [39m [90mDeleted Task[39m  \n');
     });
@@ -172,8 +171,7 @@ describe('Test config functionality', () => {
     /* this file contains test utilitlies */
   });
 
-  afterAll(done => {
+  afterAll(() => {
     helper.resetConfig();
-    done();
   });
 });

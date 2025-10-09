@@ -2,7 +2,7 @@
 import * as program from 'commander';
 
 // START SNAPCRAFT IGNORE
-import { UpdateNotifier } from 'update-notifier';
+import updateNotifier from 'update-notifier';
 // END SNAPCRAFT IGNORE
 
 import { Taskline } from './src/taskline';
@@ -209,7 +209,7 @@ program.on('command:*', function () {
 });
 
 // START SNAPCRAFT IGNORE disable this for snap
-new UpdateNotifier({
+updateNotifier({
   pkg,
 }).notify({ isGlobal: true });
 // END SNAPCRAFT IGNORE

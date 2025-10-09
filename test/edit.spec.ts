@@ -13,7 +13,7 @@ describe('Test edit functionality', () => {
   //  Disable output ora problem also jest has no output than
   //  process.stderr.write = jest.fn();
 
-  beforeAll(async done => {
+  beforeAll(async () => {
     await helper.clearStorage();
     const data: Array<Item> = new Array<Item>();
 
@@ -40,10 +40,9 @@ describe('Test edit functionality', () => {
     }));
 
     await helper.setData(data);
-    done();
   });
 
-  it('should edit description of one item', async() => {
+  it('should edit description of one item', async () => {
     await taskline.editDescription('2', 'Edited Test Task');
     const data = await helper.getData([2]);
     expect(data[0].description).toBe('Edited Test Task');
@@ -57,8 +56,7 @@ describe('Test edit functionality', () => {
     });
   });
 
-  afterAll(done => {
+  afterAll(() => {
     helper.resetConfig();
-    done();
   });
 });
