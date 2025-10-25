@@ -41,7 +41,7 @@ export class GitStorage implements Storage {
 
     this.git = simpleGit(this.repoDir);
 
-    // Optionally, pull latest on init
+    // pull latest on init
     this.git.pull().catch(() => {});
   }
 
