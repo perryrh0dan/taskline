@@ -159,15 +159,22 @@ export class GitStorage implements Storage {
 
   public async set(data: Array<Item>): Promise<void> {
     try {
+      const remotes = await this.git.getRemotes(true);
+      const hasRemote = remotes && remotes.length > 0;
+
+      if (!hasRemote) {
+        console.warn('⚠️  Changes are only saved locally. To sync with a remote, set up a remote origin.');
+      } else {
       // Force sync to latest remote state
-      try {
-        await this.git.fetch();
-        await this.git.reset(['--hard', 'origin/master']);
-      } catch (err) {
-        if (err instanceof Error) {
-          console.warn('Git fetch/reset failed; continuing anyway:', err.message);
-        } else {
-          console.warn('Git fetch/reset failed; continuing anyway:', err);
+        try {
+          await this.git.fetch();
+          await this.git.reset(['--hard', 'origin/master']);
+        } catch (err) {
+          if (err instanceof Error) {
+            console.warn('Git fetch/reset failed; continuing anyway:', err.message);
+          } else {
+            console.warn('Git fetch/reset failed; continuing anyway:', err);
+          }
         }
       }
 
@@ -193,7 +200,18 @@ export class GitStorage implements Storage {
       try {
         await this.git.push();
       } catch (err) {
-        if (err instanceof Error) {
+        if (
+          err instanceof Error &&
+          /No configured push destination|No remote configured/i.test(err.message)
+        ) {
+          console.warn(
+            `Git push failed: No remote is configured.\n` +
+            `To enable syncing, run:\n\n` +
+            `    git remote add <name> <url>\n` +
+            `and then push using the remote name:\n\n` +
+            `    git push <name>\n`
+          );
+        } else if (err instanceof Error) {
           console.error('Git push failed:', err.message);
         } else {
           console.error('Git push failed:', err);
