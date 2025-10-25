@@ -257,9 +257,45 @@ Display progress overview below the timeline and board views.
 
 - Type: `Enum`
 - Default: `local`
-- Values: `local` , `firestore`
+- Values: `local` , `firestore` , `git`
 
-Choose of storage module. Currently there are two modules `local` and `firestore` . For the firestore module the firestoreConfig is needed.
+Choose the storage module.
+- For the `firestore` module, the `firestoreConfig` is needed.
+- For the `git` module, set the `gitStorageDirectory` option as shown below.
+
+##### `gitStorageDirectory`
+
+- Type: `String`
+- Example: `D:\\test_repo`
+
+Filesystem path where the Git storage repository will be initialized or used.  
+If the directory does not contain a Git repository, one will be initialized automatically.
+
+**Example configuration for Git storage in your `~/.taskline.json` file:**
+
+```json
+{
+  "storageModule": "git",
+  "gitStorageDirectory": "<your-git-storage-path>", // Path to your local Git repository
+  ...
+}
+```
+> **Tip:**  
+> On **Windows**, use double backslashes in your path (e.g., `C:\\Users\\YourName\\my-taskline-repo`).\
+> On **macOS/Linux**, use forward slashes (e.g., `/home/yourname/my-taskline-repo`).
+
+**Note:**  
+To enable syncing across devices or with a remote server, your Git storage repository must be connected to a remote (such as GitHub, GitLab, or Bitbucket).  
+If no remote is configured, changes will only be saved locally and will not sync globally.
+
+To add a remote to your Git storage directory, run:
+
+```sh
+git remote add origin <your-remote-url>
+git push -u origin master
+```
+
+Replace `<your-remote-url>` with the URL of your remote repository.
 
 ##### `firestoreConfig`
 
