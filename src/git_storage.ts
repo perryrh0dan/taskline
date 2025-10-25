@@ -170,6 +170,17 @@ export class GitStorage implements Storage {
     return null;
   }
 
+  private printNoRemoteWarning(): void {
+    console.warn(
+      `Git push failed: No remote is configured.\n` +
+      `To enable syncing, run:\n\n` +
+      `    git remote add origin <your-remote-url>\n` +
+      `    git branch -M main\n` +
+      `    git push -u origin main\n\n` +
+      `Replace <your-remote-url> with the URL of your remote repository.`
+    );
+  }
+
   public async set(data: Array<Item>): Promise<void> {
     try {
       const branchName = await this.getRemoteBranchName();
@@ -216,13 +227,7 @@ export class GitStorage implements Storage {
           err instanceof Error &&
           /No configured push destination|No remote configured/i.test(err.message)
         ) {
-          console.warn(
-            `Git push failed: No remote is configured.\n` +
-            `To enable syncing, run:\n\n` +
-            `    git remote add <name> <url>\n` +
-            `and then push using the remote name:\n\n` +
-            `    git push <name>\n`
-          );
+          this.printNoRemoteWarning();
         } else if (err instanceof Error) {
           console.error('Git push failed:', err.message);
         } else {
@@ -281,13 +286,7 @@ export class GitStorage implements Storage {
           err instanceof Error &&
           /No configured push destination|No remote configured/i.test(err.message)
         ) {
-          console.warn(
-            `Git push failed: No remote is configured.\n` +
-            `To enable syncing, run:\n\n` +
-            `    git remote add <name> <url>\n` +
-            `and then push using the remote name:\n\n` +
-            `    git push <name>\n`
-          );
+          this.printNoRemoteWarning();
         } else if (err instanceof Error) {
           console.error('Git push failed (archive):', err.message);
         } else {
