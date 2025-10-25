@@ -240,29 +240,55 @@ export class GitStorage implements Storage {
       // Force sync to latest remote state
       const branchName = await this.getRemoteBranchName();
       
-      const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
-      const tempArchiveFile: string = this.getTempFile(this.archiveFile);
-      fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
-      fs.renameSync(tempArchiveFile, this.archiveFile);
-
-      // Stage and commit
-      await this.git.add(this.archiveFile);
+    if (!branchName) {
+      console.warn('⚠️  Changes are only saved locally. To sync with a remote, set up a remote origin.');
+    } else {
       try {
-        await this.git.commit('Update archive.json');
+        await this.git.fetch();
+        await this.git.reset(['--hard', branchName]);
       } catch (err) {
         if (err instanceof Error) {
-          if (!/nothing to commit/i.test(err.message)) {
-            console.error('Git commit failed (archive):', err.message);
-          }
+          console.warn('Git fetch/reset failed for archive; continuing anyway:', err.message);
         } else {
-          console.error('Git commit failed (archive):', err);
+          console.warn('Git fetch/reset failed for archive; continuing anyway:', err);
         }
       }
-      // Push
-      try {
-        await this.git.push();
-      } catch (err) {
-        if (err instanceof Error) {
+    }
+
+    const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
+    const tempArchiveFile: string = this.getTempFile(this.archiveFile);
+    fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
+    fs.renameSync(tempArchiveFile, this.archiveFile);
+
+    // Stage and commit
+    await this.git.add(this.archiveFile);
+    try {
+      await this.git.commit('Update archive.json');
+    } catch (err) {
+      if (err instanceof Error) {
+        if (!/nothing to commit/i.test(err.message)) {
+          console.error('Git commit failed (archive):', err.message);
+        }
+      } else {
+        console.error('Git commit failed (archive):', err);
+      }
+    }
+    // Push
+    try {
+      await this.git.push();
+    } catch (err) {
+        if (
+          err instanceof Error &&
+          /No configured push destination|No remote configured/i.test(err.message)
+        ) {
+          console.warn(
+            `Git push failed: No remote is configured.\n` +
+            `To enable syncing, run:\n\n` +
+            `    git remote add <name> <url>\n` +
+            `and then push using the remote name:\n\n` +
+            `    git push <name>\n`
+          );
+        } else if (err instanceof Error) {
           console.error('Git push failed (archive):', err.message);
         } else {
           console.error('Git push failed (archive):', err);
