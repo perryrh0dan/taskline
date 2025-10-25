@@ -192,7 +192,6 @@ export class GitStorage implements Storage {
       // Push
       try {
         await this.git.push();
-        console.log('Git push done');
       } catch (err) {
         if (err instanceof Error) {
           console.error('Git push failed:', err.message);
@@ -241,7 +240,6 @@ export class GitStorage implements Storage {
       // Push
       try {
         await this.git.push();
-        console.log('Git push done (archive)');
       } catch (err) {
         if (err instanceof Error) {
           console.error('Git push failed (archive):', err.message);
