@@ -156,19 +156,31 @@ export class GitStorage implements Storage {
     return archive;
   }
 
+  private async getRemoteBranchName(): Promise<string | null> {
+    const remotes = await this.git.getRemotes(true);
+    const hasRemote = remotes && remotes.length > 0;
+    if (!hasRemote) return null;
+
+    const branchSummary = await this.git.branch(['-r']);
+    if (branchSummary.branches['origin/main']) {
+      return 'origin/main';
+    } else if (branchSummary.branches['origin/master']) {
+      return 'origin/master';
+    }
+    return null;
+  }
 
   public async set(data: Array<Item>): Promise<void> {
     try {
-      const remotes = await this.git.getRemotes(true);
-      const hasRemote = remotes && remotes.length > 0;
+      const branchName = await this.getRemoteBranchName();
 
-      if (!hasRemote) {
+      if (!branchName) {
         console.warn('⚠️  Changes are only saved locally. To sync with a remote, set up a remote origin.');
-      } else {
+      } else if (branchName) {
       // Force sync to latest remote state
         try {
           await this.git.fetch();
-          await this.git.reset(['--hard', 'origin/master']);
+          await this.git.reset(['--hard', branchName]);
         } catch (err) {
           if (err instanceof Error) {
             console.warn('Git fetch/reset failed; continuing anyway:', err.message);
@@ -226,16 +238,7 @@ export class GitStorage implements Storage {
   public async setArchive(archive: Array<Item>): Promise<void> {
     try {     
       // Force sync to latest remote state
-      try {
-        await this.git.fetch();
-        await this.git.reset(['--hard', 'origin/master']);
-      } catch (err) {
-        if (err instanceof Error) {
-          console.warn('Git fetch/reset failed for archive; continuing anyway:', err.message);
-        } else {
-          console.warn('Git fetch/reset failed for archive; continuing anyway:', err);
-        }
-      }
+      const branchName = await this.getRemoteBranchName();
       
       const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
       const tempArchiveFile: string = this.getTempFile(this.archiveFile);
