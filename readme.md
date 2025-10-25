@@ -266,7 +266,7 @@ Choose the storage module.
 ##### `gitStorageDirectory`
 
 - Type: `String`
-- Example: `D:\\test_repo`
+- Example: `<your-git-storage-path>`
 
 Filesystem path where the Git storage repository will be initialized or used.  
 If the directory does not contain a Git repository, one will be initialized automatically.
@@ -276,7 +276,7 @@ If the directory does not contain a Git repository, one will be initialized auto
 ```json
 {
   "storageModule": "git",
-  "gitStorageDirectory": "<your-git-storage-path>", // Path to your local Git repository
+  "gitStorageDirectory": "<your-git-storage-path>", // Absolute Path to your local Git repository
   ...
 }
 ```
