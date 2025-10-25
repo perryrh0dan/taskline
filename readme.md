@@ -292,7 +292,8 @@ To add a remote to your Git storage directory, run:
 
 ```sh
 git remote add origin <your-remote-url>
-git push -u origin master
+git branch -M main
+git push -u origin main
 ```
 
 Replace `<your-remote-url>` with the URL of your remote repository.
