@@ -7,7 +7,6 @@
     }
   ],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": true
   },
-  "github.copilot.chat.newWorkspaceCreation.enabled": false,
 }
