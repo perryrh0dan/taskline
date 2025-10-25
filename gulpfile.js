@@ -60,7 +60,7 @@ const delDist = () => {
 
 const build = gulp.series(delDist, compileProd, moveLocals);
 const buildMeta = gulp.parallel(movePackage, moveReadme);
-const buildTest = gulp.series(compileTest, moveLocals, movePackage);
+const buildTest = gulp.series(compileTest, moveLocals);
 const dev = gulp.series(buildTest, watch);
 const snapcraft = gulp.series(compileProd, editPackageSnapcraft);
 
