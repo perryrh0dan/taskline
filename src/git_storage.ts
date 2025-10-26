@@ -46,16 +46,21 @@ export class GitStorage implements Storage {
   }
 
   private getRepoDir(): string {
-    const { gitStorageDirectory } = Config.instance.get();
-    const defaultRepoDir: string = join(os.homedir(), '.taskline-git');
-    if (!gitStorageDirectory) {
-      return defaultRepoDir;
+    let { tasklineDirectory } = Config.instance.get();
+    if (tasklineDirectory.startsWith('~')) {
+      tasklineDirectory = join(os.homedir(), tasklineDirectory.slice(1));
     }
-    if (!fs.existsSync(gitStorageDirectory)) {
-      Renderer.instance.invalidCustomAppDir(gitStorageDirectory);
+
+    if(!tasklineDirectory) {
+      tasklineDirectory = os.homedir();
+    }
+    const repoDir = join(tasklineDirectory, '.taskline-git');
+    if (!fs.existsSync(tasklineDirectory)) {
+      Renderer.instance.invalidCustomAppDir(tasklineDirectory);
       process.exit(1);
     }
-    return join(gitStorageDirectory, '.taskline-git');
+    return repoDir;
+    
   }
 
   private ensureDirectories(): void {

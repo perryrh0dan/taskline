@@ -42,7 +42,6 @@ export interface IConfig {
   firestoreConfig: IFirestoreConfig;
   dateformat: string;
   theme: ITheme;
-  gitStorageDirectory?: string;
 }
 
 export class Config {
