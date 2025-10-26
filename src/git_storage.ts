@@ -170,17 +170,6 @@ export class GitStorage implements Storage {
     return null;
   }
 
-  private printNoRemoteWarning(): void {
-    Renderer.instance.warn(
-      `Git push failed: No remote is configured.
-        To enable syncing, run:
-          git remote add origin <your-remote-url>
-          git branch -M main
-          git push -u origin main
-      Replace <your-remote-url> with the URL of your remote repository.`
-    );
-  }
-
   public async set(data: Array<Item>): Promise<void> {
     try {
       const branchName = await this.getRemoteBranchName();
@@ -207,7 +196,7 @@ export class GitStorage implements Storage {
       try {
         await this.git.commit('Update storage.json');
       } catch (err) {
-        if (err instanceof Error && !/nothing to commit/i.test(err.message)) {
+        if (err instanceof Error && !err.message.toLowerCase().includes('nothing to commit')) {
           Renderer.instance.gitCommitError(err.message);
         } else {
           Renderer.instance.gitCommitError(String(err));
@@ -219,7 +208,7 @@ export class GitStorage implements Storage {
       } catch (err) {
         if (
           err instanceof Error &&
-          /No configured push destination|No remote configured/i.test(err.message)
+          (err.message.includes('No configured push destination') || err.message.includes('No remote configured'))
         ) {
           Renderer.instance.gitRemoteSetup();
         } else if (err instanceof Error) {
@@ -260,7 +249,7 @@ export class GitStorage implements Storage {
     try {
       await this.git.commit('Update archive.json');
     } catch (err) {
-      if (err instanceof Error && !/nothing to commit/i.test(err.message)) {
+      if (err instanceof Error && !err.message.toLowerCase().includes('nothing to commit')) {
         Renderer.instance.gitCommitError(err.message);
       } else {
         Renderer.instance.gitCommitError(String(err));
@@ -272,7 +261,7 @@ export class GitStorage implements Storage {
     } catch (err) {
         if (
           err instanceof Error &&
-          /No configured push destination|No remote configured/i.test(err.message)
+          (err.message.includes('No configured push destination') || err.message.includes('No remote configured'))
         ) {
           Renderer.instance.gitRemoteSetup();
         } else if (err instanceof Error) {
