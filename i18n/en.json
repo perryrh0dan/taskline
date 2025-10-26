@@ -87,11 +87,11 @@
     "dateFormat": "Unable to parse date: {0}",
     "firestoreConfig": "Firestore config contains error",
     "gitNoRemote": "No remote repository is configured. Please set up a remote to enable syncing.",
-    "gitRemoteSetup": "No remote is configured. To enable syncing, run:\n  git remote add origin <your-remote-url>\n  git branch -M main\n  git push -u origin main\nReplace <your-remote-url> with the URL of your remote repository.",
+    "gitRemoteSetup": "To enable syncing, run:\n  git remote add origin <your-remote-url>\n  git branch -M main\n  git push -u origin main\nReplace <your-remote-url> with the URL of your remote repository.",
     "gitFetchReset": "Failed to fetch or reset from remote. Please ensure your remote branch exists and matches your configuration.",
     "gitPush": "Failed to push changes to remote. Please check your remote configuration and permissions. {0}",
     "gitCommit": "Git commit failed: {0}",
-    "gitLocalOnly": "Changes are only saved locally. To sync with a remote, set up a remote origin.",
+    "gitLocalOnly": "Changes are only saved locally. To sync your tasks with a remote repository, set up a remote origin first.",
     "id": "Unable to find item with id: {0}",
     "idRange": "Unable to resolve ID range: {0}",
     "priority": "Priority can only be 1, 2 or 3"

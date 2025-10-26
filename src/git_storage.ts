@@ -232,15 +232,13 @@ export class GitStorage implements Storage {
     try {     
       // Force sync to latest remote state
       const branchName = await this.getRemoteBranchName();
-      
-    if (!branchName) {
-      Renderer.instance.gitLocalOnly();
-    } else {
+
+    if (branchName) {
       try {
         await this.git.fetch();
         await this.git.reset(['--hard', branchName]);
       } catch (err) {
-        Renderer.instance.gitFetchResetError();
+        // Renderer.instance.gitFetchResetError(); // Suppressed
       }
     }
 
@@ -254,26 +252,26 @@ export class GitStorage implements Storage {
     try {
       await this.git.commit('Update archive.json');
     } catch (err) {
-      if (err instanceof Error && !err.message.toLowerCase().includes('nothing to commit')) {
-        Renderer.instance.gitCommitError(err.message);
-      } else {
-        Renderer.instance.gitCommitError(String(err));
-      }
+      // if (err instanceof Error && !err.message.toLowerCase().includes('nothing to commit')) {
+      //   Renderer.instance.gitCommitError(err.message);
+      // } else {
+      //   Renderer.instance.gitCommitError(String(err));
+      // }
     }
     // Push
     try {
       await this.git.push();
     } catch (err) {
-        if (
-          err instanceof Error &&
-          (err.message.includes('No configured push destination') || err.message.includes('No remote configured'))
-        ) {
-          Renderer.instance.gitRemoteSetup();
-        } else if (err instanceof Error) {
-          Renderer.instance.gitPushError(err.message);
-        } else {
-          Renderer.instance.gitPushError(String(err));
-        }
+        // if (
+        //   err instanceof Error &&
+        //   (err.message.includes('No configured push destination') || err.message.includes('No remote configured'))
+        // ) {
+        //   // Renderer.instance.gitRemoteSetup(); // Suppress warning as the set is showing these already
+        // } else if (err instanceof Error) {
+        //   Renderer.instance.gitPushError(err.message);
+        // } else {
+        //   Renderer.instance.gitPushError(String(err));
+        // }
       }
     } catch (error) {
       return Promise.reject(error);
