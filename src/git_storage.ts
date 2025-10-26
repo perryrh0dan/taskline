@@ -171,13 +171,13 @@ export class GitStorage implements Storage {
   }
 
   private printNoRemoteWarning(): void {
-    console.warn(
-      `Git push failed: No remote is configured.\n` +
-      `To enable syncing, run:\n\n` +
-      `    git remote add origin <your-remote-url>\n` +
-      `    git branch -M main\n` +
-      `    git push -u origin main\n\n` +
-      `Replace <your-remote-url> with the URL of your remote repository.`
+    Renderer.instance.warn(
+      `Git push failed: No remote is configured.
+        To enable syncing, run:
+          git remote add origin <your-remote-url>
+          git branch -M main
+          git push -u origin main
+      Replace <your-remote-url> with the URL of your remote repository.`
     );
   }
 
@@ -186,7 +186,7 @@ export class GitStorage implements Storage {
       const branchName = await this.getRemoteBranchName();
 
       if (!branchName) {
-        console.warn('⚠️  Changes are only saved locally. To sync with a remote, set up a remote origin.');
+        Renderer.instance.warn('Changes are only saved locally. To sync with a remote, set up a remote origin.');
       } else if (branchName) {
       // Force sync to latest remote state
         try {
@@ -194,9 +194,9 @@ export class GitStorage implements Storage {
           await this.git.reset(['--hard', branchName]);
         } catch (err) {
           if (err instanceof Error) {
-            console.warn('Git fetch/reset failed; continuing anyway:', err.message);
+            Renderer.instance.warn('Git fetch/reset failed; continuing anyway: ' + err.message);
           } else {
-            console.warn('Git fetch/reset failed; continuing anyway:', err);
+            Renderer.instance.warn('Git fetch/reset failed; continuing anyway: ' + err);
           }
         }
       }
@@ -246,16 +246,16 @@ export class GitStorage implements Storage {
       const branchName = await this.getRemoteBranchName();
       
     if (!branchName) {
-      console.warn('⚠️  Changes are only saved locally. To sync with a remote, set up a remote origin.');
+      Renderer.instance.warn('⚠️  Changes are only saved locally. To sync with a remote, set up a remote origin.');
     } else {
       try {
         await this.git.fetch();
         await this.git.reset(['--hard', branchName]);
       } catch (err) {
         if (err instanceof Error) {
-          console.warn('Git fetch/reset failed for archive; continuing anyway:', err.message);
+          Renderer.instance.warn('Git fetch/reset failed for archive; continuing anyway: ' + err.message);
         } else {
-          console.warn('Git fetch/reset failed for archive; continuing anyway:', err);
+          Renderer.instance.warn('Git fetch/reset failed for archive; continuing anyway: ' + err);
         }
       }
     }

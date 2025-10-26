@@ -414,7 +414,13 @@ export class Renderer {
     console.log('');
   }
 
-
+  public warn(message: string): void {
+    this.stopLoading();
+    this.signale.warn({
+      prefix: '\n',
+      message
+    });
+  }
 
   public displayByDate(data: any): void {
     this.stopLoading();
