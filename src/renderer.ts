@@ -414,12 +414,46 @@ export class Renderer {
     console.log('');
   }
 
-  public warn(message: string): void {
+  public gitNoRemote(): void {
     this.stopLoading();
-    this.signale.warn({
-      prefix: '\n',
-      message
-    });
+    const prefix = '\n';
+    const message = Localization.instance.get('warning.gitNoRemote');
+    this.signale.warn({ prefix, message });
+  }
+
+  public gitFetchResetError(): void {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = Localization.instance.get('warning.gitFetchReset');
+    this.signale.error({ prefix, message });
+  }
+
+  public gitPushError(error?: string): void {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = Localization.instance.getf('warning.gitPush', { params: [error || ''] });
+    this.signale.error({ prefix, message });
+  }
+
+  public gitCommitError(error?: string): void {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = Localization.instance.getf('warning.gitCommit', { params: [error || ''] });
+    this.signale.error({ prefix, message });
+  }
+
+  public gitLocalOnly(): void {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = Localization.instance.get('warning.gitLocalOnly');
+    this.signale.warn({ prefix, message });
+  }
+
+  public gitRemoteSetup(): void {
+    this.stopLoading();
+    const prefix = '\n';
+    const message = Localization.instance.get('warning.gitRemoteSetup');
+    this.signale.warn({ prefix, message });
   }
 
   public displayByDate(data: any): void {

@@ -186,18 +186,14 @@ export class GitStorage implements Storage {
       const branchName = await this.getRemoteBranchName();
 
       if (!branchName) {
-        Renderer.instance.warn('Changes are only saved locally. To sync with a remote, set up a remote origin.');
+        Renderer.instance.gitLocalOnly();
       } else if (branchName) {
       // Force sync to latest remote state
         try {
           await this.git.fetch();
           await this.git.reset(['--hard', branchName]);
         } catch (err) {
-          if (err instanceof Error) {
-            Renderer.instance.warn('Git fetch/reset failed; continuing anyway: ' + err.message);
-          } else {
-            Renderer.instance.warn('Git fetch/reset failed; continuing anyway: ' + err);
-          }
+          Renderer.instance.gitFetchResetError();
         }
       }
 
@@ -211,12 +207,10 @@ export class GitStorage implements Storage {
       try {
         await this.git.commit('Update storage.json');
       } catch (err) {
-        if (err instanceof Error) {
-          if (!/nothing to commit/i.test(err.message)) {
-            console.error('Git commit failed:', err.message);
-          }
+        if (err instanceof Error && !/nothing to commit/i.test(err.message)) {
+          Renderer.instance.gitCommitError(err.message);
         } else {
-          console.error('Git commit failed:', err);
+          Renderer.instance.gitCommitError(String(err));
         }
       }
       // Push
@@ -227,11 +221,11 @@ export class GitStorage implements Storage {
           err instanceof Error &&
           /No configured push destination|No remote configured/i.test(err.message)
         ) {
-          this.printNoRemoteWarning();
+          Renderer.instance.gitRemoteSetup();
         } else if (err instanceof Error) {
-          console.error('Git push failed:', err.message);
+          Renderer.instance.gitPushError(err.message);
         } else {
-          console.error('Git push failed:', err);
+          Renderer.instance.gitPushError(String(err));
         }
       }
     } catch (error) {
@@ -246,17 +240,13 @@ export class GitStorage implements Storage {
       const branchName = await this.getRemoteBranchName();
       
     if (!branchName) {
-      Renderer.instance.warn('⚠️  Changes are only saved locally. To sync with a remote, set up a remote origin.');
+      Renderer.instance.gitLocalOnly();
     } else {
       try {
         await this.git.fetch();
         await this.git.reset(['--hard', branchName]);
       } catch (err) {
-        if (err instanceof Error) {
-          Renderer.instance.warn('Git fetch/reset failed for archive; continuing anyway: ' + err.message);
-        } else {
-          Renderer.instance.warn('Git fetch/reset failed for archive; continuing anyway: ' + err);
-        }
+        Renderer.instance.gitFetchResetError();
       }
     }
 
@@ -270,12 +260,10 @@ export class GitStorage implements Storage {
     try {
       await this.git.commit('Update archive.json');
     } catch (err) {
-      if (err instanceof Error) {
-        if (!/nothing to commit/i.test(err.message)) {
-          console.error('Git commit failed (archive):', err.message);
-        }
+      if (err instanceof Error && !/nothing to commit/i.test(err.message)) {
+        Renderer.instance.gitCommitError(err.message);
       } else {
-        console.error('Git commit failed (archive):', err);
+        Renderer.instance.gitCommitError(String(err));
       }
     }
     // Push
@@ -286,11 +274,11 @@ export class GitStorage implements Storage {
           err instanceof Error &&
           /No configured push destination|No remote configured/i.test(err.message)
         ) {
-          this.printNoRemoteWarning();
+          Renderer.instance.gitRemoteSetup();
         } else if (err instanceof Error) {
-          console.error('Git push failed (archive):', err.message);
+          Renderer.instance.gitPushError(err.message);
         } else {
-          console.error('Git push failed (archive):', err);
+          Renderer.instance.gitPushError(String(err));
         }
       }
     } catch (error) {
