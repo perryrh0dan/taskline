@@ -259,6 +259,11 @@ Display progress overview below the timeline and board views.
 - Default: `local`
 - Values: `local` , `firestore` , `git`
 
+Choice of storage module. Currently there are three modules `local` , `firestore` and `git` . For the firestore module the firestoreConfig is needed.
+
+To use Git for storage, simply set `"storageModule": "git"` in your configuration.  
+Taskline will initialize a `.taskline-git` repository inside your chosen `tasklineDirectory`.
+
 **Note:**  
 To enable syncing across devices or with a remote server, your Git storage repository must be connected to a remote (such as GitHub, GitLab, or Bitbucket).  
 If no remote is configured, changes will only be saved locally and will not sync globally.
