@@ -238,7 +238,9 @@ export class GitStorage implements Storage {
         await this.git.fetch();
         await this.git.reset(['--hard', branchName]);
       } catch (err) {
-        // Renderer.instance.gitFetchResetError(); // Suppressed
+        // Errors are intentionally suppressed here to avoid duplicate warnings.
+        // All user-facing git errors are handled in `set`, which is always called together with `setArchive`.
+        // Suppressed
       }
     }
 
@@ -252,26 +254,13 @@ export class GitStorage implements Storage {
     try {
       await this.git.commit('Update archive.json');
     } catch (err) {
-      // if (err instanceof Error && !err.message.toLowerCase().includes('nothing to commit')) {
-      //   Renderer.instance.gitCommitError(err.message);
-      // } else {
-      //   Renderer.instance.gitCommitError(String(err));
-      // }
+      // do nothing
     }
     // Push
     try {
       await this.git.push();
     } catch (err) {
-        // if (
-        //   err instanceof Error &&
-        //   (err.message.includes('No configured push destination') || err.message.includes('No remote configured'))
-        // ) {
-        //   // Renderer.instance.gitRemoteSetup(); // Suppress warning as the set is showing these already
-        // } else if (err instanceof Error) {
-        //   Renderer.instance.gitPushError(err.message);
-        // } else {
-        //   Renderer.instance.gitPushError(String(err));
-        // }
+        // do nothing
       }
     } catch (error) {
       return Promise.reject(error);
