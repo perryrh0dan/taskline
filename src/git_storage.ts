@@ -223,7 +223,7 @@ export class GitStorage implements Storage {
         }
       }
     } catch (error) {
-      return Promise.reject(error);
+      throw error;
     }
   }
 
@@ -263,7 +263,7 @@ export class GitStorage implements Storage {
         // do nothing
       }
     } catch (error) {
-      return Promise.reject(error);
+      throw error;
     }
   }
 
