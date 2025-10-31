@@ -46,7 +46,7 @@ Come over to [Gitter](https://gitter.im/taskline/community?source=orgpage) or [T
 
 This project was heavily inspired by [taskbook](https://github.com/klaussinani/taskbook). Due to the lack of some critical features mentioned below, I decided to rewrite the complete app in a more modern approach.
 
-### Original 
+### Original
 
 - Organize tasks & notes to boards
 - Board & timeline views
@@ -261,22 +261,9 @@ Display progress overview below the timeline and board views.
 
 Choice of storage module. Currently there are three modules `local` , `firestore` and `git` . For the firestore module the firestoreConfig is needed.
 
-To use Git for storage, simply set `"storageModule": "git"` in your configuration.  
-Taskline will initialize a `.taskline-git` repository inside your chosen `tasklineDirectory`.
-
 **Note:**  
 To enable syncing across devices or with a remote server, your Git storage repository must be connected to a remote (such as GitHub, GitLab, or Bitbucket).  
 If no remote is configured, changes will only be saved locally and will not sync globally.
-
-To add a remote to your taskline directory, run:
-
-```sh
-git remote add origin <your-remote-url>
-git branch -M main
-git push -u origin main
-```
-
-Replace `<your-remote-url>` with the URL of your remote repository.
 
 ##### `firestoreConfig`
 
@@ -372,7 +359,6 @@ To mark a task as canceled/revived, use the `cancel` command followed by the ids
 > tl cancel 1-3,5,6
 
 ```
-
 
 ### Star Item
 
@@ -596,6 +582,7 @@ Since Taskline 1.1.0 custom themes can be created. The colors of the individual 
 ## Languages
 
 Change the language in the configuration file under language. Following languages are supported:
+
 - english(en)
 - german(de)
 - spanish(es) (thanks a lot to [camilohh](https://github.com/camilohh) <3)
@@ -628,7 +615,7 @@ Run the build script from '/scripts/build.sh'
 
 #### Snapcraft
 
-``` bash
+```bash
 snapcraft login
 
 snapcraft push --release=stable taskline_1.3.4_multi.snap

@@ -2,7 +2,12 @@
 
 Changelog for npm and snapcraft
 
+## Version 1.5.0
+
+- Add git storage module
+
 ## Version 1.4.0
+
 - Add timeloggin feature for tasks
 - Add spanisch language support
 - Add localization to help menu
@@ -39,7 +44,7 @@ tl t "thats cool" -d next monday
 
 ## Version 1.1.2
 
-- Fixed date parse bug for december. 
+- Fixed date parse bug for december.
 
 ## Version 1.1.1
 

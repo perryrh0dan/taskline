@@ -90,7 +90,7 @@ export abstract class Item {
     const jsonObj: any = {};
     // const jsonObj: any = Object.assign({}, this);
 
-    protos.forEach(proto => {
+    protos.forEach((proto) => {
       Object.entries(Object.getOwnPropertyDescriptors(proto))
         .filter(([key, descriptor]) => typeof descriptor.get === 'function')
         .map(([key, descriptor]) => {

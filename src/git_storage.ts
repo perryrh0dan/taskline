@@ -51,22 +51,23 @@ export class GitStorage implements Storage {
       tasklineDirectory = join(os.homedir(), tasklineDirectory.slice(1));
     }
 
-    if(!tasklineDirectory) {
+    if (!tasklineDirectory) {
       tasklineDirectory = os.homedir();
     }
-    const repoDir = join(tasklineDirectory, '.taskline-git');
+    const repoDir = join(tasklineDirectory, '.taskline');
     if (!fs.existsSync(tasklineDirectory)) {
       Renderer.instance.invalidCustomAppDir(tasklineDirectory);
       process.exit(1);
     }
     return repoDir;
-    
   }
 
   private ensureDirectories(): void {
-    [this.repoDir, this.storageDir, this.archiveDir, this.tempDir].forEach(dir => {
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    });
+    [this.repoDir, this.storageDir, this.archiveDir, this.tempDir].forEach(
+      (dir) => {
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      },
+    );
     this.cleanTempDir();
     // Initialize git repo if not already
     if (!fs.existsSync(join(this.repoDir, '.git'))) {
@@ -106,28 +107,32 @@ export class GitStorage implements Storage {
       }
       // Support old storage format
       if (data[id]._isTask) {
-        items.push(new Task({
-          id: data[id]._id,
-          date: data[id]._date,
-          timestamp: data[id]._timestamp,
-          description: data[id].description,
-          isStarred: data[id].isStarred,
-          boards: data[id].boards,
-          priority: data[id].priority,
-          inProgress: data[id].inProgress,
-          isCanceled: data[id].isCanceled,
-          isComplete: data[id].isComplete,
-          dueDate: data[id].dueDate
-        }));
+        items.push(
+          new Task({
+            id: data[id]._id,
+            date: data[id]._date,
+            timestamp: data[id]._timestamp,
+            description: data[id].description,
+            isStarred: data[id].isStarred,
+            boards: data[id].boards,
+            priority: data[id].priority,
+            inProgress: data[id].inProgress,
+            isCanceled: data[id].isCanceled,
+            isComplete: data[id].isComplete,
+            dueDate: data[id].dueDate,
+          }),
+        );
       } else if (data[id]._isTask === false) {
-        items.push(new Note({
-          id: data[id]._id,
-          date: data[id]._date,
-          timestamp: data[id]._timestamp,
-          description: data[id].description,
-          isStarred: data[id].isStarred,
-          boards: data[id].boards
-        }));
+        items.push(
+          new Note({
+            id: data[id]._id,
+            date: data[id]._date,
+            timestamp: data[id]._timestamp,
+            description: data[id].description,
+            isStarred: data[id].isStarred,
+            boards: data[id].boards,
+          }),
+        );
       }
     });
     return items;
@@ -182,7 +187,7 @@ export class GitStorage implements Storage {
       if (!branchName) {
         Renderer.instance.gitLocalOnly();
       } else if (branchName) {
-      // Force sync to latest remote state
+        // Force sync to latest remote state
         try {
           await this.git.fetch();
           await this.git.reset(['--hard', branchName]);
@@ -191,7 +196,11 @@ export class GitStorage implements Storage {
         }
       }
 
-      const jsonData: string = JSON.stringify(data.map((item: Item) => item.toJSON()), null, 4);
+      const jsonData: string = JSON.stringify(
+        data.map((item: Item) => item.toJSON()),
+        null,
+        4,
+      );
       const tempStorageFile: string = this.getTempFile(this.mainStorageFile);
       fs.writeFileSync(tempStorageFile, jsonData, 'utf8');
       fs.renameSync(tempStorageFile, this.mainStorageFile);
@@ -201,7 +210,10 @@ export class GitStorage implements Storage {
       try {
         await this.git.commit('Update storage.json');
       } catch (err) {
-        if (err instanceof Error && !err.message.toLowerCase().includes('nothing to commit')) {
+        if (
+          err instanceof Error &&
+          !err.message.toLowerCase().includes('nothing to commit')
+        ) {
           Renderer.instance.gitCommitError(err.message);
         } else {
           Renderer.instance.gitCommitError(String(err));
@@ -213,7 +225,8 @@ export class GitStorage implements Storage {
       } catch (err) {
         if (
           err instanceof Error &&
-          (err.message.includes('No configured push destination') || err.message.includes('No remote configured'))
+          (err.message.includes('No configured push destination') ||
+            err.message.includes('No remote configured'))
         ) {
           Renderer.instance.gitRemoteSetup();
         } else if (err instanceof Error) {
@@ -227,39 +240,42 @@ export class GitStorage implements Storage {
     }
   }
 
-
   public async setArchive(archive: Array<Item>): Promise<void> {
-    try {     
+    try {
       // Force sync to latest remote state
       const branchName = await this.getRemoteBranchName();
 
-    if (branchName) {
-      try {
-        await this.git.fetch();
-        await this.git.reset(['--hard', branchName]);
-      } catch (err) {
-        // Errors are intentionally suppressed here to avoid duplicate warnings.
-        // All user-facing git errors are handled in `set`, which is always called together with `setArchive`.
-        // Suppressed
+      if (branchName) {
+        try {
+          await this.git.fetch();
+          await this.git.reset(['--hard', branchName]);
+        } catch (err) {
+          // Errors are intentionally suppressed here to avoid duplicate warnings.
+          // All user-facing git errors are handled in `set`, which is always called together with `setArchive`.
+          // Suppressed
+        }
       }
-    }
 
-    const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
-    const tempArchiveFile: string = this.getTempFile(this.archiveFile);
-    fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
-    fs.renameSync(tempArchiveFile, this.archiveFile);
+      const jsonArchive: string = JSON.stringify(
+        archive.map((item: Item) => item.toJSON()),
+        null,
+        4,
+      );
+      const tempArchiveFile: string = this.getTempFile(this.archiveFile);
+      fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
+      fs.renameSync(tempArchiveFile, this.archiveFile);
 
-    // Stage and commit
-    await this.git.add(this.archiveFile);
-    try {
-      await this.git.commit('Update archive.json');
-    } catch (err) {
-      // do nothing
-    }
-    // Push
-    try {
-      await this.git.push();
-    } catch (err) {
+      // Stage and commit
+      await this.git.add(this.archiveFile);
+      try {
+        await this.git.commit('Update archive.json');
+      } catch (err) {
+        // do nothing
+      }
+      // Push
+      try {
+        await this.git.push();
+      } catch (err) {
         // do nothing
       }
     } catch (error) {
@@ -269,7 +285,7 @@ export class GitStorage implements Storage {
 
   private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
     if (ids) {
-      return data.filter(item => ids.indexOf(item.id) !== -1);
+      return data.filter((item) => ids.indexOf(item.id) !== -1);
     }
     return data;
   }

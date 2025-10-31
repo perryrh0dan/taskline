@@ -10,8 +10,6 @@ import { Task } from './task';
 import { Note } from './note';
 import { Renderer } from './renderer';
 
-// const render = require('./render')
-
 export class LocalStorage implements Storage {
   private static _instance: LocalStorage;
   private storageDir: string = '';
@@ -29,7 +27,7 @@ export class LocalStorage implements Storage {
     return this._instance;
   }
 
-  private init(): void{
+  private init(): void {
     this.storageDir = join(this.mainAppDir, 'storage');
     this.archiveDir = join(this.mainAppDir, 'archive');
     this.tempDir = join(this.mainAppDir, '.temp');
@@ -40,9 +38,7 @@ export class LocalStorage implements Storage {
   }
 
   private get mainAppDir(): string {
-    const {
-      tasklineDirectory
-    } = Config.instance.get();
+    const { tasklineDirectory } = Config.instance.get();
     const defaultAppDirectory: string = join(os.homedir(), '.taskline');
 
     if (!tasklineDirectory) {
@@ -119,34 +115,38 @@ export class LocalStorage implements Storage {
     Object.keys(data).forEach((id: string) => {
       if (data[id].isTask) {
         items.push(new Task(data[id]));
-      } else if (data[id].isTask === false){
+      } else if (data[id].isTask === false) {
         items.push(new Note(data[id]));
       }
 
       // to support old storage format
       if (data[id]._isTask) {
-        items.push(new Task({
-          id: data[id]._id,
-          date: data[id]._date,
-          timestamp: data[id]._timestamp,
-          description: data[id].description,
-          isStarred: data[id].isStarred,
-          boards: data[id].boards,
-          priority: data[id].priority,
-          inProgress: data[id].inProgress,
-          isCanceled: data[id].isCanceled,
-          isComplete: data[id].isComplete,
-          dueDate: data[id].dueDate
-        }));
+        items.push(
+          new Task({
+            id: data[id]._id,
+            date: data[id]._date,
+            timestamp: data[id]._timestamp,
+            description: data[id].description,
+            isStarred: data[id].isStarred,
+            boards: data[id].boards,
+            priority: data[id].priority,
+            inProgress: data[id].inProgress,
+            isCanceled: data[id].isCanceled,
+            isComplete: data[id].isComplete,
+            dueDate: data[id].dueDate,
+          }),
+        );
       } else if (data[id]._isTask === false) {
-        items.push(new Note({
-          id: data[id]._id,
-          date: data[id]._date,
-          timestamp: data[id]._timestamp,
-          description: data[id].description,
-          isStarred: data[id].isStarred,
-          boards: data[id].boards
-        }));
+        items.push(
+          new Note({
+            id: data[id]._id,
+            date: data[id]._date,
+            timestamp: data[id]._timestamp,
+            description: data[id].description,
+            isStarred: data[id].isStarred,
+            boards: data[id].boards,
+          }),
+        );
       }
     });
 
@@ -187,7 +187,11 @@ export class LocalStorage implements Storage {
 
   public async set(data: Array<Item>): Promise<void> {
     try {
-      const jsonData: string = JSON.stringify(data.map((item: Item) => item.toJSON()), null, 4);
+      const jsonData: string = JSON.stringify(
+        data.map((item: Item) => item.toJSON()),
+        null,
+        4,
+      );
       const tempStorageFile: string = this.getTempFile(this.mainStorageFile);
 
       fs.writeFileSync(tempStorageFile, jsonData, 'utf8');
@@ -201,7 +205,11 @@ export class LocalStorage implements Storage {
 
   public async setArchive(archive: Array<Item>): Promise<void> {
     try {
-      const jsonArchive: string = JSON.stringify(archive.map((item: Item) => item.toJSON()), null, 4);
+      const jsonArchive: string = JSON.stringify(
+        archive.map((item: Item) => item.toJSON()),
+        null,
+        4,
+      );
       const tempArchiveFile: string = this.getTempFile(this.archiveFile);
 
       fs.writeFileSync(tempArchiveFile, jsonArchive, 'utf8');
@@ -215,7 +223,9 @@ export class LocalStorage implements Storage {
 
   private filterByID(data: Array<Item>, ids: Array<number>): Array<Item> {
     if (ids) {
-      return data.filter(item => { return ids.indexOf(item.id) != -1; });
+      return data.filter((item) => {
+        return ids.indexOf(item.id) != -1;
+      });
     }
     return data;
   }
