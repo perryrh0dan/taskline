@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as program from 'commander';
+import { Command } from 'commander';
 
 // START SNAPCRAFT IGNORE
 import updateNotifier from 'update-notifier';
@@ -10,6 +10,7 @@ import { Localization } from './src/localization';
 import logger from './src/utils/logger';
 import pkg = require('./package.json');
 const taskline = new Taskline();
+const program = new Command();
 
 program.version(pkg.version);
 program.description(pkg.description);
@@ -62,7 +63,6 @@ program
   .action(() => {
     taskline.displayConfig();
   });
-
 
 program
   .command('boards')
