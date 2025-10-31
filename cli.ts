@@ -19,6 +19,12 @@ logger.info('Starting in Debug Mode');
 
 program.name('tl').usage('[command] [options]');
 
+program.command('default', { isDefault: true }).action(() => {
+  taskline.displayByBoard().then((grouped) => {
+    return taskline.displayStats(grouped);
+  });
+});
+
 program
   .command('archive')
   .alias('a')
@@ -200,12 +206,6 @@ program.on('--help', function () {
     'Detailed description under: https://github.com/perryrh0dan/taskline#flight-manual',
   );
 });
-
-if (process.argv.length === 2) {
-  taskline.displayByBoard().then((grouped) => {
-    return taskline.displayStats(grouped);
-  });
-}
 
 program.on('command:*', function () {
   console.error(
