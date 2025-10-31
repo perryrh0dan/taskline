@@ -257,9 +257,26 @@ Display progress overview below the timeline and board views.
 
 - Type: `Enum`
 - Default: `local`
-- Values: `local` , `firestore`
+- Values: `local` , `firestore` , `git`
 
-Choose of storage module. Currently there are two modules `local` and `firestore` . For the firestore module the firestoreConfig is needed.
+Choice of storage module. Currently there are three modules `local` , `firestore` and `git` . For the firestore module the firestoreConfig is needed.
+
+To use Git for storage, simply set `"storageModule": "git"` in your configuration.  
+Taskline will initialize a `.taskline-git` repository inside your chosen `tasklineDirectory`.
+
+**Note:**  
+To enable syncing across devices or with a remote server, your Git storage repository must be connected to a remote (such as GitHub, GitLab, or Bitbucket).  
+If no remote is configured, changes will only be saved locally and will not sync globally.
+
+To add a remote to your taskline directory, run:
+
+```sh
+git remote add origin <your-remote-url>
+git branch -M main
+git push -u origin main
+```
+
+Replace `<your-remote-url>` with the URL of your remote repository.
 
 ##### `firestoreConfig`
 

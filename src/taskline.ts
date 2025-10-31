@@ -9,6 +9,7 @@ import { Renderer } from './renderer';
 import { Config } from './config';
 import { Note } from './note';
 import { parseDate } from './libs/date';
+import { GitStorage } from './git_storage';
 
 export class Taskline {
   private storage: Storage;
@@ -19,6 +20,8 @@ export class Taskline {
       this.storage = FirestoreStorage.instance;
     } else if (storageModule === 'local') {
       this.storage = LocalStorage.instance;
+    } else if (storageModule === 'git') {
+      this.storage = GitStorage.instance;
     }
   }
 
